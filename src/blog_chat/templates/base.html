@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="nord">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Blog Chat{% endblock %}</title>
+    <link rel="stylesheet" href="/static/main.css">
+    {% block styles %}{% endblock %}
+</head>
+
+<body class="flex flex-col h-screen">
+    <header class="navbar bg-primary text-white shadow-sm">
+        <nav>
+            <a class="nav-btn text-xl" href="/">Home</a>
+            {% if post %}
+            <a href="/" class="nav-btn">&larr; Back to all posts</a>
+            {% endif %}
+        </nav>
+    </header>
+
+    <main class="flex-1 container mx-auto px-4 py-6 flex flex-col md:flex-row gap-6">
+        <aside aria-label="sidebar" class="hidden md:block md:w-1/4"></aside>
+        <section aria-label="main content" class="w-full md:w-1/2">
+            {% block content %}{% endblock %}
+        </section>
+        <aside aria-label="right sidebar" class="w-full md:w-1/4">
+            {% include "chat.html" %}
+        </aside>
+    </main>
+
+    <footer class="bg-gray-100 text-center py-4">
+        <p>&copy; 2026 Blog Chat</p>
+    </footer>
+
+    <script type="module" src="/static/main.js"></script>
+    {% block scripts %}{% endblock %}
+</body>
+
+</html>

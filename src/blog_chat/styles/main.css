@@ -1,0 +1,40 @@
+@import "./navigation.css";
+@import "tailwindcss";
+@plugin "daisyui";
+@theme {
+  --color-primary: #88c0d0;
+  --color-secondary: #81a1c1;
+  --color-accent: #5e81ac;
+  --color-neutral: #3b4252;
+  --color-base-100: #2e3440;
+  --color-info: #88c0d0;
+  --color-success: #a3be8c;
+  --color-warning: #ebcb8b;
+  --color-error: #bf616a;
+}
+
+[data-theme="nord"] {
+  --p: 187 48% 63%;
+  --pf: 187 48% 53%;
+  --pc: 0 0% 100%;
+  --s: 215 34% 52%;
+  --sf: 215 34% 42%;
+  --sc: 0 0% 100%;
+  --a: 220 41% 46%;
+  --af: 220 41% 36%;
+  --ac: 0 0% 100%;
+  --n: 222 19% 27%;
+  --nf: 222 19% 17%;
+  --nc: 0 0% 100%;
+  --b1: 215 28% 22%;
+  --bc: 0 0% 100%;
+  --in: 187 48% 63%;
+  --inc: 0 0% 0%;
+  --su: 137 34% 57%;
+  --suc: 0 0% 0%;
+  --wa: 35 77% 66%;
+  --wac: 0 0% 0%;
+  --er: 348 59% 59%;
+  --erc: 0 0% 0%;
+}
+
