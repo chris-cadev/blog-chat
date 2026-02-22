@@ -5,22 +5,22 @@
 {% block content %}
 <article class="post">
     <header>
-        <div class="flex items-center">
+        <div class="flex items-center gap-4">
             <h1 class="text-2xl">{{ post.title }}</h1>
             {% if post.updated %}
-            <p class="badge">updated: {{ post.updated }}</p>
+            <p class="date">updated: {{ post.updated }}</p>
             {% elif post.created %}
-            <p class="badge">created: {{ post.created }}</p>
+            <p class="date">created: {{ post.created }}</p>
             {% endif %}
 
             {% if post.tags %}
             <div class="tags">
                 {% for tag in post.tags %}
-                <span class="badge">{{ tag }}</span>
+                <a class="tag" href="/tags/{{ tag }}">{{ tag }}</a>
                 {% endfor %}
             </div>
+            {% endif %}
         </div>
-        {% endif %}
     </header>
 
     <div class="content text-lg">

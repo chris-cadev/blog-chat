@@ -1,0 +1,10 @@
+@utility tag {
+    @apply badge badge-neutral badge-md;
+    &::before {
+        content: "#";
+    }
+}
+
+@utility date {
+    @apply text-sm text-neutral-content;
+}

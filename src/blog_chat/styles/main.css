@@ -1,6 +1,8 @@
 @import "./navigation.css";
+@import "./posts.css";
 @import "tailwindcss";
 @plugin "daisyui";
+
 @theme {
   --color-primary: #88c0d0;
   --color-secondary: #81a1c1;
@@ -37,4 +39,3 @@
   --er: 348 59% 59%;
   --erc: 0 0% 0%;
 }
-
