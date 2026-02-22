@@ -1,0 +1,1 @@
+Bienvenidos a este blog, tiene la modalidad de ser un blog que permite el chat en cada esquina del blog, es decir se puede hacer un chat en cada tema que se publique, la idea es charlar sobre temas de interes del bloger.

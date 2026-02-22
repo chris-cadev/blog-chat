@@ -2,7 +2,7 @@
 authors = [
   {name = "Christian Camacho", email = "chris.ca.dev@gmail.com"},
 ]
-dependencies = ["fastapi[standard]>=0.129.2", "jinja2>=3.1.6", "powerwalk>=1.0.0", "jinja-markdown2>=0.4.0", "pyyaml>=6.0", "markdown>=3.0", "sqlalchemy[asyncio]>=2.0", "aiosqlite>=0.20", "cachetools>=5.0", "httpx>=0.27.0", "pyjwt>=2.11.0"]
+dependencies = ["fastapi[standard]>=0.129.2", "jinja2>=3.1.6", "powerwalk>=1.0.0", "jinja-markdown2>=0.4.0", "pyyaml>=6.0", "markdown>=3.0", "sqlalchemy[asyncio]>=2.0", "aiosqlite>=0.20", "pyjwt>=2.11.0"]
 description = "The idea is to connect website of logs with a live chat in a single page. This to generate interaction between people and content."
 license = {text = "MIT"}
 name = "blog-chat"

@@ -43,11 +43,6 @@ declare module 'htmx.org' {
   export default htmx;
 }
 
-declare module "htmx.org/dist/ext/ws" {
-  const ws: any;
-  export default ws;
-}
-
 interface Window {
   htmx: any;
 }

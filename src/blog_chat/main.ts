@@ -1,6 +1,7 @@
 import "./styles/main.css";
+import "htmx.org";
+import { initChat } from "./ws-handlers";
+import { initTheme } from "./theme";
 
-const htmx = await import("htmx.org");
-window.htmx = htmx.default;
-
-await import("htmx.org/dist/ext/ws");
+initChat();
+initTheme();

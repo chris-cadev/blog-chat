@@ -48,7 +48,6 @@ class Message(Base):
     timestamp: Mapped[datetime] = mapped_column(
         DateTime, default=Base.now, index=True)
     ip_address: Mapped[str | None] = mapped_column(String(45), nullable=True)
-    weather: Mapped[str | None] = mapped_column(String(100), nullable=True)
 
     user: Mapped["User"] = relationship(back_populates="messages")
 

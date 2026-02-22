@@ -4,6 +4,7 @@ export default defineConfig({
   build: {
     outDir: 'static',
     assetsDir: '',
+    inlineDynamicImports: true,
     rollupOptions: {
       input: {
         main: './src/blog_chat/main.ts',

@@ -2,7 +2,6 @@
 tags:
   - idea
 title: Blog Chat Idea
-slug: blog-chat-idea
 created: 21-02-2026
 updated: 21-02-2026
 ---
