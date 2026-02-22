@@ -16,7 +16,7 @@ from starlette.middleware.cors import CORSMiddleware
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from .database import async_session_maker, init_db, User, Message, get_db
+from .database import Base, async_session_maker, init_db, User, Message, get_db
 
 CONTENT_DIR = Path("content")
 
@@ -109,25 +109,38 @@ class ConnectionManager:
                 await connection.send_json(message)
 
 
+def get_username_from_cookie(request: Request) -> str | None:
+    token = request.cookies.get("chat_token")
+    if token:
+        try:
+            payload = jwt.decode(token, JWT_SECRET, algorithms=[JWT_ALGORITHM])
+            return payload.get("username")
+        except (jwt.ExpiredSignatureError, jwt.InvalidTokenError):
+            return None
+    return None
+
+
 manager = ConnectionManager()
 
 
 @app.get("/")
 def read_root(request: Request):
     posts = get_posts()
-    return templates.TemplateResponse("index.html", {"request": request, "posts": posts, "room": "offtopic"})
+    username = get_username_from_cookie(request)
+    return templates.TemplateResponse("index.html", {"request": request, "posts": posts, "room": "offtopic", "username": username})
 
 
 @app.get("/{slug}")
 def read_item(request: Request, slug: str):
     post = get_post(slug)
+    username = get_username_from_cookie(request)
     if not post:
         return templates.TemplateResponse(
             "index.html",
-            {"request": request, "posts": get_posts(), "error": "Post not found"},
+            {"request": request, "posts": get_posts(), "error": "Post not found", "username": username},
             status_code=404,
         )
-    return templates.TemplateResponse("post.html", {"request": request, "post": post, "room": slug})
+    return templates.TemplateResponse("post.html", {"request": request, "post": post, "room": slug, "username": username})
 
 
 @app.post("/api/set-username")
@@ -156,7 +169,7 @@ async def set_username(request: Request, db: AsyncSession = Depends(get_db)):
 
     payload = {
         "username": username,
-        "exp": datetime.utcnow() + timedelta(days=30)
+        "exp": Base.now() + timedelta(days=30)
     }
     token = jwt.encode(payload, JWT_SECRET, algorithm=JWT_ALGORITHM)
 
@@ -176,12 +189,25 @@ async def set_username(request: Request, db: AsyncSession = Depends(get_db)):
     return response
 
 
+@app.post("/api/clear-username")
+async def clear_username(request: Request):
+    response = HTMLResponse("<div id='username-section'>Username cleared</div>")
+    response.set_cookie(
+        key="chat_token",
+        value="",
+        httponly=True,
+        samesite="lax",
+        max_age=0
+    )
+    return response
+
+
 @app.websocket("/ws/chat")
 async def websocket_endpoint(websocket: WebSocket, db: AsyncSession = Depends(get_db)):
     room = websocket.query_params.get("room", "offtopic")
     await manager.connect(websocket, room)
 
-    token = websocket.query_params.get("token", "")
+    token = websocket.cookies.get("chat_token", "")
     username = "Guest"
 
     if token:

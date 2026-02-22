@@ -11,6 +11,7 @@
     </div>
 
     <div id="username-section">
+        {% if not username %}
         <form class="mb-4" hx-post="/api/set-username?room={{ room|default('offtopic') }}" hx-swap="outerHTML">
             <input type="hidden" name="room" value="{{ room|default('offtopic') }}" />
             <div class="flex gap-2">
@@ -19,6 +20,13 @@
                 <button class="btn btn-primary join-item">Join</button>
             </div>
         </form>
+        {% else %}
+        <div class="mb-4 flex items-center justify-between">
+            <span class="text-sm">Logged in as <span class="font-bold">{{ username }}</span></span>
+            <button class="btn btn-sm btn-ghost" hx-post="/api/clear-username?room={{ room|default('offtopic') }}"
+                hx-swap="outerHTML">Change username</button>
+        </div>
+        {% endif %}
     </div>
 
     <div class="chat-box h-96 overflow-y-auto mb-4 space-y-2" id="chat-messages">
@@ -34,10 +42,10 @@
 <script>
     document.body.addEventListener('htmx:afterSwap', (e) => {
         const usernameSection = document.getElementById('username-section');
-        if (!usernameSection || usernameSection.querySelector('form')) return;
-        
-        const token = document.cookie.match(/chat_token=([^;]+)/)?.[1];
-        if (token) {
+        if (!usernameSection) return;
+
+        const hasForm = usernameSection.querySelector('form');
+        if (!hasForm) {
             window.location.reload();
         }
     });
