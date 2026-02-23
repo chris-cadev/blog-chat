@@ -1,6 +1,6 @@
 import re
 from pathlib import Path
-from datetime import datetime, timedelta
+from datetime import timedelta
 from typing import Set
 
 from fastapi.concurrency import asynccontextmanager
@@ -16,7 +16,7 @@ from starlette.middleware.cors import CORSMiddleware
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from .database import Base, async_session_maker, init_db, User, Message, get_db
+from .database import Base, init_db, User, Message, get_db
 
 CONTENT_DIR = Path("content")
 
@@ -137,7 +137,8 @@ def read_item(request: Request, slug: str):
     if not post:
         return templates.TemplateResponse(
             "index.html",
-            {"request": request, "posts": get_posts(), "error": "Post not found", "username": username},
+            {"request": request, "posts": get_posts(), "error": "Post not found",
+             "username": username},
             status_code=404,
         )
     return templates.TemplateResponse("post.html", {"request": request, "post": post, "room": slug, "username": username})
@@ -191,7 +192,8 @@ async def set_username(request: Request, db: AsyncSession = Depends(get_db)):
 
 @app.post("/api/clear-username")
 async def clear_username(request: Request):
-    response = HTMLResponse("<div id='username-section'>Username cleared</div>")
+    response = HTMLResponse(
+        "<div id='username-section'>Username cleared</div>")
     response.set_cookie(
         key="chat_token",
         value="",
