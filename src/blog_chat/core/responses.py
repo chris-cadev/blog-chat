@@ -15,12 +15,3 @@ def create_templates(directory):
     templates.env.template_class = MinifiedTemplate
     templates.env.filters["minify"] = minify_html
     return templates
-
-
-def minified_template_response(templates, template_name: str, context: dict):
-    env = templates.env
-    old_class = env.template_class
-    env.template_class = MinifiedTemplate
-    response = templates.TemplateResponse(template_name, context)
-    env.template_class = old_class
-    return response

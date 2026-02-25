@@ -1,7 +1,6 @@
 from pathlib import Path
 
 from fastapi import APIRouter, Request
-import markdown
 
 from blog_chat.core.filters import add_markdown_filter
 from blog_chat.core.responses import create_templates

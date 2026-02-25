@@ -1,9 +1,10 @@
-from fastapi import APIRouter, WebSocket, WebSocketDisconnect, Depends, Request
+from fastapi import APIRouter, WebSocket, WebSocketDisconnect, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
-from datetime import datetime
-import markdown
+from datetime import datetime, timezone
+from zoneinfo import ZoneInfo
 import hashlib
+import humanize
 
 from blog_chat.core.database import get_db
 from blog_chat.core.filters import add_markdown_filter
@@ -15,6 +16,7 @@ from blog_chat.features.accounts.services import get_username_from_token
 router = APIRouter()
 
 manager = ConnectionManager()
+user_timezones: dict[str, str] = {}
 
 templates = create_templates("src/blog_chat/features/chat/templates")
 add_markdown_filter(templates)
@@ -28,20 +30,32 @@ def get_username_color(username: str) -> str:
     return f"hsl({hue}, 70%, 45%)"
 
 
-def render_message_template(username: str, content: str, timestamp: str, is_own: bool, show_header: bool = True, last_username: str | None = None) -> str:
-    formatted_time = ""
-    if timestamp:
-        dt = datetime.fromisoformat(timestamp.replace("Z", "+00:00"))
-        formatted_time = dt.strftime("%H:%M")
+def format_timestamp(timestamp: str, timezone_name: str | None = None) -> str:
+    if not timestamp:
+        return ""
+    
+    ts = timestamp.replace("Z", "+00:00")
+    dt_utc = datetime.fromisoformat(ts).replace(tzinfo=timezone.utc)
+    
+    if timezone_name:
+        try:
+            dt_local = dt_utc.astimezone(ZoneInfo(timezone_name))
+            return humanize.naturaltime(dt_local)
+        except Exception:
+            pass
+    
+    return humanize.naturaltime(dt_utc)
 
-    should_show_header = show_header or last_username != username
+
+def render_message_template(username: str, content: str, timestamp: str, is_own: bool, show_header: bool = True, timezone_name: str | None = None) -> str:
+    formatted_time = format_timestamp(timestamp, timezone_name)
 
     return templates.get_template("message.html").render(
         username=username,
         content=content,
         timestamp=formatted_time,
         isOwnMessage=is_own,
-        show_header=should_show_header,
+        show_header=show_header,
         userColor=get_username_color(username)
     )
 
@@ -62,24 +76,33 @@ async def websocket_endpoint(websocket: WebSocket, db: AsyncSession = Depends(ge
     )
     messages = result.scalars().all()
     messages_list = []
-    last_username = None
-    for m in reversed(messages):
+    timezone_name = websocket.cookies.get("chat_timezone")
+    for m in messages:
         html = render_message_template(
-            m.username, m.content, m.timestamp.isoformat(), m.username == username, last_username=last_username)
+            m.username, m.content, m.timestamp.isoformat(), m.username == username, 
+            show_header=True, timezone_name=timezone_name)
         messages_list.append({
             "id": m.id,
             "html": html,
             "username": m.username,
             "timestamp": m.timestamp.isoformat(),
         })
-        last_username = m.username
 
     await websocket.send_json({"type": "history", "messages": messages_list})
 
     try:
         while True:
             data = await websocket.receive_text()
+            
+            timezone_name = user_timezones.get(room) or websocket.cookies.get("chat_timezone")
             message_text = data.strip()
+            
+            if message_text.startswith("tz:"):
+                parts = message_text.split("|", 1)
+                if len(parts) == 2 and parts[0].startswith("tz:"):
+                    timezone_name = parts[0][3:]
+                    message_text = parts[1].strip()
+                    user_timezones[room] = timezone_name
 
             if not message_text:
                 continue
@@ -107,7 +130,9 @@ async def websocket_endpoint(websocket: WebSocket, db: AsyncSession = Depends(ge
                 new_message.username,
                 new_message.content,
                 new_message.timestamp.isoformat(),
-                True
+                True,
+                show_header=True,
+                timezone_name=timezone_name
             )
             message_payload = {
                 "type": "message",

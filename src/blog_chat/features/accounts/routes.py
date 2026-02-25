@@ -26,7 +26,7 @@ async def set_username(request: Request, db: AsyncSession = Depends(get_db)):
 
     if not username or len(username) > 50:
         html = templates.env.get_template(
-            "invalid_username.html"
+            "invalid_user.html"
         ).render()
         return HTMLResponse(html, status_code=400)
 

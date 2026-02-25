@@ -2,6 +2,17 @@ let ws: WebSocket | null = null;
 export { ws };
 const MAX_CHARS = 280;
 let isSending = false;
+let timezoneSent = false;
+
+function getTimezone(): string {
+  return Intl.DateTimeFormat().resolvedOptions().timeZone;
+}
+
+function setTimezoneCookie(tz: string) {
+  const expires = new Date();
+  expires.setFullYear(expires.getFullYear() + 1);
+  document.cookie = `chat_timezone=${tz};expires=${expires.toUTCString()};path=/;SameSite=Lax`;
+}
 
 function formatRelativeTime(isoString: string): string {
   const date = new Date(isoString);
@@ -64,14 +75,17 @@ function isAtBottom(): boolean {
   const container = document.getElementById("chat-messages");
   if (!container) return true;
   const threshold = 100;
-  return container.scrollHeight - container.scrollTop - container.clientHeight <= threshold;
+  return (
+    container.scrollHeight - container.scrollTop - container.clientHeight <=
+    threshold
+  );
 }
 
-function scrollToBottom(smooth = false) {
+function scrollToTop(smooth = false) {
   const container = document.getElementById("chat-messages");
   if (container) {
     container.scrollTo({
-      top: container.scrollHeight,
+      top: 0,
       behavior: smooth ? "smooth" : "auto",
     });
   }
@@ -80,10 +94,11 @@ function scrollToBottom(smooth = false) {
 function createScrollButton(): HTMLElement {
   const btn = document.createElement("button");
   btn.id = "scroll-to-bottom";
-  btn.className = "btn btn-sm btn-secondary fixed bottom-24 right-8 z-50 shadow-lg";
-  btn.innerHTML = "↓ New messages";
+  btn.className =
+    "btn btn-sm btn-primary fixed bottom-24 right-8 z-50 shadow-lg";
+  btn.innerHTML = "New messages";
   btn.addEventListener("click", () => {
-    scrollToBottom(true);
+    scrollToTop(true);
     btn.remove();
   });
   return btn;
@@ -143,7 +158,7 @@ function loadChatHistory(data: any) {
       showEmptyState(false);
       data.messages.forEach((msg: any) => addHistoryMessage(msg));
       if (isAtBottom()) {
-        scrollToBottom();
+        scrollToTop();
       }
     }
   }
@@ -160,6 +175,7 @@ function addHistoryMessage(msg: any) {
   if (timeEl && msg.timestamp) {
     timeEl.setAttribute("datetime", msg.timestamp);
   }
+
 }
 
 function sendMessage(input: HTMLInputElement) {
@@ -170,7 +186,18 @@ function sendMessage(input: HTMLInputElement) {
 
   isSending = true;
   setLoadingState(true);
-  ws.send(text);
+
+  let messageToSend = text;
+  if (!timezoneSent) {
+    const tz = getTimezone();
+    if (tz) {
+      messageToSend = `tz:${tz}|${text}`;
+      setTimezoneCookie(tz);
+    }
+    timezoneSent = true;
+  }
+
+  ws.send(messageToSend);
   input.value = "";
   updateCharCount();
 }
@@ -195,7 +222,7 @@ function handleError(data: any) {
   setLoadingState(false);
   const input = document.getElementById("chat-input") as HTMLInputElement;
   if (input) {
-    input.value = data.message.split('.')[0] + ".";
+    input.value = data.message.split(".")[0] + ".";
     input.focus();
   }
 }
@@ -226,7 +253,7 @@ function addMessage(data: any) {
   container.prepend(msgEl!);
 
   if (wasAtBottom) {
-    scrollToBottom();
+    scrollToTop();
   } else {
     const existingBtn = document.getElementById("scroll-to-bottom");
     if (!existingBtn) {
