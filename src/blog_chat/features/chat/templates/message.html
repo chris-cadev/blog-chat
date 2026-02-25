@@ -1,8 +1,10 @@
 <div class="chat {% if isOwnMessage %}chat-start{% else %}chat-end{% endif %}">
+    {% if show_header %}
     <div class="chat-header">
-        {{ username }}
+        <span style="color: {{ userColor }};">{{ username }}</span>
         <time class="text-xs opacity-50">{{ timestamp }}</time>
     </div>
+    {% endif %}
     {% if isOwnMessage %}
     <div class="chat-bubble chat-bubble-primary">
         {{ content | markdown | safe }}

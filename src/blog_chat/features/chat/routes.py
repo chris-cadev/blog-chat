@@ -3,6 +3,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from datetime import datetime
 import markdown
+import hashlib
 
 from blog_chat.core.database import get_db
 from blog_chat.core.filters import add_markdown_filter
@@ -18,18 +19,30 @@ manager = ConnectionManager()
 templates = create_templates("src/blog_chat/features/chat/templates")
 add_markdown_filter(templates)
 
+MAX_MESSAGE_LENGTH = 280
 
-def render_message_template(username: str, content: str, timestamp: str, is_own: bool) -> str:
+
+def get_username_color(username: str) -> str:
+    hash_value = int(hashlib.md5(username.encode()).hexdigest(), 16)
+    hue = hash_value % 360
+    return f"hsl({hue}, 70%, 45%)"
+
+
+def render_message_template(username: str, content: str, timestamp: str, is_own: bool, show_header: bool = True, last_username: str | None = None) -> str:
     formatted_time = ""
     if timestamp:
         dt = datetime.fromisoformat(timestamp.replace("Z", "+00:00"))
         formatted_time = dt.strftime("%H:%M")
 
+    should_show_header = show_header or last_username != username
+
     return templates.get_template("message.html").render(
         username=username,
         content=content,
         timestamp=formatted_time,
-        isOwnMessage=is_own
+        isOwnMessage=is_own,
+        show_header=should_show_header,
+        userColor=get_username_color(username)
     )
 
 
@@ -49,15 +62,17 @@ async def websocket_endpoint(websocket: WebSocket, db: AsyncSession = Depends(ge
     )
     messages = result.scalars().all()
     messages_list = []
+    last_username = None
     for m in reversed(messages):
         html = render_message_template(
-            m.username, m.content, m.timestamp.isoformat(), m.username == username)
+            m.username, m.content, m.timestamp.isoformat(), m.username == username, last_username=last_username)
         messages_list.append({
             "id": m.id,
             "html": html,
             "username": m.username,
             "timestamp": m.timestamp.isoformat(),
         })
+        last_username = m.username
 
     await websocket.send_json({"type": "history", "messages": messages_list})
 
@@ -67,6 +82,13 @@ async def websocket_endpoint(websocket: WebSocket, db: AsyncSession = Depends(ge
             message_text = data.strip()
 
             if not message_text:
+                continue
+
+            if len(message_text) > MAX_MESSAGE_LENGTH:
+                await websocket.send_json({
+                    "type": "error",
+                    "message": f"Message too long. Maximum {MAX_MESSAGE_LENGTH} characters allowed."
+                })
                 continue
 
             client_ip = websocket.client.host if websocket.client else None
