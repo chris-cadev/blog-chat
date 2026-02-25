@@ -1,77 +1,36 @@
-from pathlib import Path
-
-from fastapi import APIRouter, Request, WebSocket, WebSocketDisconnect, Depends
-from fastapi.responses import HTMLResponse
+from fastapi import APIRouter, WebSocket, WebSocketDisconnect, Depends, Request
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
+from datetime import datetime
+import markdown
 
 from blog_chat.core.database import get_db
+from blog_chat.core.filters import add_markdown_filter
 from blog_chat.core.responses import create_templates
-from blog_chat.features.chat.models import User, Message
+from blog_chat.features.chat.models import Message
 from blog_chat.features.chat.websocket import ConnectionManager
-from blog_chat.features.chat.services import create_token, get_username_from_token
+from blog_chat.features.accounts.services import get_username_from_token
 
 router = APIRouter()
 
 manager = ConnectionManager()
 
 templates = create_templates("src/blog_chat/features/chat/templates")
+add_markdown_filter(templates)
 
 
-@router.post("/api/set-username")
-async def set_username(request: Request, db: AsyncSession = Depends(get_db)):
-    content_type = request.headers.get("Content-Type", "")
+def render_message_template(username: str, content: str, timestamp: str, is_own: bool) -> str:
+    formatted_time = ""
+    if timestamp:
+        dt = datetime.fromisoformat(timestamp.replace("Z", "+00:00"))
+        formatted_time = dt.strftime("%H:%M")
 
-    if "application/json" in content_type:
-        data = await request.json()
-        username = data.get("username", "").strip()
-    else:
-        form = await request.form()
-        username = str(form.get("username", "")).strip()
-
-    if not username or len(username) > 50:
-        return HTMLResponse("<div id='username-section'>Invalid username</div>", status_code=400)
-
-    client_ip = request.client.host if request.client else None
-
-    existing = await db.execute(select(User).where(User.username == username))
-    existing_user = existing.scalar_one_or_none()
-
-    if not existing_user:
-        new_user = User(username=username, ip_address=client_ip)
-        db.add(new_user)
-        await db.commit()
-
-    token = create_token(username)
-
-    room = request.query_params.get("room", "offtopic")
-    connected_html = templates.env.get_template(
-        "ws_connected.html"
-    ).render(room=room, token=token)
-
-    response = HTMLResponse(connected_html)
-    response.set_cookie(
-        key="chat_token",
-        value=token,
-        httponly=True,
-        samesite="lax",
-        max_age=60 * 60 * 24 * 30
+    return templates.get_template("message.html").render(
+        username=username,
+        content=content,
+        timestamp=formatted_time,
+        isOwnMessage=is_own
     )
-    return response
-
-
-@router.post("/api/clear-username")
-async def clear_username(request: Request):
-    response = HTMLResponse(
-        "<div id='username-section'>Username cleared</div>")
-    response.set_cookie(
-        key="chat_token",
-        value="",
-        httponly=True,
-        samesite="lax",
-        max_age=0
-    )
-    return response
 
 
 @router.websocket("/ws/chat")
@@ -85,19 +44,20 @@ async def websocket_endpoint(websocket: WebSocket, db: AsyncSession = Depends(ge
     result = await db.execute(
         select(Message)
         .where(Message.room_slug == room)
-        .order_by(Message.timestamp.desc())
+        .order_by(Message.timestamp.asc())
         .limit(50)
     )
     messages = result.scalars().all()
-    messages_list = [
-        {
+    messages_list = []
+    for m in reversed(messages):
+        html = render_message_template(
+            m.username, m.content, m.timestamp.isoformat(), m.username == username)
+        messages_list.append({
             "id": m.id,
+            "html": html,
             "username": m.username,
-            "content": m.content,
             "timestamp": m.timestamp.isoformat(),
-        }
-        for m in reversed(messages)
-    ]
+        })
 
     await websocket.send_json({"type": "history", "messages": messages_list})
 
@@ -121,11 +81,17 @@ async def websocket_endpoint(websocket: WebSocket, db: AsyncSession = Depends(ge
             await db.commit()
             await db.refresh(new_message)
 
+            html = render_message_template(
+                new_message.username,
+                new_message.content,
+                new_message.timestamp.isoformat(),
+                True
+            )
             message_payload = {
                 "type": "message",
                 "id": new_message.id,
+                "html": html,
                 "username": new_message.username,
-                "content": new_message.content,
                 "timestamp": new_message.timestamp.isoformat(),
             }
             await manager.broadcast(message_payload, room)

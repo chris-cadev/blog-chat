@@ -3,8 +3,9 @@ from pathlib import Path
 from fastapi import APIRouter, Request
 import markdown
 
+from blog_chat.core.filters import add_markdown_filter
 from blog_chat.core.responses import create_templates
-from blog_chat.features.chat.services import get_username_from_cookie
+from blog_chat.features.accounts.services import get_username_from_cookie
 from blog_chat.features.posts.services import get_post, get_posts
 
 router = APIRouter()
@@ -14,13 +15,7 @@ posts_template_dirs = [
     Path("src/blog_chat/features/chat/templates"),
 ]
 templates = create_templates(posts_template_dirs)
-
-
-def parse_to_markdown(text: str) -> str:
-    return markdown.markdown(text or "")
-
-
-templates.env.filters["markdown"] = parse_to_markdown
+add_markdown_filter(templates)
 
 
 @router.get("/")

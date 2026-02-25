@@ -6,19 +6,18 @@ export function initChat() {
   const wsUrl = `${protocol}//${window.location.host}/ws/chat?room=${room}`;
 
   ws = new WebSocket(wsUrl);
+  const handlers = {
+    history: loadChatHistory,
+    message: addMessage,
+  };
+
+  type HandlerType = keyof typeof handlers;
 
   ws.onmessage = (event) => {
     const data = JSON.parse(event.data);
 
-    if (data.type === "history") {
-      const container = document.getElementById("chat-messages");
-      if (container) {
-        container.innerHTML = "";
-        data.messages.forEach((msg: any) => addMessage(msg));
-      }
-    } else if (data.type === "message") {
-      addMessage(data);
-    }
+    const handler = handlers[data.type as HandlerType];
+    if (handler) handler(data);
   };
 
   const input = document.getElementById("chat-input") as HTMLInputElement;
@@ -32,6 +31,21 @@ export function initChat() {
   }
 }
 
+function loadChatHistory(data: any) {
+  const container = document.getElementById("chat-messages");
+  if (container) {
+    container.innerHTML = "";
+    data.messages.forEach((msg: any) => addHistoryMessage(msg));
+  }
+}
+
+function addHistoryMessage(msg: any) {
+  const container = document.getElementById("chat-messages");
+  if (!container) return;
+
+  container.insertAdjacentHTML("beforeend", msg.html);
+}
+
 function sendMessage(input: HTMLInputElement) {
   const text = input.value.trim();
   if (text && ws && ws.readyState === WebSocket.OPEN) {
@@ -40,36 +54,9 @@ function sendMessage(input: HTMLInputElement) {
   }
 }
 
-function addMessage(msg: any) {
+function addMessage(data: any) {
   const container = document.getElementById("chat-messages");
   if (!container) return;
 
-  const currentUsername = container.getAttribute("data-username") || "";
-  const isOwnMessage = msg.username === currentUsername;
-
-  const div = document.createElement("div");
-  div.className = isOwnMessage ? "chat chat-start" : "chat chat-end";
-
-  const time = msg.timestamp
-    ? new Date(msg.timestamp).toLocaleTimeString([], {
-        hour: "2-digit",
-        minute: "2-digit",
-      })
-    : "";
-
-  div.innerHTML = `
-        <div class="chat-header">
-            ${escapeHtml(msg.username)}
-            <time class="text-xs opacity-50">${time}</time>
-        </div>
-        <div class="chat-bubble ${isOwnMessage ? "chat-bubble-primary" : "chat-bubble-secondary"}">${escapeHtml(msg.content)}</div>
-    `;
-  container.appendChild(div);
-  container.scrollTop = container.scrollHeight;
-}
-
-function escapeHtml(text: string): string {
-  const div = document.createElement("div");
-  div.textContent = text;
-  return div.innerHTML;
+  container.prepend(document.createRange().createContextualFragment(data.html));
 }
