@@ -31,11 +31,17 @@
 
     <div class="join w-full">
         <input id="chat-input" class="input input-bordered join-item flex-1" type="text"
-            placeholder="Type a message..." />
+            placeholder="Type a message... (Enter to send)" maxlength="280" />
         <button id="send-btn" class="btn btn-primary join-item">Send</button>
+    </div>
+    <div class="flex justify-end mt-1">
+        <span id="char-count" class="text-xs text-base-content/50">0/280</span>
     </div>
 
     <div id="chat-messages" class="chat h-96 overflow-y-auto mb-4 space-y-2" data-username="{{ username|default('') }}">
+    </div>
+    <div id="chat-empty" class="hidden text-center py-8 text-base-content/50">
+        No messages yet. Start the conversation!
     </div>
 </div>
 
@@ -47,6 +53,22 @@
         const hasForm = usernameSection.querySelector('form');
         if (!hasForm) {
             window.location.reload();
+            return;
+        }
+
+        const username = usernameSection.querySelector('.font-bold');
+        if (username) {
+            const newUsername = username.textContent;
+            const messagesContainer = document.getElementById('chat-messages');
+            if (messagesContainer) {
+                messagesContainer.setAttribute('data-username', newUsername);
+            }
+            if (typeof initChat === 'function') {
+                if (ws) {
+                    ws.close();
+                }
+                initChat();
+            }
         }
     });
 </script>
