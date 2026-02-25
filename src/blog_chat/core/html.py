@@ -1,8 +1,8 @@
-import minify_html
+from minify_html import minify
 
 
 def minify_html_func(html: str) -> str:
-    return minify_html.minify(
+    return minify(
         html,
         keep_comments=False,
         keep_html_and_head_opening_tags=True,
@@ -10,3 +10,6 @@ def minify_html_func(html: str) -> str:
         minify_js=False,
         remove_processing_instructions=True
     )
+
+
+minify_html = minify_html_func
