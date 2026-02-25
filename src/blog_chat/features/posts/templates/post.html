@@ -2,6 +2,15 @@
 
 {% block title %}{{ post.title }}{% endblock %}
 
+{% block styles %}
+<link rel="stylesheet" href="/static/posts.css">
+<link rel="stylesheet" href="/static/chat.css">
+{% endblock %}
+
+{% block scripts %}
+<script type="module" src="/static/chat.js"></script>
+{% endblock %}
+
 {% block content %}
 <article class="post">
     <header>

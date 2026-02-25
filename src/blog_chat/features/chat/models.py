@@ -1,27 +1,9 @@
-from datetime import datetime, timezone
-from typing import AsyncGenerator
 
+from datetime import datetime
 from sqlalchemy import String, DateTime, Text, ForeignKey
-from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
-from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine, async_sessionmaker
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-DATABASE_URL = "sqlite+aiosqlite:///chat.db"
-
-engine = create_async_engine(
-    DATABASE_URL,
-    echo=False
-)
-async_session_maker = async_sessionmaker(
-    engine,
-    class_=AsyncSession,
-    expire_on_commit=False
-)
-
-
-class Base(DeclarativeBase):
-    @staticmethod
-    def now():
-        return datetime.now(timezone.utc)
+from blog_chat.core.base import Base
 
 
 class User(Base):
@@ -50,13 +32,3 @@ class Message(Base):
     ip_address: Mapped[str | None] = mapped_column(String(45), nullable=True)
 
     user: Mapped["User"] = relationship(back_populates="messages")
-
-
-async def get_db() -> AsyncGenerator[AsyncSession, None]:
-    async with async_session_maker() as session:
-        yield session
-
-
-async def init_db():
-    async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.create_all)

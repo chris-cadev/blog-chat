@@ -1,0 +1,9 @@
+.chat-box {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.chat-message {
+    word-wrap: break-word;
+}

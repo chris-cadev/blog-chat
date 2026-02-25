@@ -13,6 +13,8 @@ dependencies = [
   "aiosqlite>=0.20",
   "pyjwt>=2.11.0",
   "uvicorn[standard]>=0.41.0",
+  "python-dotenv>=1.2.1",
+  "htmlmin>=0.1.12",
 ]
 description = "The idea is to connect website of logs with a live chat in a single page. This to generate interaction between people and content."
 license = {text = "MIT"}
@@ -26,8 +28,8 @@ build-backend = "pdm.backend"
 requires = ["pdm-backend"]
 
 [tool.pdm.scripts]
-prod = "uvicorn blog_chat.main:app --host 0.0.0.0 --port 9091"
-start = "fastapi dev src/blog_chat/main.py"
+prod = "uvicorn blog_chat.app:app --host 0.0.0.0 --port 9091"
+start = "fastapi dev src/blog_chat/app.py"
 
 [tool.pdm]
 distribution = true

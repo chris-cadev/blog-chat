@@ -7,3 +7,5 @@ static/
 *.db
 .cloudflare/
 .pdm-python
+.env
+dist

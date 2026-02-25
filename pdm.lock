@@ -5,7 +5,7 @@
 groups = ["default"]
 strategy = ["inherit_metadata"]
 lock_version = "4.5.0"
-content_hash = "sha256:ac83b79ab5d71b08d36c37bdc6235992008fc36b58e5fcbf95e6781bea342adb"
+content_hash = "sha256:a1562ece09ebf5610b829971f58d4cb202f43d9ed835f7feafe41b0de5a22b60"
 
 [[metadata.targets]]
 requires_python = ">=3.12"
@@ -347,6 +347,15 @@ groups = ["default"]
 files = [
     {file = "h11-0.16.0-py3-none-any.whl", hash = "sha256:63cf8bbe7522de3bf65932fda1d9c2772064ffb3dae62d55932da54b31cb6c86"},
     {file = "h11-0.16.0.tar.gz", hash = "sha256:4e35b956cf45792e4caa5885e69fba00bdbc6ffafbfa020300e549b208ee5ff1"},
+]
+
+[[package]]
+name = "htmlmin"
+version = "0.1.12"
+summary = "An HTML Minifier"
+groups = ["default"]
+files = [
+    {file = "htmlmin-0.1.12.tar.gz", hash = "sha256:50c1ef4630374a5d723900096a961cff426dff46b48f34d194a81bbe14eca178"},
 ]
 
 [[package]]
