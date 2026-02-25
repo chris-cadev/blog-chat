@@ -1,6 +1,7 @@
 let ws: WebSocket | null = null;
 export { ws };
 const MAX_CHARS = 280;
+let isSending = false;
 
 function formatRelativeTime(isoString: string): string {
   const date = new Date(isoString);
@@ -165,12 +166,13 @@ function sendMessage(input: HTMLInputElement) {
   const text = input.value.trim();
   if (!text || text.length > MAX_CHARS) return;
   if (!ws || ws.readyState !== WebSocket.OPEN) return;
+  if (isSending) return;
 
+  isSending = true;
   setLoadingState(true);
   ws.send(text);
   input.value = "";
   updateCharCount();
-  input.focus();
 }
 
 export function onMessageSent() {
@@ -199,6 +201,13 @@ function handleError(data: any) {
 }
 
 function addMessage(data: any) {
+  if (isSending) {
+    isSending = false;
+    setLoadingState(false);
+    const input = document.getElementById("chat-input") as HTMLInputElement;
+    if (input) input.focus();
+  }
+
   const container = document.getElementById("chat-messages");
   if (!container) return;
 
