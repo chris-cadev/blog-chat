@@ -9,3 +9,4 @@ static/
 .pdm-python
 .env
 dist
+coverage*

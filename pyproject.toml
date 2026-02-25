@@ -18,6 +18,11 @@ dependencies = [
   "humanize>=4.15.0",
 ]
 description = "The idea is to connect website of logs with a live chat in a single page. This to generate interaction between people and content."
+dev-dependencies = [
+  "pytest>=8.0.0",
+  "pytest-asyncio>=0.25.0",
+  "pytest-cov>=6.0.0",
+]
 license = {text = "MIT"}
 name = "blog-chat"
 readme = "README.md"
@@ -31,6 +36,7 @@ requires = ["pdm-backend"]
 [tool.pdm.scripts]
 prod = "uvicorn blog_chat.app:app --host 0.0.0.0 --port 9091"
 start = "fastapi dev src/blog_chat/app.py"
+test = "pytest -v --cov=blog_chat --cov-report=term-missing --cov-report=html:coverage_html --cov-report=json:coverage_html/coverage.json"
 watch = "bun run watch"
 
 [tool.pdm]
