@@ -175,7 +175,6 @@ function addHistoryMessage(msg: any) {
   if (timeEl && msg.timestamp) {
     timeEl.setAttribute("datetime", msg.timestamp);
   }
-
 }
 
 function sendMessage(input: HTMLInputElement) {

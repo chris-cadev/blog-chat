@@ -14,7 +14,7 @@ dependencies = [
   "pyjwt>=2.11.0",
   "uvicorn[standard]>=0.41.0",
   "python-dotenv>=1.2.1",
-  "htmlmin>=0.1.12",
+  "minify-html>=0.15.0",
   "humanize>=4.15.0",
 ]
 description = "The idea is to connect website of logs with a live chat in a single page. This to generate interaction between people and content."
