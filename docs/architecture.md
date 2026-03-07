@@ -4,25 +4,28 @@
 
 blog-chat is a real-time chat application with an integrated markdown-based blog. It uses a feature-based architecture where each major functionality (accounts, chat, posts) is organized as a self-contained module.
 
+This document describes the current implementation. For planned features aligned with the PRD, see [TODO Details](todos.md).
+
 ## System Architecture
 
 ```
 ┌─────────────────────────────────────────────────────────┐
 │                    FastAPI Backend                      │
-├──────────────┬──────────────┬───────────────────────────┤
-│   Accounts   │     Chat     │         Posts             │
-│   (auth)     │  (WebSocket) │    (markdown blog)        │
-├──────────────┴──────────────┴───────────────────────────┤
+├──────────────┬──────────────┬──────────────┬─────────────┤
+│   Accounts   │     Chat     │    Posts     │   Voting    │
+│   (auth)     │  (WebSocket) │ (markdown)  │  (planned)  │
+├──────────────┴──────────────┴──────────────┴─────────────┤
 │              SQLAlchemy Async ORM                       │
 │              (SQLite / PostgreSQL)                      │
 └─────────────────────────────────────────────────────────┘
-                          │
-                          ▼
+                           │
+                           ▼
 ┌─────────────────────────────────────────────────────────┐
 │                  Vite + TypeScript                      │
 │    main.ts  │  chat.ts  │  posts.ts                     │
 ├─────────────────────────────────────────────────────────┤
 │              HTMX for HTML-based interactivity          │
+│              DaisyUI (planned)                          │
 └─────────────────────────────────────────────────────────┘
 ```
 
@@ -35,6 +38,7 @@ blog-chat is a real-time chat application with an integrated markdown-based blog
 - **responses.py** - Jinja2 template rendering helpers
 - **filters.py** - Custom Jinja2 filters (markdown, etc.)
 - **base.py** - SQLAlchemy declarative base
+- **html.py** - HTML utilities
 
 ### Features Module (`src/blog_chat/features/`)
 
@@ -45,6 +49,8 @@ Each feature is a self-contained module with its own routes, models, and service
 - JWT token creation/validation
 - User model and database operations
 - Cookie-based authentication
+- **Planned:** Role-based access (Admin, Moderator, User, Guest)
+- **Planned:** OAuth integration
 
 #### Chat (`features/chat/`)
 
@@ -52,12 +58,21 @@ Each feature is a self-contained module with its own routes, models, and service
 - ConnectionManager for broadcasting to rooms
 - Message model with room, username, content, timestamp
 - Markdown rendering for messages
+- **Planned:** Thread replies (parent_id)
+- **Planned:** Anonymous user support
 
 #### Posts (`features/posts/`)
 
 - Markdown file parsing from `content/` directory
 - Static blog pages
 - Custom markdown parser
+- **Planned:** Topic voting integration
+
+#### Voting (`features/voting/`)
+
+- **Planned:** Vote model (topic_id, user_id, created_at)
+- **Planned:** Vote endpoints
+- **Planned:** Trending calculation
 
 ## Frontend Architecture
 
@@ -78,6 +93,11 @@ The frontend uses HTMX for server-side rendered interactivity without writing Ja
 - HTML responses from FastAPI include `hx-*` attributes
 - HTMX handles AJAX requests and DOM swapping
 - Reduces client-side JavaScript complexity
+
+### UI Components
+
+- **Current:** Vanilla CSS / custom styles
+- **Planned:** DaisyUI for consistent, responsive design (see PRD Section 6)
 
 ### WebSocket Chat Client
 
@@ -114,6 +134,8 @@ Located in `features/chat/client/ws-handlers.ts`:
 ```
 id: INTEGER PRIMARY KEY
 username: VARCHAR(50) UNIQUE
+role: VARCHAR(20) DEFAULT 'user'  -- planned: admin, moderator, user, guest
+ip_address: VARCHAR(45)
 created_at: DATETIME
 ```
 
@@ -122,11 +144,21 @@ created_at: DATETIME
 ```
 id: INTEGER PRIMARY KEY
 room_slug: VARCHAR(100)
-user_id: INTEGER FK -> users.id
+user_id: INTEGER FK -> users.id  -- nullable for anonymous
 username: VARCHAR(50)
 content: TEXT
+parent_id: INTEGER FK -> messages.id  -- planned: for thread replies
 timestamp: DATETIME
 ip_address: VARCHAR(45)
+```
+
+### Votes Table (Planned)
+
+```
+id: INTEGER PRIMARY KEY
+topic_slug: VARCHAR(100)  -- references post/topic
+user_id: INTEGER FK -> users.id  -- nullable for anonymous votes
+created_at: DATETIME
 ```
 
 ## Security
@@ -136,6 +168,9 @@ ip_address: VARCHAR(45)
 - CORS configured for localhost
 - GZip compression for responses
 - SQLAlchemy prevents SQL injection
+- **Planned:** Security middleware (CSP, X-Frame-Options)
+- **Planned:** Rate limiting
+- **Planned:** GDPR-ready data handling
 
 ## Environment Variables
 
@@ -144,3 +179,23 @@ ip_address: VARCHAR(45)
 | DATABASE_URL | SQLite or PostgreSQL connection string | Yes                      |
 | JWT_SECRET   | Secret key for JWT signing             | Yes                      |
 | CONTENT_DIR  | Path to markdown blog files            | Yes (default: "content") |
+
+## PRD Alignment
+
+This implementation follows the PRD with the following alignment:
+
+| PRD Section | Status |
+|-------------|--------|
+| 4.1 Topic List / Blog Layer | ✅ Implemented |
+| 4.2 Live Topic Chat | ✅ Implemented |
+| 4.2 Thread-like replies | 🔲 Planned |
+| 4.3 Topic Voting | 🔲 Planned |
+| 4.4 User Authentication | ⚠️ Partial (JWT, no OAuth) |
+| 4.4 User Roles | 🔲 Planned |
+| 4.5 Persistent Chat History | ✅ Implemented |
+| 4.6 Notifications | 🔲 Planned |
+| 4.7 Optional Features | 🔲 Various |
+| Non-functional: DaisyUI | 🔲 Planned |
+| Non-functional: Security Headers | 🔲 Planned |
+
+See [TODO Details](todos.md) for implementation priorities.

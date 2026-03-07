@@ -3,8 +3,9 @@
 ## Prerequisites
 
 - Python 3.12+
-- Node.js & Bun (for frontend build)
-- PostgreSQL (optional, for production)
+- Bun (for frontend build)
+- SQLite
+  - PostgreSQL (optional, for production)
 
 ## Quick Start
 
@@ -20,7 +21,7 @@ python -m venv .venv
 source .venv/bin/activate  # On Windows: .venv\Scripts\activate
 
 # Install Python dependencies
-pip install -r requirements.txt
+pdm install
 ```
 
 ### 2. Environment Variables
@@ -37,6 +38,7 @@ JWT_SECRET=your-secret-key-here
 ```
 
 For production with PostgreSQL:
+
 ```bash
 DATABASE_URL=postgresql+asyncpg://user:password@localhost/dbname
 ```
@@ -54,7 +56,7 @@ ls content/
 
 ```bash
 # Using PDM (recommended)
-pdm start
+pdm dev
 
 # Or using FastAPI directly
 fastapi dev src/blog_chat/app.py
@@ -76,22 +78,33 @@ npx vite
 
 ## Available Commands
 
-| Command | Description |
-|---------|-------------|
-| `pdm start` | Run development server |
-| `pdm prod` | Run production server on port 9091 |
-| `pdm test` | Run tests with coverage |
-| `pdm watch` | Watch mode for frontend |
-| `bun run build` | Build frontend assets |
+| Command                   | Description                             |
+| ------------------------- | --------------------------------------- |
+| `pdm dev`                 | Run development server                  |
+| `pdm prod`                | Run production server on port 9091      |
+| `pdm test`                | Run tests with coverage                 |
+| `pdm watch`               | Watch mode for frontend                 |
+| `pdm client_install`      | Install frontend dependencies           |
+| `pdm client_watch`        | Watch mode for frontend (alias)         |
+| `pdm build`               | Build frontend assets                   |
+| `pdm migrate`             | Run database migrations                 |
+| `pdm migration_create`    | Create new migration (requires message) |
+| `pdm backup`              | Backup database to tarball              |
+| `pdm clean`               | Clean pycache and build artifacts       |
+| `pdm drop_db`             | Backup and delete database              |
+| `pdm export_requirements` | Export requirements.txt for production  |
 
-## Project Scripts (package.json)
+## Project Scripts (pyproject.toml)
 
 ```bash
 # Build frontend
-bun run build
+pdm build
 
 # Watch mode
-bun run watch
+pdm watch
+
+# Install client deps
+pdm client_install
 ```
 
 ## Testing
@@ -109,7 +122,7 @@ pytest -v
 ### 1. Build Frontend
 
 ```bash
-bun run build
+pdm build
 ```
 
 This outputs to `static/` directory.
@@ -136,6 +149,7 @@ Default database is `chat.db` (SQLite). Created automatically on first run.
 ### PostgreSQL (Production)
 
 Set `DATABASE_URL` to PostgreSQL connection string:
+
 ```
 postgresql+asyncpg://username:password@localhost/databasename
 ```
@@ -167,19 +181,21 @@ blog-chat/
 ### Database Errors
 
 If you see database errors:
+
 1. Check `DATABASE_URL` is set correctly
 2. Ensure the database file/directory is writable
-3. Try deleting `chat.db` to recreate
+3. Try `pdm drop_db` to backup and recreate database
 
 ### Import Errors
 
 If you see import errors:
+
 1. Ensure you're in the virtual environment
-2. Run `pip install -r requirements.txt` again
+2. Run `pdm install` again
 
 ### Frontend Not Loading
 
-1. Run `bun run build` to generate static files
+1. Run `pdm build` to generate static files
 2. Check `static/` directory has files
 3. Ensure `/static` mount point works in app
 
@@ -191,8 +207,8 @@ If you see import errors:
 
 ## Development Workflow
 
-1. Start backend: `pdm start`
-2. Start frontend watch: `bun run watch` (optional)
+1. Start backend: `pdm dev`
+2. Start frontend watch: `pdm watch` (optional)
 3. Make changes to code
 4. Run tests: `pdm test`
-5. Build frontend: `bun run build` (before commit)
+5. Build frontend: `pdm build` (before commit)

@@ -38,36 +38,4 @@ src/blog_chat/
 
 ## TODO
 
-### Chat Features
-
-- [ ] **Embeddable chat widget** - Make chat available as an embeddable iframe/JS widget for external sites
-- [ ] **Group near messages** - Group chat messages within 5 minutes of each other visually
-- [ ] **Weather indicator** - Show weather info in chat messages (e.g., user's local weather)
-
-### Blog/Content Features
-
-- [ ] **Content file system router** - Left sidebar showing blog content directory structure with navigation
-- [ ] **Docs directory** - Write learning docs about topics understood in the project
-
-### User Experience
-
-- [ ] **Onboarding chat flow**
-  - Prompt user to choose "Anonymous" or enter a username
-  - Block message sending until username is set
-- [ ] **Fix time display bug** - Human-readable time should always be positive (handle future timestamps correctly)
-- [ ] **Fix undefined on send** - Race condition when sending messages causes undefined errors
-
-### Infrastructure & Security
-
-- [ ] **Move base.html to core module** - Consolidate shared templates
-- [ ] **Security middleware** - Research and add appropriate security headers for FastAPI
-- [ ] **Fix Cloudflare tunnel** - Resolve hosted tunnel service issues
-- [ ] **CI Script**
-  - Backup database
-  - Build client assets
-  - Build container
-  - Verify requirements.txt
-
-### User Management
-
-- [ ] **Create user on valid token** - Create database user record when a valid JWT token is presented (currently only stores username in token)
+For a complete list of tasks and priorities, see [TODO Documentation](docs/todos.md).
