@@ -3,8 +3,9 @@ tags:
   - idea
 title: "BlogChat: Turning Your Blog Into a Living Conversation"
 slug: "platform/first"
+description: "An experiment in blending blogs and live discussion—turning static posts into evolving conversations driven by community curiosity."
 created: 06-03-2026
-updated: 06-03-2026
+updated: 07-03-2026
 ---
 
 Most blogs feel like empty libraries. You read something, maybe it sparks a thought, and then—nothing. The page just ends. That comment you were definitely going to leave? Still rattling around in your head somewhere.

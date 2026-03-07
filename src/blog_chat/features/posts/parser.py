@@ -22,5 +22,6 @@ def parse_markdown_file(file_path: Path) -> dict | None:
         "tags": frontmatter.get("tags", []),
         "created": frontmatter.get("created", ""),
         "updated": frontmatter.get("updated", ""),
+        "description": frontmatter.get("description", None),
         "content": body.strip(),
     }

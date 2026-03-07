@@ -15,6 +15,8 @@ if not DATABASE_URL.startswith("sqlite+aiosqlite://") and not DATABASE_URL.start
         "DATABASE_URL must compatible with either SQLite or PostgreSQL (e.g., sqlite+aiosqlite:///chat.db or postgresql+asyncpg://user:password@localhost/dbname)"
     )
 
+SITE_URL = os.environ.get("SITE_URL", "https://blog.chrislabs.net")
+
 JWT_ALGORITHM = "HS256"
 JWT_SECRET = os.environ.get("JWT_SECRET")
 if not JWT_SECRET:
