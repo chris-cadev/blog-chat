@@ -27,7 +27,7 @@ def read_root(request: Request):
     )
 
 
-@router.get("/{slug}")
+@router.get("/{slug:path}")
 def read_item(request: Request, slug: str):
     post = get_post(slug)
     username = get_username_from_cookie(request)

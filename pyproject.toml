@@ -1,7 +1,15 @@
 [project]
 authors = [
-  {name = "Christian Camacho", email = "chris.ca.dev@gmail.com"},
+  {name = "Christian Camacho", email = "chris@chrislabs.net"},
 ]
+description = "The idea is to connect website of logs with a live chat in a single page. This to generate interaction between people and content."
+license = {text = "MIT"}
+name = "blog-chat"
+readme = "README.md"
+requires-python = ">=3.12"
+version = "0.1.0"
+
+# Dependencies
 dependencies = [
   "fastapi[standard]>=0.129.2",
   "jinja2>=3.1.6",
@@ -16,28 +24,51 @@ dependencies = [
   "python-dotenv>=1.2.1",
   "minify-html>=0.15.0",
   "humanize>=4.15.0",
+  "alembic>=1.18.4",
 ]
-description = "The idea is to connect website of logs with a live chat in a single page. This to generate interaction between people and content."
-dev-dependencies = [
-  "pytest>=8.0.0",
-  "pytest-asyncio>=0.25.0",
-  "pytest-cov>=6.0.0",
+[project.optional-dependencies]
+test = [
+  "pytest>=8.0",
+  "pytest-asyncio>=0.23",
+  "pytest-cov>=5.0",
 ]
-license = {text = "MIT"}
-name = "blog-chat"
-readme = "README.md"
-requires-python = ">=3.12"
-version = "0.1.0"
 
 [build-system]
 build-backend = "pdm.backend"
 requires = ["pdm-backend"]
 
 [tool.pdm.scripts]
+# Dev scripts
+client_install = "bun install"
+client_watch = "bun run watch"
+dev = "fastapi dev src/blog_chat/app.py"
+migration_create = "alembic revision --autogenerate -m"
+post_install = {composite = ["migrate", "client_install", "build"]}
+
+# Dev cleanup
+backup = {shell = "tar -czvf ../blog_chat-db-$(date +%Y%m%d-%H%M%S).tar.gz blog_chat.db"}
+clean = {shell = 'find . -type d -name "__pycache__" -exec rm -r {} + && rm -rf dist static .venv node_modules'}
+drop_db = {composite = ["backup", "rm -rf blog_chat.db"]}
+
+# Build & migration
+build = "bun run build"
+migrate = "alembic upgrade head"
+
+# Prod scripts
+er = {composite = ["export_requirements"]}
+export_requirements = {shell = "pdm export -f requirements --without-hashes --prod -o requirements.txt"}
 prod = "uvicorn blog_chat.app:app --host 0.0.0.0 --port 9091"
-start = "fastapi dev src/blog_chat/app.py"
+
+# Testing
 test = "pytest -v --cov=blog_chat --cov-report=term-missing --cov-report=html:coverage_html --cov-report=json:coverage_html/coverage.json"
+
+# Watch
 watch = "bun run watch"
 
 [tool.pdm]
 distribution = true
+
+[dependency-groups]
+dev = [
+  "python-dotenv>=1.2.2",
+]
