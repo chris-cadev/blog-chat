@@ -78,6 +78,7 @@ Map Hugo front matter to blog-chat's parser fields (`parser.py` reads `title`, `
 ### 7.3 Multilingual Handling (blog repo)
 
 - Each trilingual post (`.en.md`, `.es.md`, `.fr.md`) becomes **one blog-chat post per language** with a language-suffixed slug (`<stem>-en`, `<stem>-es`, `<stem>-fr`).
+- Migrated files are organized into per-language subdirectories: `content/en/`, `content/es/`, `content/fr/` (undetermined-language drafts go to `content/mixed/`).
 - Add a `lang` field in front matter (`en`/`es`/`fr`) and a shared `lang_group` value so future UI can group translations.
 - Default blog-chat shows all posts; no automatic language routing in this PRD.
 
@@ -120,3 +121,12 @@ Replace Hugo shortcodes in bodies with plain markdown/HTML:
 
 - Execute the migration mechanics in 7.1–7.5.
 - Follow-up PRDs may add translation grouping UI, draft filtering, and routing.
+
+## 11. Implementation Status
+
+- [x] Migration script: `scripts/migrate_posts.py` (front-matter conversion, language-suffixed slugs, shortcode + cross-link + image resolution).
+- [x] Images copied to `src/assets/posts/`; `vite.config.js` publishes them under `/static/posts/`.
+- [x] Migrated posts committed to `content/` (68 posts from `chris-cadev/blog`), organized into `content/en/`, `content/es/`, `content/fr/`, `content/mixed/`.
+- [x] Language-prefixed routes: `/en/`, `/es/`, `/fr/` indexes and `/en/<slug>` post pages; header language switcher links to the same post in other languages.
+- [x] Verified: all files parse with `parse_markdown_file`, no shortcodes/relative images remain, `pdm test` passes.
+- [ ] Translation grouping UI (future PRD).

@@ -8,7 +8,7 @@ Welcome to the blog-chat documentation.
 - [TODO Details](todos.md) - Detailed breakdown of all project tasks
 - [Setup Guide](setup.md) - How to run the project locally
 - [Product Requirements (PRD)](PRD.md) - Product specification and features
-- [PRD-00001: Gather Past Posts](plans/PRD-00001-gather-past-posts.md) - Intention to gather posts from past blog attempts
+- [PRD-00001: Gather Past Posts](plans/PRD-00001-gather-past-posts.md) - Migrate posts from past blog attempts into content/
 
 ## What is blog-chat?
 

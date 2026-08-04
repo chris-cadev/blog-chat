@@ -1,0 +1,8 @@
+SOURCE FILES FOUND: 68
+
+DRAFT: chambear-con-codigo-en-la-frabrica (/tmp/opencode/blog-src/content/posts/chambear-con-codigo-en-la-frabrica.en.md)
+DRAFT: chambear-con-codigo-en-la-frabrica (/tmp/opencode/blog-src/content/posts/chambear-con-codigo-en-la-frabrica.es.md)
+DRAFT: chambear-con-codigo-en-la-frabrica (/tmp/opencode/blog-src/content/posts/chambear-con-codigo-en-la-frabrica.fr.md)
+DRAFT: learnings-of-legacy-code (/tmp/opencode/blog-src/content/posts/learnings-of-legacy-code.en.md.md)
+DRAFT: ugly-code (/tmp/opencode/blog-src/content/posts/ugly-code.en.md)
+DRAFT: my-take-on-write-simpler-software-bashbunni (/tmp/opencode/blog-src/content/pre/my take on... write simpler software - bashbunni.md)

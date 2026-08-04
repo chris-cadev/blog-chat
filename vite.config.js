@@ -9,6 +9,10 @@ export default defineConfig({
           src: 'src/assets/favicon/*',
           dest: '',
         },
+        {
+          src: 'src/assets/posts/*',
+          dest: 'posts',
+        },
       ],
     }),
   ],

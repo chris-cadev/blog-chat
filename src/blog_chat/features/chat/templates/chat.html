@@ -1,9 +1,9 @@
-<div class="container mx-auto py-4">
+<div class="container mx-auto py-4 flex flex-col md:flex-1 md:min-h-0">
     {% if not post %}
     <div class="card bg-base-200 shadow-xl mb-4">
         <div class="card-body p-4">
             <h2 class="card-title flex items-center gap-2">
-                Off-topic
+                {{ t('chat_title') }}
                 <span class="badge badge-primary">chat</span>
             </h2>
         </div>
@@ -16,32 +16,33 @@
             <input type="hidden" name="room" value="{{ room|default('offtopic') }}" />
             <div class="flex gap-2">
                 <input name="username" class="input input-bordered join-item flex-1" type="text"
-                    placeholder="Enter your name" maxlength="50" />
-                <button class="btn btn-primary join-item">Join</button>
+                    placeholder="{{ t('enter_name') }}" maxlength="50" />
+                <button class="btn btn-primary join-item">{{ t('join') }}</button>
             </div>
         </form>
         {% else %}
         <div class="mb-4 flex items-center justify-between">
-            <span class="text-sm">Logged in as <span class="font-bold">{{ username }}</span></span>
+            <span class="text-sm">{{ t('logged_in_as') }} <span class="font-bold">{{ username }}</span></span>
             <button class="btn btn-sm btn-ghost" hx-post="/api/clear-username?room={{ room|default('offtopic') }}"
-                hx-swap="outerHTML">Change username</button>
+                hx-swap="outerHTML">{{ t('change_username') }}</button>
         </div>
         {% endif %}
     </div>
 
     <div class="join w-full">
         <input id="chat-input" class="input input-bordered join-item flex-1" type="text"
-            placeholder="Type a message... (Enter to send)" maxlength="280" />
-        <button id="send-btn" class="btn btn-primary join-item">Send</button>
+            placeholder="{{ t('type_message') }}" maxlength="280" />
+        <button id="send-btn" class="btn btn-primary join-item">{{ t('send') }}</button>
     </div>
     <div class="flex justify-end mt-1">
         <span id="char-count" class="text-xs text-base-content/50">0/280</span>
     </div>
 
-    <div id="chat-messages" class="chat h-96 overflow-y-auto mb-4 space-y-2" data-username="{{ username|default('') }}">
+    <div id="chat-messages" class="chat h-96 md:h-auto md:flex-1 overflow-y-auto mb-4 space-y-2 md:min-h-0"
+        data-username="{{ username|default('') }}">
     </div>
     <div id="chat-empty" class="hidden text-center py-8 text-base-content/50">
-        No messages yet. Start the conversation!
+        {{ t('no_messages') }}
     </div>
 </div>
 
