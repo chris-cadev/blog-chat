@@ -95,7 +95,6 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .chat-bubble-enter,
     .chat-glow::before,
     .chat-glow-ring::after,
     .chat-shimmer::after {

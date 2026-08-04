@@ -4,13 +4,12 @@ from sqlalchemy import select
 from datetime import datetime, timezone
 from zoneinfo import ZoneInfo
 import asyncio
-import hashlib
 import humanize
 import json
 
 from blog_chat.core.database import get_db, engine, init_db
 from blog_chat.core.db_watcher import DatabaseChangeWatcher, sqlite_db_path
-from blog_chat.core.filters import add_markdown_filter
+from blog_chat.core.filters import add_filter, add_markdown_filter
 from blog_chat.core.responses import create_templates
 from blog_chat.features.chat.models import Message
 from blog_chat.features.chat.websocket import ConnectionManager
@@ -63,9 +62,15 @@ db_watcher = DatabaseChangeWatcher(on_change=_handle_db_change)
 
 
 def get_username_color(username: str) -> str:
-    hash_value = int(hashlib.md5(username.encode()).hexdigest(), 16)
+    hash_value = 0x811C9DC5
+    for byte in username.encode("utf-8"):
+        hash_value ^= byte
+        hash_value = (hash_value * 0x01000193) & 0xFFFFFFFF
     hue = hash_value % 360
     return f"hsl({hue}, 70%, 45%)"
+
+
+add_filter(templates, "username_color", get_username_color)
 
 
 def format_timestamp(timestamp: str, timezone_name: str | None = None) -> str:

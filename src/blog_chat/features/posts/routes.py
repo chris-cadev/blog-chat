@@ -4,7 +4,7 @@ from datetime import datetime
 from fastapi import APIRouter, Request
 from fastapi.responses import PlainTextResponse, Response, RedirectResponse
 
-from blog_chat.core.filters import add_markdown_filter
+from blog_chat.core.filters import add_filter, add_markdown_filter
 from blog_chat.core.responses import create_templates
 from blog_chat.core.config import SITE_URL
 from blog_chat.features.accounts.services import (
@@ -12,6 +12,7 @@ from blog_chat.features.accounts.services import (
     generate_guest_name,
     get_username_from_cookie,
 )
+from blog_chat.features.chat.routes import get_username_color
 from blog_chat.features.posts.services import get_post, get_posts
 
 router = APIRouter()
@@ -22,6 +23,7 @@ posts_template_dirs = [
 ]
 templates = create_templates(posts_template_dirs)
 add_markdown_filter(templates)
+add_filter(templates, "username_color", get_username_color)
 
 LANGS = ("en", "es", "fr")
 LANG_FLAGS = {"en": "🇺🇸", "es": "🇲🇽", "fr": "🇫🇷"}

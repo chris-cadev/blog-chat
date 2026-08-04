@@ -62,7 +62,7 @@ class TestPostPage:
             response = client.get("/en/firstcommit")
             assert response.status_code == 200
             assert response.cookies.get("chat_token")
-            assert 'id="change-username-form"' in response.text or "id=change-username-form" in response.text
+            assert 'id="username-edit-btn"' in response.text or "id=username-edit-btn" in response.text
             assert 'placeholder="Enter your name"' not in response.text
             name = self._page_username(client, "/en/firstcommit")
             assert name

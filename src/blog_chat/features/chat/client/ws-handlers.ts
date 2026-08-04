@@ -16,7 +16,6 @@ let chatInited = false;
 let lastReceivedAt = 0;
 let historyLoaded = false;
 let currentMessageIds: string[] = [];
-let syncTimer: number | null = null;
 
 function getTimezone(): string {
   return Intl.DateTimeFormat().resolvedOptions().timeZone;
@@ -168,7 +167,6 @@ export function initChat() {
   const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
   wsUrl = `${protocol}//${window.location.host}/ws/chat?room=${room}`;
 
-  bindUsernameRefresh();
   bindChangeUsername();
   bindStarterPrompts();
   initGlow();
@@ -190,30 +188,110 @@ export function initChat() {
   }
 
   setInterval(updateTimestamps, 30000);
-  syncTimer = window.setInterval(requestSync, SYNC_INTERVAL);
+  window.setInterval(requestSync, SYNC_INTERVAL);
   setInterval(checkConnectionLiveness, 30000);
 }
 
-function bindUsernameRefresh() {
-  document.body.addEventListener("htmx:afterSwap", () => {
-    const section = document.getElementById("username-section");
-    if (section && !section.querySelector("form")) {
-      window.location.reload();
-    }
-  });
+function getUsernameColor(username: string): string {
+  let hash = 0x811c9dc5;
+  const bytes = new TextEncoder().encode(username);
+  for (let i = 0; i < bytes.length; i++) {
+    hash ^= bytes[i];
+    hash = (hash * 0x01000193) >>> 0;
+  }
+  return `hsl(${hash % 360}, 70%, 45%)`;
 }
 
+let usernameEditActive = false;
+
 function bindChangeUsername() {
-  const btn = document.getElementById("change-username-btn");
-  const form = document.getElementById("change-username-form");
-  if (!btn || !form) return;
-  btn.addEventListener("click", () => {
-    form.classList.toggle("hidden");
-    if (!form.classList.contains("hidden")) {
-      const input = form.querySelector<HTMLInputElement>("input[name='username']");
-      input?.focus();
-      input?.select();
+  const editBtn = document.getElementById("change-username-btn");
+  const nameBtn = document.getElementById("username-edit-btn");
+  const input = document.getElementById("username-input") as HTMLInputElement;
+  if (!editBtn || !nameBtn || !input) return;
+
+  const room = document.body.getAttribute("data-room") || "offtopic";
+
+  const enterEdit = () => {
+    if (usernameEditActive) return;
+    usernameEditActive = true;
+    nameBtn.style.display = "none";
+    editBtn.style.display = "none";
+    const current = nameBtn.textContent || "";
+    input.value = current;
+    input.style.color = getUsernameColor(current);
+    input.classList.remove("hidden");
+    input.focus();
+    input.select();
+    window.setTimeout(() => {
+      if (!usernameEditActive) return;
+      const expected = nameBtn.textContent || "";
+      if (input.value !== expected) {
+        input.value = expected;
+        input.style.color = getUsernameColor(expected);
+        input.select();
+      }
+    }, 0);
+  };
+
+  const cancelEdit = () => {
+    if (!usernameEditActive) return;
+    usernameEditActive = false;
+    input.classList.add("hidden");
+    nameBtn.style.display = "";
+    editBtn.style.display = "";
+  };
+
+  const save = async () => {
+    if (!usernameEditActive) return;
+    const value = input.value.trim();
+    const current = nameBtn.textContent || "";
+    if (!value || value === current) {
+      cancelEdit();
+      return;
     }
+    try {
+      const res = await fetch(
+        `/api/set-username?room=${encodeURIComponent(room)}`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ username: value }),
+        }
+      );
+      if (!res.ok) {
+        input.classList.add("text-error");
+        window.setTimeout(() => input.classList.remove("text-error"), 1500);
+        input.focus();
+        return;
+      }
+      nameBtn.textContent = value;
+      nameBtn.style.color = getUsernameColor(value);
+      document
+        .getElementById("chat-messages")
+        ?.setAttribute("data-username", value);
+      cancelEdit();
+      forceReconnect();
+    } catch {
+      cancelEdit();
+    }
+  };
+
+  editBtn.addEventListener("click", enterEdit);
+  nameBtn.addEventListener("click", enterEdit);
+  input.addEventListener("input", () => {
+    input.style.color = getUsernameColor(input.value);
+  });
+  input.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      save();
+    } else if (e.key === "Escape") {
+      cancelEdit();
+    }
+  });
+  input.addEventListener("blur", () => {
+    save();
   });
 }
 
@@ -306,6 +384,16 @@ function connect() {
     resetSendingState();
     if (!manuallyClosed) scheduleReconnect();
   };
+}
+
+function forceReconnect() {
+  if (ws) {
+    ws.onclose = null;
+    ws.close();
+    ws = null;
+  }
+  reconnectAttempts = 0;
+  connect();
 }
 
 function scheduleReconnect() {

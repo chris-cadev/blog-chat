@@ -5,7 +5,7 @@ from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 from blog_chat.core.base import Base
 from blog_chat.features.accounts.models import User
 from blog_chat.features.chat.models import Message
-from blog_chat.features.chat.routes import load_history
+from blog_chat.features.chat.routes import get_username_color, load_history
 from blog_chat.features.chat.websocket import ConnectionManager, SlidingWindowLimiter
 
 
@@ -53,6 +53,22 @@ class FakeWebSocket:
 
     async def close(self, code=1000):
         self.closed_code = code
+
+
+class TestUsernameColor:
+    def test_deterministic(self):
+        assert get_username_color("Alice") == get_username_color("Alice")
+
+    def test_different_names_get_different_colors(self):
+        assert get_username_color("Alice") != get_username_color("Bob")
+
+    def test_returns_hsl_string(self):
+        import re
+
+        assert re.match(r"^hsl\(\d+, 70%, 45%\)$", get_username_color("Alice"))
+
+    def test_matches_expected_fnv1a_value(self):
+        assert get_username_color("Alice") == "hsl(143, 70%, 45%)"
 
 
 class TestConnectionManager:

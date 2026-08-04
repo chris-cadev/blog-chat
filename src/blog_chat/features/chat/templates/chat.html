@@ -12,19 +12,19 @@
 
     <div id="username-section">
         <div id="username-identity" class="mb-4 flex items-center justify-between">
-            <span class="text-sm">{{ t('logged_in_as') }} <span class="font-bold">{{ username }}</span></span>
-            <button id="change-username-btn" class="btn btn-sm btn-ghost" type="button">{{ t('change_username') }}</button>
+            <span class="text-sm">{{ t('logged_in_as') }}
+                <button id="username-edit-btn" type="button"
+                    class="font-bold border-b border-dotted border-base-content/40 hover:border-base-content/70 cursor-text"
+                    style="color: {{ username|username_color }};" title="{{ t('change_username') }}">{{ username }}</button>
+                <button id="change-username-btn" type="button"
+                    class="text-xs opacity-40 hover:opacity-100 transition-opacity align-middle"
+                    title="{{ t('change_username') }}">✎</button>
+                <input id="username-input" type="text" value="{{ username }}" maxlength="50" autocomplete="off"
+                    aria-label="{{ t('enter_name') }}"
+                    class="hidden font-bold bg-transparent border-0 border-b border-dashed border-base-content/50 outline-none p-0"
+                    style="color: {{ username|username_color }};" />
+            </span>
         </div>
-        <form id="change-username-form" class="hidden mb-4" hx-post="/api/set-username?room={{ room|default('offtopic') }}"
-            hx-swap="outerHTML">
-            <input type="hidden" name="room" value="{{ room|default('offtopic') }}" />
-            <label for="username-input" class="sr-only">{{ t('enter_name') }}</label>
-            <div class="flex gap-2">
-                <input id="username-input" name="username" class="input input-bordered join-item flex-1" type="text"
-                    value="{{ username }}" maxlength="50" autocomplete="nickname" />
-                <button class="btn btn-primary join-item">{{ t('join') }}</button>
-            </div>
-        </form>
     </div>
 
     <div class="join w-full" id="chat-input-group">
