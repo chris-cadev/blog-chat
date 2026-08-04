@@ -61,6 +61,8 @@ TRANSLATIONS = {
         "starter_reading_message": "What are you reading right now?",
         "language_not_found": "Language not found",
         "post_not_found": "Post not found",
+        "people_online": "People currently in chat",
+        "online": "online",
     },
     "es": {
         "home": "Inicio",
@@ -89,6 +91,8 @@ TRANSLATIONS = {
         "starter_reading_message": "¿Qué estás leyendo ahora?",
         "language_not_found": "Idioma no encontrado",
         "post_not_found": "Artículo no encontrado",
+        "people_online": "Personas en el chat ahora",
+        "online": "en línea",
     },
     "fr": {
         "home": "Accueil",
@@ -117,6 +121,8 @@ TRANSLATIONS = {
         "starter_reading_message": "Que lisez-vous en ce moment ?",
         "language_not_found": "Langue introuvable",
         "post_not_found": "Article introuvable",
+        "people_online": "Personnes actuellement dans le chat",
+        "online": "en ligne",
     },
 }
 

@@ -36,6 +36,10 @@
     <div class="flex items-center mt-1 gap-2">
         <span id="chat-input-hint" class="text-xs text-base-content/50">{{ t('enter_to_send') }}</span>
         <span id="chat-status" class="text-xs text-error hidden" role="status" aria-live="polite"></span>
+        <span id="chat-presence" class="badge badge-sm badge-ghost gap-1" data-label="{{ t('online') }}"
+            title="{{ t('people_online') }}" role="status" aria-live="polite">
+            <span class="loading loading-dots loading-xs"></span>
+        </span>
         <span id="char-count" class="text-xs text-base-content/50 ml-auto" role="status" aria-live="polite">0/280</span>
     </div>
 

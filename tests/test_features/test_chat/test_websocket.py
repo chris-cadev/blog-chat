@@ -134,6 +134,44 @@ class TestConnectionManager:
         await_test(manager.broadcast_refresh())
         assert "room1" not in manager.active_connections
 
+    def test_broadcast_presence_sends_count_to_room(self):
+        manager = ConnectionManager()
+        ws1 = FakeWebSocket("10.0.0.1")
+        ws2 = FakeWebSocket("10.0.0.2")
+        ws3 = FakeWebSocket("10.0.0.3")
+        await_test(manager.connect(ws1, "room1"))
+        await_test(manager.connect(ws2, "room1"))
+        await_test(manager.connect(ws3, "room2"))
+
+        await_test(manager.broadcast_presence("room1"))
+
+        assert [m["type"] for m in ws1.sent] == ["presence"]
+        assert ws1.sent[0]["count"] == 2
+        assert ws2.sent[0]["count"] == 2
+        assert ws3.sent == []
+
+    def test_broadcast_presence_after_disconnect(self):
+        manager = ConnectionManager()
+        ws1 = FakeWebSocket("10.0.0.1")
+        ws2 = FakeWebSocket("10.0.0.2")
+        await_test(manager.connect(ws1, "room1"))
+        await_test(manager.connect(ws2, "room1"))
+        manager.disconnect(ws1, "room1")
+
+        await_test(manager.broadcast_presence("room1"))
+
+        assert ws2.sent[0] == {"type": "presence", "count": 1}
+
+    def test_broadcast_presence_empty_room_is_noop(self):
+        manager = ConnectionManager()
+        ws = FakeWebSocket()
+        await_test(manager.connect(ws, "room1"))
+        manager.disconnect(ws, "room1")
+
+        await_test(manager.broadcast_presence("room1"))
+
+        assert ws.sent == []
+
 
 def await_test(awaitable):
     import asyncio
@@ -183,3 +221,19 @@ class TestLoadHistory:
         assert len(messages) == 50
         assert "msg-54" in messages[0]["html"]
         assert "msg-5" in messages[-1]["html"]
+
+
+class TestPresenceEndpoint:
+    def test_clients_receive_live_presence_count(self):
+        from fastapi.testclient import TestClient
+        from blog_chat.app import app
+
+        with TestClient(app) as client:
+            with client.websocket_connect("/ws/chat?room=presence-test") as ws1:
+                assert ws1.receive_json()["type"] == "history"
+                assert ws1.receive_json() == {"type": "presence", "count": 1}
+
+                with client.websocket_connect("/ws/chat?room=presence-test") as ws2:
+                    assert ws2.receive_json()["type"] == "history"
+                    assert ws2.receive_json() == {"type": "presence", "count": 2}
+                    assert ws1.receive_json() == {"type": "presence", "count": 2}

@@ -95,6 +95,14 @@ class ConnectionManager:
             except Exception:
                 self.disconnect(connection, room)
 
+    async def broadcast_presence(self, room: str):
+        count = len(self.active_connections.get(room, ()))
+
+        async def make_payload(_username: str, _timezone: str | None) -> dict:
+            return {"type": "presence", "count": count}
+
+        await self.broadcast(room, make_payload)
+
     async def broadcast_refresh(self, reason: str = "database_changed"):
         async def make_refresh_payload(_username: str, _timezone: str | None) -> dict:
             return {"type": "refresh", "reason": reason}

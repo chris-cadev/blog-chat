@@ -376,6 +376,7 @@ function connect() {
 
     if (data.type === "history") loadChatHistory(data);
     else if (data.type === "message") addMessage(data);
+    else if (data.type === "presence") updatePresence(data.count);
     else if (data.type === "refresh") requestSync();
   };
 
@@ -442,6 +443,13 @@ function isPrefixOf(current: string[], incoming: string[]): boolean {
 function requestSync() {
   if (!ws || ws.readyState !== WebSocket.OPEN) return;
   ws.send(JSON.stringify({ type: "sync" }));
+}
+
+function updatePresence(count: number) {
+  const el = document.getElementById("chat-presence");
+  if (!el) return;
+  const label = el.dataset.label || "";
+  el.textContent = `${count} ${label}`.trim();
 }
 
 function checkConnectionLiveness() {

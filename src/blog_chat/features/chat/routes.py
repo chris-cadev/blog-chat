@@ -131,6 +131,8 @@ async def websocket_endpoint(websocket: WebSocket, db: AsyncSession = Depends(ge
     })
 
     try:
+        await manager.broadcast_presence(room)
+
         while True:
             try:
                 data = await asyncio.wait_for(
@@ -207,4 +209,7 @@ async def websocket_endpoint(websocket: WebSocket, db: AsyncSession = Depends(ge
             await manager.broadcast(room, make_payload)
 
     except WebSocketDisconnect:
+        pass
+    finally:
         manager.disconnect(websocket, room)
+        await manager.broadcast_presence(room)
