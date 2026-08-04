@@ -89,6 +89,27 @@ class TestConnectionManager:
             assert manager.rate_limited(ws) is False
         assert manager.rate_limited(ws) is True
 
+    def test_broadcast_refresh_sends_to_all_rooms(self):
+        manager = ConnectionManager()
+        ws1 = FakeWebSocket("10.0.0.1")
+        ws2 = FakeWebSocket("10.0.0.2")
+        await_test(manager.connect(ws1, "room1"))
+        await_test(manager.connect(ws2, "room2"))
+
+        await_test(manager.broadcast_refresh())
+
+        assert [m["type"] for m in ws1.sent] == ["refresh"]
+        assert [m["type"] for m in ws2.sent] == ["refresh"]
+        assert ws1.sent[0]["reason"] == "database_changed"
+
+    def test_broadcast_refresh_disconnects_failed_socket(self):
+        manager = ConnectionManager()
+        ws = FakeWebSocket()
+        await_test(manager.connect(ws, "room1"))
+        ws.send_json = None
+        await_test(manager.broadcast_refresh())
+        assert "room1" not in manager.active_connections
+
 
 def await_test(awaitable):
     import asyncio

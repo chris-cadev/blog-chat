@@ -3,10 +3,13 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from datetime import datetime, timezone
 from zoneinfo import ZoneInfo
+import asyncio
 import hashlib
 import humanize
+import json
 
-from blog_chat.core.database import get_db
+from blog_chat.core.database import get_db, engine, init_db
+from blog_chat.core.db_watcher import DatabaseChangeWatcher, sqlite_db_path
 from blog_chat.core.filters import add_markdown_filter
 from blog_chat.core.responses import create_templates
 from blog_chat.features.chat.models import Message
@@ -21,6 +24,42 @@ templates = create_templates("src/blog_chat/features/chat/templates")
 add_markdown_filter(templates)
 
 MAX_MESSAGE_LENGTH = 280
+HEARTBEAT_INTERVAL = 30
+CONTROL_TYPES = {"sync"}
+
+
+async def load_history(db: AsyncSession, room: str, username: str, timezone_name: str | None) -> list[dict]:
+    result = await db.execute(
+        select(Message)
+        .where(Message.room_slug == room)
+        .order_by(Message.timestamp.asc())
+        .limit(50)
+    )
+    messages = result.scalars().all()
+    messages_list = []
+    for m in messages:
+        html = render_message_template(
+            m.username, m.content, m.timestamp.isoformat(), m.username == username,
+            show_header=True, timezone_name=timezone_name)
+        messages_list.append({
+            "id": m.id,
+            "html": html,
+            "username": m.username,
+            "timestamp": m.timestamp.isoformat(),
+        })
+    return messages_list
+
+
+async def _handle_db_change():
+    path = sqlite_db_path()
+    if path is not None and not path.exists():
+        await engine.dispose()
+        await init_db()
+    await manager.broadcast_refresh()
+    db_watcher.note_internal_change()
+
+
+db_watcher = DatabaseChangeWatcher(on_change=_handle_db_change)
 
 
 def get_username_color(username: str) -> str:
@@ -59,6 +98,18 @@ def render_message_template(username: str, content: str, timestamp: str, is_own:
     )
 
 
+def parse_control_message(text: str) -> dict | None:
+    if not text.startswith("{"):
+        return None
+    try:
+        payload = json.loads(text)
+    except json.JSONDecodeError:
+        return None
+    if isinstance(payload, dict) and payload.get("type") in CONTROL_TYPES:
+        return payload
+    return None
+
+
 @router.websocket("/ws/chat")
 async def websocket_endpoint(websocket: WebSocket, db: AsyncSession = Depends(get_db)):
     room = websocket.query_params.get("room", "offtopic")
@@ -69,32 +120,33 @@ async def websocket_endpoint(websocket: WebSocket, db: AsyncSession = Depends(ge
     if not await manager.connect(websocket, room, username, timezone_name):
         return
 
-    result = await db.execute(
-        select(Message)
-        .where(Message.room_slug == room)
-        .order_by(Message.timestamp.asc())
-        .limit(50)
-    )
-    messages = result.scalars().all()
-    messages_list = []
-    for m in messages:
-        html = render_message_template(
-            m.username, m.content, m.timestamp.isoformat(), m.username == username, 
-            show_header=True, timezone_name=timezone_name)
-        messages_list.append({
-            "id": m.id,
-            "html": html,
-            "username": m.username,
-            "timestamp": m.timestamp.isoformat(),
-        })
-
-    await websocket.send_json({"type": "history", "messages": messages_list})
+    await websocket.send_json({
+        "type": "history",
+        "messages": await load_history(db, room, username, timezone_name),
+    })
 
     try:
         while True:
-            data = await websocket.receive_text()
-            message_text = data.strip()
+            try:
+                data = await asyncio.wait_for(
+                    websocket.receive_text(),
+                    timeout=HEARTBEAT_INTERVAL,
+                )
+            except asyncio.TimeoutError:
+                await websocket.send_json({"type": "heartbeat"})
+                continue
 
+            text = data.strip()
+            control = parse_control_message(text)
+            if control is not None:
+                if control.get("type") == "sync":
+                    await websocket.send_json({
+                        "type": "history",
+                        "messages": await load_history(db, room, username, timezone_name),
+                    })
+                continue
+
+            message_text = text
             if not message_text:
                 continue
 
@@ -123,6 +175,7 @@ async def websocket_endpoint(websocket: WebSocket, db: AsyncSession = Depends(ge
             db.add(new_message)
             await db.commit()
             await db.refresh(new_message)
+            db_watcher.note_internal_change()
 
             timestamp_iso = new_message.timestamp.isoformat()
 

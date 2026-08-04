@@ -95,6 +95,13 @@ class ConnectionManager:
             except Exception:
                 self.disconnect(connection, room)
 
+    async def broadcast_refresh(self, reason: str = "database_changed"):
+        async def make_refresh_payload(_username: str, _timezone: str | None) -> dict:
+            return {"type": "refresh", "reason": reason}
+
+        for room in list(self.active_connections.keys()):
+            await self.broadcast(room, make_refresh_payload)
+
     @staticmethod
     def _ip_key(websocket: WebSocket) -> str:
         return websocket.client.host if websocket.client else "unknown"

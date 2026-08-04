@@ -2,6 +2,7 @@ import secrets
 import contextvars
 
 from blog_chat.features.chat.routes import router as chat_router
+from blog_chat.features.chat.routes import db_watcher
 from blog_chat.features.posts.routes import router as posts_router
 from blog_chat.features.accounts.routes import router as accounts_router
 from contextlib import asynccontextmanager
@@ -56,7 +57,11 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
 @asynccontextmanager
 async def lifespan(_: FastAPI):
     await init_db()
-    yield
+    db_watcher.start()
+    try:
+        yield
+    finally:
+        await db_watcher.stop()
 
 app = FastAPI(lifespan=lifespan)
 app.add_middleware(SecurityHeadersMiddleware)

@@ -1,6 +1,8 @@
 const MAX_CHARS = 280;
 const RECONNECT_BASE_DELAY = 1000;
 const RECONNECT_MAX_DELAY = 30000;
+const SYNC_INTERVAL = 60000;
+const HEARTBEAT_TIMEOUT = 90000;
 
 let ws: WebSocket | null = null;
 let wsUrl = "";
@@ -11,6 +13,10 @@ let isSending = false;
 let pendingDraft = "";
 let timezoneCookieSet = false;
 let chatInited = false;
+let lastReceivedAt = 0;
+let historyLoaded = false;
+let currentMessageIds: string[] = [];
+let syncTimer: number | null = null;
 
 function getTimezone(): string {
   return Intl.DateTimeFormat().resolvedOptions().timeZone;
@@ -173,6 +179,8 @@ export function initChat() {
   }
 
   setInterval(updateTimestamps, 30000);
+  syncTimer = window.setInterval(requestSync, SYNC_INTERVAL);
+  setInterval(checkConnectionLiveness, 30000);
 }
 
 function bindUsernameRefresh() {
@@ -202,6 +210,7 @@ function connect() {
     } catch {
       return;
     }
+    lastReceivedAt = Date.now();
 
     if (data.type === "error") {
       handleError(data);
@@ -210,6 +219,7 @@ function connect() {
 
     if (data.type === "history") loadChatHistory(data);
     else if (data.type === "message") addMessage(data);
+    else if (data.type === "refresh") requestSync();
   };
 
   ws.onclose = () => {
@@ -237,6 +247,12 @@ function loadChatHistory(data: any) {
   const container = document.getElementById("chat-messages");
   if (!container) return;
 
+  const incomingIds = (data.messages || []).map((m: any) => String(m.id));
+  if (historyLoaded && isSuffixOf(currentMessageIds, incomingIds)) {
+    return;
+  }
+  currentMessageIds = incomingIds;
+
   container.innerHTML = "";
   if (data.messages.length === 0) {
     showEmptyState(true);
@@ -244,6 +260,28 @@ function loadChatHistory(data: any) {
     showEmptyState(false);
     data.messages.forEach((msg: any) => addHistoryMessage(msg));
     scrollToBottom();
+  }
+  historyLoaded = true;
+}
+
+function isSuffixOf(current: string[], incoming: string[]): boolean {
+  if (incoming.length > current.length) return false;
+  const start = current.length - incoming.length;
+  for (let i = 0; i < incoming.length; i++) {
+    if (current[start + i] !== incoming[i]) return false;
+  }
+  return true;
+}
+
+function requestSync() {
+  if (!ws || ws.readyState !== WebSocket.OPEN) return;
+  ws.send(JSON.stringify({ type: "sync" }));
+}
+
+function checkConnectionLiveness() {
+  if (!ws || ws.readyState !== WebSocket.OPEN) return;
+  if (lastReceivedAt > 0 && Date.now() - lastReceivedAt > HEARTBEAT_TIMEOUT) {
+    ws.close();
   }
 }
 
@@ -309,6 +347,8 @@ function addMessage(data: any) {
 
   const container = document.getElementById("chat-messages");
   if (!container) return;
+
+  if (data.id != null) currentMessageIds.push(String(data.id));
 
   showEmptyState(false);
   const wasNearBottom = isNearBottom();
