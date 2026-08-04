@@ -20,6 +20,8 @@ templates = create_templates(posts_template_dirs)
 add_markdown_filter(templates)
 
 LANGS = ("en", "es", "fr")
+LANG_FLAGS = {"en": "🇺🇸", "es": "🇲🇽", "fr": "🇫🇷"}
+LANG_NAMES = {"en": "English", "es": "Español", "fr": "Français"}
 LANG_COOKIE = "lang"
 LANG_COOKIE_MAX_AGE = 60 * 60 * 24 * 365
 
@@ -93,8 +95,11 @@ def _language_switcher(request: Request, lang: str | None, slug: str | None) -> 
             "code": code,
             "active": code == lang,
             "href": f"/{code}/{slug}" if slug else f"/{code}/",
+            "flag": LANG_FLAGS[code],
+            "title": LANG_NAMES[code],
         }
         for code in LANGS
+        if code != lang
     ]
 
 
