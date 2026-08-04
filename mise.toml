@@ -3,6 +3,10 @@ python = "latest"
 node = "latest"
 bun = "latest"
 
+[tasks.test]
+description = "Run the test suite with coverage"
+run = ".venv/bin/pytest -v --cov=blog_chat --cov-report=term-missing --cov-report=html:coverage_html --cov-report=json:coverage_html/coverage.json"
+
 [tasks.build]
 description = "Build frontend assets into static/"
 run = "bun run build"
