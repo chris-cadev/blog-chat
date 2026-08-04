@@ -11,41 +11,51 @@
     {% endif %}
 
     <div id="username-section">
-        {% if not username %}
-        <form class="mb-4" hx-post="/api/set-username?room={{ room|default('offtopic') }}" hx-swap="outerHTML">
+        <div id="username-identity" class="mb-4 flex items-center justify-between">
+            <span class="text-sm">{{ t('logged_in_as') }} <span class="font-bold">{{ username }}</span></span>
+            <button id="change-username-btn" class="btn btn-sm btn-ghost" type="button">{{ t('change_username') }}</button>
+        </div>
+        <form id="change-username-form" class="hidden mb-4" hx-post="/api/set-username?room={{ room|default('offtopic') }}"
+            hx-swap="outerHTML">
             <input type="hidden" name="room" value="{{ room|default('offtopic') }}" />
             <label for="username-input" class="sr-only">{{ t('enter_name') }}</label>
             <div class="flex gap-2">
                 <input id="username-input" name="username" class="input input-bordered join-item flex-1" type="text"
-                    placeholder="{{ t('enter_name') }}" maxlength="50" autocomplete="nickname" />
+                    value="{{ username }}" maxlength="50" autocomplete="nickname" />
                 <button class="btn btn-primary join-item">{{ t('join') }}</button>
             </div>
         </form>
-        {% else %}
-        <div class="mb-4 flex items-center justify-between">
-            <span class="text-sm">{{ t('logged_in_as') }} <span class="font-bold">{{ username }}</span></span>
-            <button class="btn btn-sm btn-ghost" hx-post="/api/clear-username?room={{ room|default('offtopic') }}"
-                hx-swap="outerHTML">{{ t('change_username') }}</button>
-        </div>
-        {% endif %}
     </div>
 
-    <div class="join w-full">
+    <div class="join w-full" id="chat-input-group">
         <label for="chat-input" class="sr-only">{{ t('type_message') }}</label>
         <input id="chat-input" class="input input-bordered join-item flex-1" type="text"
             placeholder="{{ t('type_message') }}" maxlength="280" autocomplete="off" />
         <button id="send-btn" class="btn btn-primary join-item">{{ t('send') }}</button>
     </div>
-    <div class="flex justify-between items-center mt-1">
+    <div class="flex items-center mt-1 gap-2">
+        <span id="chat-input-hint" class="text-xs text-base-content/50">{{ t('enter_to_send') }}</span>
         <span id="chat-status" class="text-xs text-error hidden" role="status" aria-live="polite"></span>
-        <span id="char-count" class="text-xs text-base-content/50" role="status" aria-live="polite">0/280</span>
+        <span id="char-count" class="text-xs text-base-content/50 ml-auto" role="status" aria-live="polite">0/280</span>
+    </div>
+
+    <div id="chat-empty" class="hidden text-center py-8 text-base-content/50">
+        <div class="text-lg font-medium mb-3">{{ t('no_messages') }}</div>
+        <div id="starter-prompts" class="flex flex-wrap justify-center gap-2">
+            {% if post %}
+            <button class="btn btn-sm btn-outline" type="button" data-starter="{{ t('starter_ask') }}" data-starter-message="{{ t('starter_ask_message') }}">{{ t('starter_ask') }}</button>
+            <button class="btn btn-sm btn-outline" type="button" data-starter="{{ t('starter_take') }}" data-starter-message="{{ t('starter_take_message') }}">{{ t('starter_take') }}</button>
+            <button class="btn btn-sm btn-outline" type="button" data-starter="{{ t('starter_say_hi') }}" data-starter-message="{{ t('starter_say_hi_message') }}">{{ t('starter_say_hi') }}</button>
+            {% else %}
+            <button class="btn btn-sm btn-outline" type="button" data-starter="{{ t('starter_say_hi') }}" data-starter-message="{{ t('starter_say_hi_message') }}">{{ t('starter_say_hi') }}</button>
+            <button class="btn btn-sm btn-outline" type="button" data-starter="{{ t('starter_reading') }}" data-starter-message="{{ t('starter_reading_message') }}">{{ t('starter_reading') }}</button>
+            <button class="btn btn-sm btn-outline" type="button" data-starter="{{ t('starter_share') }}" data-starter-message="{{ t('starter_share_message') }}">{{ t('starter_share') }}</button>
+            {% endif %}
+        </div>
     </div>
 
     <div id="chat-messages" class="chat h-96 md:h-auto md:flex-1 overflow-y-auto mb-4 space-y-2 md:min-h-0"
         role="log" aria-live="polite" aria-relevant="additions" aria-label="Chat messages"
         data-username="{{ username|default('') }}">
-    </div>
-    <div id="chat-empty" class="hidden text-center py-8 text-base-content/50">
-        {{ t('no_messages') }}
     </div>
 </div>

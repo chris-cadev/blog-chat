@@ -1,11 +1,20 @@
 
 from datetime import timedelta
+import secrets
 
 import jwt
 from fastapi import Request
+from coolname import generate as generate_coolname
 
 from blog_chat.core.config import JWT_ALGORITHM, JWT_SECRET
 from blog_chat.core.base import Base
+
+
+def generate_guest_name() -> str:
+    words = generate_coolname(2)
+    base = "".join(word.capitalize() for word in words)
+    suffix = secrets.randbelow(9000) + 1000
+    return f"{base}-{suffix}"
 
 
 def create_token(username: str) -> str:

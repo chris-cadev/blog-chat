@@ -32,7 +32,7 @@ async def load_history(db: AsyncSession, room: str, username: str, timezone_name
     result = await db.execute(
         select(Message)
         .where(Message.room_slug == room)
-        .order_by(Message.timestamp.asc())
+        .order_by(Message.timestamp.desc())
         .limit(50)
     )
     messages = result.scalars().all()

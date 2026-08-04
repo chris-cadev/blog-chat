@@ -7,7 +7,11 @@ from fastapi.responses import PlainTextResponse, Response, RedirectResponse
 from blog_chat.core.filters import add_markdown_filter
 from blog_chat.core.responses import create_templates
 from blog_chat.core.config import SITE_URL
-from blog_chat.features.accounts.services import get_username_from_cookie
+from blog_chat.features.accounts.services import (
+    create_token,
+    generate_guest_name,
+    get_username_from_cookie,
+)
 from blog_chat.features.posts.services import get_post, get_posts
 
 router = APIRouter()
@@ -24,6 +28,8 @@ LANG_FLAGS = {"en": "🇺🇸", "es": "🇲🇽", "fr": "🇫🇷"}
 LANG_NAMES = {"en": "English", "es": "Español", "fr": "Français"}
 LANG_COOKIE = "lang"
 LANG_COOKIE_MAX_AGE = 60 * 60 * 24 * 365
+CHAT_TOKEN_COOKIE = "chat_token"
+CHAT_TOKEN_MAX_AGE = 60 * 60 * 24 * 30
 
 TRANSLATIONS = {
     "en": {
@@ -37,9 +43,20 @@ TRANSLATIONS = {
         "join": "Join",
         "logged_in_as": "Logged in as",
         "change_username": "Change username",
-        "type_message": "Type a message... (Enter to send)",
+        "type_message": "Type a message…",
+        "enter_to_send": "Press Enter to send",
         "send": "Send",
         "no_messages": "No messages yet. Start the conversation!",
+        "starter_say_hi": "Say hi 👋",
+        "starter_take": "What's your take?",
+        "starter_ask": "Ask about this post",
+        "starter_share": "Share a thought",
+        "starter_reading": "What are you reading?",
+        "starter_say_hi_message": "Hi! 👋",
+        "starter_take_message": "I'd love to hear your take on this.",
+        "starter_ask_message": "What do you think about this post?",
+        "starter_share_message": "I'd like to share a thought.",
+        "starter_reading_message": "What are you reading right now?",
         "language_not_found": "Language not found",
         "post_not_found": "Post not found",
     },
@@ -54,9 +71,20 @@ TRANSLATIONS = {
         "join": "Unirse",
         "logged_in_as": "Conectado como",
         "change_username": "Cambiar nombre",
-        "type_message": "Escribe un mensaje... (Enter para enviar)",
+        "type_message": "Escribe un mensaje…",
+        "enter_to_send": "Enter para enviar",
         "send": "Enviar",
         "no_messages": "Aún no hay mensajes. ¡Inicia la conversación!",
+        "starter_say_hi": "¡Hola! 👋",
+        "starter_take": "¿Qué opinas?",
+        "starter_ask": "Pregunta sobre este artículo",
+        "starter_share": "Comparte una idea",
+        "starter_reading": "¿Qué estás leyendo?",
+        "starter_say_hi_message": "¡Hola! 👋",
+        "starter_take_message": "Me encantaría saber tu opinión.",
+        "starter_ask_message": "¿Qué opinas de este artículo?",
+        "starter_share_message": "Me gustaría compartir una idea.",
+        "starter_reading_message": "¿Qué estás leyendo ahora?",
         "language_not_found": "Idioma no encontrado",
         "post_not_found": "Artículo no encontrado",
     },
@@ -71,9 +99,20 @@ TRANSLATIONS = {
         "join": "Rejoindre",
         "logged_in_as": "Connecté en tant que",
         "change_username": "Changer de nom",
-        "type_message": "Écrivez un message... (Entrée pour envoyer)",
+        "type_message": "Écrivez un message…",
+        "enter_to_send": "Entrée pour envoyer",
         "send": "Envoyer",
         "no_messages": "Aucun message pour l'instant. Lancez la conversation !",
+        "starter_say_hi": "Dis bonjour 👋",
+        "starter_take": "Qu'en pensez-vous ?",
+        "starter_ask": "Posez une question sur cet article",
+        "starter_share": "Partagez une idée",
+        "starter_reading": "Que lisez-vous ?",
+        "starter_say_hi_message": "Bonjour ! 👋",
+        "starter_take_message": "J'aimerais bien connaître votre avis.",
+        "starter_ask_message": "Que pensez-vous de cet article ?",
+        "starter_share_message": "J'aimerais partager une idée.",
+        "starter_reading_message": "Que lisez-vous en ce moment ?",
         "language_not_found": "Langue introuvable",
         "post_not_found": "Article introuvable",
     },
@@ -140,6 +179,42 @@ def _with_lang_cookie(response: Response, lang: str) -> Response:
     return response
 
 
+def _render(
+    template_name: str,
+    request: Request,
+    lang: str | None,
+    status_code: int | None = None,
+    apply_lang_cookie: bool = True,
+    **extra,
+) -> Response:
+    username = get_username_from_cookie(request)
+    generated = username is None
+    if generated:
+        username = generate_guest_name()
+    extra["username"] = username
+
+    template_kwargs = {}
+    if status_code is not None:
+        template_kwargs["status_code"] = status_code
+    response = templates.TemplateResponse(
+        template_name,
+        _context(request, lang, **extra),
+        **template_kwargs,
+    )
+    if apply_lang_cookie and lang in LANGS:
+        response = _with_lang_cookie(response, lang)
+    if generated:
+        response.set_cookie(
+            CHAT_TOKEN_COOKIE,
+            create_token(username),
+            httponly=True,
+            samesite="lax",
+            path="/",
+            max_age=CHAT_TOKEN_MAX_AGE,
+        )
+    return response
+
+
 def _context(request: Request, lang: str | None, **extra) -> dict:
     ctx = {"request": request, "lang": lang, "t": _make_t(lang)}
     ctx.update(extra)
@@ -191,25 +266,26 @@ def read_root(request: Request):
 @router.get("/{lang}/")
 def read_lang_index(request: Request, lang: str):
     if lang not in LANGS:
-        return templates.TemplateResponse(
+        return _render(
             "index.html",
-            _context(request, "en", posts=get_posts(), error=_make_t("en")("language_not_found"),
-                     username=get_username_from_cookie(request),
-                     slug=None,
-                     language_switcher=_language_switcher(request, None, None)),
+            request,
+            "en",
             status_code=404,
+            apply_lang_cookie=False,
+            posts=get_posts(),
+            error=_make_t("en")("language_not_found"),
+            slug=None,
+            language_switcher=_language_switcher(request, None, None),
         )
     posts = get_posts(lang)
-    username = get_username_from_cookie(request)
-    return _with_lang_cookie(
-        templates.TemplateResponse(
-            "index.html",
-            _context(request, lang, posts=posts,
-                     room="offtopic", username=username,
-                     slug=None,
-                     language_switcher=_language_switcher(request, lang, None)),
-        ),
+    return _render(
+        "index.html",
+        request,
         lang,
+        posts=posts,
+        room="offtopic",
+        slug=None,
+        language_switcher=_language_switcher(request, lang, None),
     )
 
 
@@ -223,16 +299,15 @@ def read_tag(request: Request, lang: str, tag: str):
     if lang not in LANGS:
         return RedirectResponse(f"/{_preferred_lang(request)}/tags/{tag}")
     posts = [p for p in get_posts(lang) if tag in (p.get("tags") or [])]
-    username = get_username_from_cookie(request)
-    return _with_lang_cookie(
-        templates.TemplateResponse(
-            "index.html",
-            _context(request, lang, posts=posts, tag=tag,
-                     room="offtopic", username=username,
-                     slug=None,
-                     language_switcher=_language_switcher(request, lang, None)),
-        ),
+    return _render(
+        "index.html",
+        request,
         lang,
+        posts=posts,
+        tag=tag,
+        room="offtopic",
+        slug=None,
+        language_switcher=_language_switcher(request, lang, None),
     )
 
 
@@ -242,45 +317,44 @@ def read_item(request: Request, lang: str, slug: str):
         legacy = get_post(f"{lang}/{slug}")
         if legacy:
             legacy_lang = legacy.get("lang") or "en"
-            return _with_lang_cookie(
-                templates.TemplateResponse(
-                    "post.html",
-                    _context(request, legacy_lang, post=legacy,
-                             room=legacy.get("slug"),
-                             username=get_username_from_cookie(request),
-                             slug=legacy.get("slug"),
-                             language_switcher=_language_switcher(request, legacy_lang, legacy.get("slug"))),
-                ),
+            return _render(
+                "post.html",
+                request,
                 legacy_lang,
+                post=legacy,
+                room=legacy.get("slug"),
+                slug=legacy.get("slug"),
+                language_switcher=_language_switcher(request, legacy_lang, legacy.get("slug")),
             )
-        return templates.TemplateResponse(
+        return _render(
             "index.html",
-            _context(request, "en", posts=get_posts(), error=_make_t("en")("post_not_found"),
-                     username=get_username_from_cookie(request),
-                     slug=None,
-                     language_switcher=_language_switcher(request, None, None)),
+            request,
+            "en",
             status_code=404,
+            apply_lang_cookie=False,
+            posts=get_posts(),
+            error=_make_t("en")("post_not_found"),
+            slug=None,
+            language_switcher=_language_switcher(request, None, None),
         )
     post = get_post(slug, lang)
-    username = get_username_from_cookie(request)
     if not post:
-        return _with_lang_cookie(
-            templates.TemplateResponse(
-                "index.html",
-                _context(request, lang, posts=get_posts(lang), error=_make_t(lang)("post_not_found"),
-                         username=username, slug=slug,
-                         language_switcher=_language_switcher(request, lang, slug)),
-                status_code=404,
-            ),
+        return _render(
+            "index.html",
+            request,
             lang,
+            status_code=404,
+            posts=get_posts(lang),
+            error=_make_t(lang)("post_not_found"),
+            slug=slug,
+            language_switcher=_language_switcher(request, lang, slug),
         )
-    return _with_lang_cookie(
-        templates.TemplateResponse(
-            "post.html",
-            _context(request, lang, post=post,
-                     room=slug, username=username,
-                     slug=slug,
-                     language_switcher=_language_switcher(request, lang, slug)),
-        ),
+    return _render(
+        "post.html",
+        request,
         lang,
+        post=post,
+        room=slug,
+        slug=slug,
+        language_switcher=_language_switcher(request, lang, slug),
     )

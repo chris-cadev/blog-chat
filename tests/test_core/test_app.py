@@ -51,3 +51,49 @@ class TestPostPage:
             response = client.get("/en/firstcommit")
             csp = response.headers.get("content-security-policy")
             assert "https://firstcommit.debugchris.com" in csp
+
+    def _page_username(self, client, path="/en/firstcommit"):
+        page = client.get(path)
+        match = re.search(r'font-bold[^>]*>([^<]+)<', page.text)
+        return match.group(1) if match else None
+
+    def test_auto_assigns_guest_identity(self):
+        with TestClient(app) as client:
+            response = client.get("/en/firstcommit")
+            assert response.status_code == 200
+            assert response.cookies.get("chat_token")
+            assert 'id="change-username-form"' in response.text or "id=change-username-form" in response.text
+            assert 'placeholder="Enter your name"' not in response.text
+            name = self._page_username(client, "/en/firstcommit")
+            assert name
+            assert re.fullmatch(r"[A-Z][a-z]+[A-Z][a-z]+-\d{4}", name)
+
+    def test_guest_identity_persists_across_requests(self):
+        with TestClient(app) as client:
+            first = self._page_username(client, "/en/firstcommit")
+            second = self._page_username(client, "/en/firstcommit")
+            assert first == second
+            assert first
+
+    def test_change_username_after_auto_identity(self):
+        with TestClient(app) as client:
+            self._page_username(client, "/en/firstcommit")
+            response = client.post(
+                "/api/set-username?room=firstcommit",
+                data={"username": "CustomName", "room": "firstcommit"},
+            )
+            assert response.status_code == 200
+            assert self._page_username(client, "/en/firstcommit") == "CustomName"
+
+    def test_interaction_hints_render(self):
+        with TestClient(app) as client:
+            response = client.get("/en/firstcommit")
+            assert response.status_code == 200
+            assert "chat-input-group" in response.text
+            assert "chat-input-hint" in response.text
+            assert "starter-prompts" in response.text
+            assert "data-starter" in response.text
+            assert "(Enter to send)" not in response.text
+
+            index = client.get("/en/")
+            assert "starter-prompts" in index.text

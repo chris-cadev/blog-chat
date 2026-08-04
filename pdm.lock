@@ -5,7 +5,7 @@
 groups = ["default", "dev"]
 strategy = ["inherit_metadata"]
 lock_version = "4.5.0"
-content_hash = "sha256:582b6fcee7a1c6fb4c6cd47a05e5a09246f7610786ede3dd1ba33bd26417d3c5"
+content_hash = "sha256:ebac611905504e4c8c292e60ff0d3711ebe94f86bc556171963ac404e95d02d2"
 
 [[metadata.targets]]
 requires_python = ">=3.12"
@@ -114,6 +114,17 @@ marker = "sys_platform == \"win32\" or platform_system == \"Windows\""
 files = [
     {file = "colorama-0.4.6-py2.py3-none-any.whl", hash = "sha256:4f1d9991f5acc0ca119f9d443620b77f9d6b33703e51011c16baf57afb285fc6"},
     {file = "colorama-0.4.6.tar.gz", hash = "sha256:08695f5cb7ed6e0531a20572697297273c47b8cae5a63ffc6d6ed5c201be6e44"},
+]
+
+[[package]]
+name = "coolname"
+version = "5.0.0"
+requires_python = ">=3.10"
+summary = "Random name and slug generator"
+groups = ["default"]
+files = [
+    {file = "coolname-5.0.0-py3-none-any.whl", hash = "sha256:b86eea9670aa0620965167d1bfadfe654fabec839a5b51e8da611c4a64f86192"},
+    {file = "coolname-5.0.0.tar.gz", hash = "sha256:594bc6c98ebc75ddd51c0ce10efbb5d2556c14eac60b5b36900dfdd5db20eecf"},
 ]
 
 [[package]]

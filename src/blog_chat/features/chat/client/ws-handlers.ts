@@ -67,6 +67,16 @@ function updateCharCount() {
     counter.classList.toggle("text-error", len > MAX_CHARS);
     counter.classList.toggle("text-base-content/50", len <= MAX_CHARS);
   }
+  updateInputHint();
+}
+
+function updateInputHint() {
+  const input = document.getElementById("chat-input") as HTMLInputElement;
+  const hint = document.getElementById("chat-input-hint");
+  const status = document.getElementById("chat-status");
+  if (!input || !hint || !status) return;
+  const statusHidden = status.classList.contains("hidden");
+  hint.classList.toggle("hidden", input.value.length > 0 || !statusHidden);
 }
 
 function setLoadingState(loading: boolean) {
@@ -88,6 +98,7 @@ function showStatus(message: string, show = true) {
   if (!status) return;
   status.textContent = show ? message : "";
   status.classList.toggle("hidden", !show);
+  updateInputHint();
 }
 
 function setConnectionState(state: "connecting" | "connected" | "reconnecting" | "disconnected") {
@@ -109,21 +120,18 @@ function showEmptyState(show: boolean) {
   }
 }
 
-function isNearBottom(): boolean {
+function isNearTop(): boolean {
   const container = document.getElementById("chat-messages");
   if (!container) return true;
   const threshold = 100;
-  return (
-    container.scrollHeight - container.scrollTop - container.clientHeight <=
-    threshold
-  );
+  return container.scrollTop <= threshold;
 }
 
-function scrollToBottom(smooth = false) {
+function scrollToTop(smooth = false) {
   const container = document.getElementById("chat-messages");
   if (container) {
     container.scrollTo({
-      top: container.scrollHeight,
+      top: 0,
       behavior: smooth ? "smooth" : "auto",
     });
   }
@@ -131,12 +139,12 @@ function scrollToBottom(smooth = false) {
 
 function createScrollButton(): HTMLElement {
   const btn = document.createElement("button");
-  btn.id = "scroll-to-bottom";
+  btn.id = "scroll-to-top";
   btn.className =
     "btn btn-sm btn-primary fixed bottom-24 right-8 z-50 shadow-lg";
   btn.textContent = "New messages";
   btn.addEventListener("click", () => {
-    scrollToBottom(true);
+    scrollToTop(true);
     btn.remove();
   });
   return btn;
@@ -161,6 +169,9 @@ export function initChat() {
   wsUrl = `${protocol}//${window.location.host}/ws/chat?room=${room}`;
 
   bindUsernameRefresh();
+  bindChangeUsername();
+  bindStarterPrompts();
+  initGlow();
   connect();
 
   const input = document.getElementById("chat-input") as HTMLInputElement;
@@ -190,6 +201,74 @@ function bindUsernameRefresh() {
       window.location.reload();
     }
   });
+}
+
+function bindChangeUsername() {
+  const btn = document.getElementById("change-username-btn");
+  const form = document.getElementById("change-username-form");
+  if (!btn || !form) return;
+  btn.addEventListener("click", () => {
+    form.classList.toggle("hidden");
+    if (!form.classList.contains("hidden")) {
+      const input = form.querySelector<HTMLInputElement>("input[name='username']");
+      input?.focus();
+      input?.select();
+    }
+  });
+}
+
+function bindStarterPrompts() {
+  const input = document.getElementById("chat-input") as HTMLInputElement;
+  const starterButtons = document.querySelectorAll<HTMLButtonElement>("[data-starter]");
+  starterButtons.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      if (!input) return;
+      input.value = btn.dataset.starterMessage || btn.dataset.starter || "";
+      updateCharCount();
+      input.focus();
+    });
+  });
+}
+
+function initGlow() {
+  let shown = false;
+  try {
+    shown = sessionStorage.getItem("chat_attention_shown") === "1";
+  } catch {
+    shown = false;
+  }
+  if (shown) return;
+
+  const container = document.getElementById("chat-messages");
+  if (!container) return;
+  const observer = new IntersectionObserver(
+    (entries) => {
+      for (const entry of entries) {
+        if (!entry.isIntersecting) continue;
+        observer.disconnect();
+        window.setTimeout(() => {
+          try {
+            sessionStorage.setItem("chat_attention_shown", "1");
+          } catch {
+            /* ignore storage restrictions */
+          }
+          container.classList.add("chat-glow");
+          const inputGroup = document.getElementById("chat-input-group");
+          if (inputGroup) {
+            inputGroup.classList.add("chat-glow-ring");
+          }
+          const newest = container.firstElementChild;
+          const bubble = newest?.querySelector(".chat-bubble");
+          if (bubble) {
+            bubble.classList.add("chat-shimmer");
+          }
+        }, 1500);
+        return;
+      }
+    },
+    { threshold: 0 }
+  );
+  observer.observe(container);
 }
 
 function connect() {
@@ -248,7 +327,7 @@ function loadChatHistory(data: any) {
   if (!container) return;
 
   const incomingIds = (data.messages || []).map((m: any) => String(m.id));
-  if (historyLoaded && isSuffixOf(currentMessageIds, incomingIds)) {
+  if (historyLoaded && isPrefixOf(currentMessageIds, incomingIds)) {
     return;
   }
   currentMessageIds = incomingIds;
@@ -259,16 +338,15 @@ function loadChatHistory(data: any) {
   } else {
     showEmptyState(false);
     data.messages.forEach((msg: any) => addHistoryMessage(msg));
-    scrollToBottom();
+    scrollToTop();
   }
   historyLoaded = true;
 }
 
-function isSuffixOf(current: string[], incoming: string[]): boolean {
+function isPrefixOf(current: string[], incoming: string[]): boolean {
   if (incoming.length > current.length) return false;
-  const start = current.length - incoming.length;
   for (let i = 0; i < incoming.length; i++) {
-    if (current[start + i] !== incoming[i]) return false;
+    if (current[i] !== incoming[i]) return false;
   }
   return true;
 }
@@ -292,10 +370,12 @@ function addHistoryMessage(msg: any) {
   showEmptyState(false);
   container.insertAdjacentHTML("beforeend", msg.html);
 
-  const timeEl = container.lastElementChild?.querySelector("time");
-  if (timeEl && msg.timestamp) {
-    timeEl.setAttribute("datetime", msg.timestamp);
-  }
+  const inserted = container.lastElementChild;
+  inserted?.querySelectorAll("time").forEach((time) => {
+    if (msg.timestamp) {
+      time.setAttribute("datetime", msg.timestamp);
+    }
+  });
 }
 
 function sendMessage(input: HTMLInputElement) {
@@ -348,10 +428,10 @@ function addMessage(data: any) {
   const container = document.getElementById("chat-messages");
   if (!container) return;
 
-  if (data.id != null) currentMessageIds.push(String(data.id));
+  if (data.id != null) currentMessageIds.unshift(String(data.id));
 
   showEmptyState(false);
-  const wasNearBottom = isNearBottom();
+  const wasNearTop = isNearTop();
 
   const temp = document.createElement("div");
   temp.innerHTML = data.html;
@@ -363,13 +443,14 @@ function addMessage(data: any) {
   }
 
   if (msgEl) {
-    container.appendChild(msgEl);
+    msgEl.classList.add("chat-bubble-enter");
+    container.prepend(msgEl);
   }
 
-  if (wasNearBottom) {
-    scrollToBottom();
+  if (wasNearTop) {
+    scrollToTop();
   } else {
-    const existingBtn = document.getElementById("scroll-to-bottom");
+    const existingBtn = document.getElementById("scroll-to-top");
     if (!existingBtn) {
       document.body.appendChild(createScrollButton());
     }

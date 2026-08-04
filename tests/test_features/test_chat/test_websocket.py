@@ -1,3 +1,11 @@
+from datetime import datetime, timedelta
+
+from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
+
+from blog_chat.core.base import Base
+from blog_chat.features.accounts.models import User
+from blog_chat.features.chat.models import Message
+from blog_chat.features.chat.routes import load_history
 from blog_chat.features.chat.websocket import ConnectionManager, SlidingWindowLimiter
 
 
@@ -115,3 +123,47 @@ def await_test(awaitable):
     import asyncio
 
     return asyncio.run(awaitable)
+
+
+class TestLoadHistory:
+    async def _make_db(self, count):
+        engine = create_async_engine("sqlite+aiosqlite:///:memory:")
+        maker = async_sessionmaker(engine, expire_on_commit=False)
+        async with engine.begin() as conn:
+            await conn.run_sync(Base.metadata.create_all)
+        now = datetime.now()
+        async with maker() as db:
+            for i in range(count):
+                db.add(Message(
+                    room_slug="offtopic",
+                    username="Alice",
+                    content=f"msg-{i}",
+                    timestamp=now + timedelta(seconds=i),
+                ))
+            await db.commit()
+        return maker
+
+    def test_history_newest_first(self):
+        async def run():
+            maker = await self._make_db(5)
+            async with maker() as db:
+                messages = await load_history(db, "offtopic", "Alice", None)
+            return messages
+
+        messages = await_test(run())
+        assert "msg-4" in messages[0]["html"]
+        assert "msg-0" in messages[-1]["html"]
+        timestamps = [datetime.fromisoformat(m["timestamp"]) for m in messages]
+        assert timestamps == sorted(timestamps, reverse=True)
+
+    def test_history_limits_to_50_most_recent(self):
+        async def run():
+            maker = await self._make_db(55)
+            async with maker() as db:
+                messages = await load_history(db, "offtopic", "Alice", None)
+            return messages
+
+        messages = await_test(run())
+        assert len(messages) == 50
+        assert "msg-54" in messages[0]["html"]
+        assert "msg-5" in messages[-1]["html"]
