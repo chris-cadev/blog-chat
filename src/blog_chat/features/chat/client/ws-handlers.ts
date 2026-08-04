@@ -204,12 +204,14 @@ function getUsernameColor(username: string): string {
 }
 
 let usernameEditActive = false;
+let usernameSaving = false;
 
 function bindChangeUsername() {
   const editBtn = document.getElementById("change-username-btn");
   const nameBtn = document.getElementById("username-edit-btn");
   const input = document.getElementById("username-input") as HTMLInputElement;
-  if (!editBtn || !nameBtn || !input) return;
+  const confirmBtn = document.getElementById("username-confirm-btn");
+  if (!editBtn || !nameBtn || !input || !confirmBtn) return;
 
   const room = document.body.getAttribute("data-room") || "offtopic";
 
@@ -222,6 +224,7 @@ function bindChangeUsername() {
     input.value = current;
     input.style.color = getUsernameColor(current);
     input.classList.remove("hidden");
+    confirmBtn.classList.remove("hidden");
     input.focus();
     input.select();
     window.setTimeout(() => {
@@ -239,18 +242,20 @@ function bindChangeUsername() {
     if (!usernameEditActive) return;
     usernameEditActive = false;
     input.classList.add("hidden");
+    confirmBtn.classList.add("hidden");
     nameBtn.style.display = "";
     editBtn.style.display = "";
   };
 
   const save = async () => {
-    if (!usernameEditActive) return;
+    if (!usernameEditActive || usernameSaving) return;
     const value = input.value.trim();
     const current = nameBtn.textContent || "";
     if (!value || value === current) {
       cancelEdit();
       return;
     }
+    usernameSaving = true;
     try {
       const res = await fetch(
         `/api/set-username?room=${encodeURIComponent(room)}`,
@@ -275,11 +280,14 @@ function bindChangeUsername() {
       forceReconnect();
     } catch {
       cancelEdit();
+    } finally {
+      usernameSaving = false;
     }
   };
 
   editBtn.addEventListener("click", enterEdit);
   nameBtn.addEventListener("click", enterEdit);
+  confirmBtn.addEventListener("click", save);
   input.addEventListener("input", () => {
     input.style.color = getUsernameColor(input.value);
   });

@@ -23,6 +23,9 @@
                     aria-label="{{ t('enter_name') }}"
                     class="hidden font-bold bg-transparent border-0 border-b border-dashed border-base-content/50 outline-none p-0"
                     style="color: {{ username|username_color }};" />
+                <button id="username-confirm-btn" type="button"
+                    class="hidden text-base-content/60 hover:text-primary transition-colors align-middle"
+                    title="{{ t('save') }}" aria-label="{{ t('save') }}">✓</button>
             </span>
         </div>
     </div>
