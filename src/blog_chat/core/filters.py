@@ -68,6 +68,7 @@ def parse_to_markdown(text: str) -> str:
         url_schemes=ALLOWED_URL_SCHEMES,
         link_rel="noopener noreferrer nofollow",
         filter_style_properties=ALLOWED_STYLE_PROPERTIES,
+        set_tag_attribute_values={"a": {"target": "_blank"}},
     )
 
     nonce = CSP_NONCE.get(None)
