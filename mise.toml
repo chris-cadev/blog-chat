@@ -1,2 +1,20 @@
 [tools]
 python = "latest"
+node = "latest"
+bun = "latest"
+
+[tasks.build]
+description = "Build frontend assets into static/"
+run = "bun run build"
+
+[tasks.migrate]
+description = "Apply pending database migrations (uses DATABASE_URL from .env)"
+run = ".venv/bin/alembic upgrade head"
+
+[tasks.deploy]
+description = "Deploy the whole service (app + Cloudflare tunnel) via Docker Compose. Builds the frontend, migrates the database, then starts the stack. Assumes .cloudflare/ config and credentials are prepared."
+run = [
+  "bun run build",
+  ".venv/bin/alembic upgrade head",
+  "docker compose up --build -d",
+]

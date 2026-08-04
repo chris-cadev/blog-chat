@@ -1,0 +1,15 @@
+.git
+.venv
+node_modules
+.env
+.env.example
+*.db
+__pycache__/
+*.py[cod]
+.pytest_cache
+.pdm-build
+.pdm-python
+dist
+coverage*
+.cloudflare
+migration_report.txt
