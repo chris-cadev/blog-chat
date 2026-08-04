@@ -5,8 +5,9 @@ from fastapi import APIRouter, Request
 from fastapi.responses import PlainTextResponse, Response, RedirectResponse
 
 from blog_chat.core.filters import add_filter, add_markdown_filter
+from blog_chat.core.logging import log_business_event
 from blog_chat.core.responses import create_templates
-from blog_chat.core.config import SITE_URL
+from blog_chat.core.config import SITE_URL, UMAMI_ACTIVE, UMAMI_SCRIPT_URL, UMAMI_WEBSITE_ID
 from blog_chat.features.accounts.services import (
     create_token,
     generate_guest_name,
@@ -228,6 +229,11 @@ def _render(
 
 def _context(request: Request, lang: str | None, **extra) -> dict:
     ctx = {"request": request, "lang": lang, "t": _make_t(lang)}
+    ctx["umami"] = {
+        "enabled": UMAMI_ACTIVE,
+        "script_url": UMAMI_SCRIPT_URL,
+        "website_id": UMAMI_WEBSITE_ID,
+    }
     ctx.update(extra)
     return ctx
 
@@ -289,6 +295,7 @@ def read_lang_index(request: Request, lang: str):
             language_switcher=_language_switcher(request, None, None),
         )
     posts = get_posts(lang)
+    log_business_event("page.view", "Blog index viewed", lang=lang, path=f"/{lang}/")
     return _render(
         "index.html",
         request,
@@ -310,6 +317,13 @@ def read_tag(request: Request, lang: str, tag: str):
     if lang not in LANGS:
         return RedirectResponse(f"/{_preferred_lang(request)}/tags/{tag}")
     posts = [p for p in get_posts(lang) if tag in (p.get("tags") or [])]
+    log_business_event(
+        "page.view",
+        "Tag page viewed",
+        lang=lang,
+        tag=tag,
+        path=f"/{lang}/tags/{tag}",
+    )
     return _render(
         "index.html",
         request,
@@ -360,6 +374,13 @@ def read_item(request: Request, lang: str, slug: str):
             slug=slug,
             language_switcher=_language_switcher(request, lang, slug),
         )
+    log_business_event(
+        "page.view",
+        "Post viewed",
+        lang=lang,
+        slug=slug,
+        path=request.url.path,
+    )
     return _render(
         "post.html",
         request,

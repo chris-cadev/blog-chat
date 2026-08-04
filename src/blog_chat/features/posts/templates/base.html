@@ -16,7 +16,11 @@
 </head>
 
 <body class="flex flex-col min-h-screen md:h-screen md:overflow-hidden"
-    data-room="{{ room|default('offtopic') }}">
+    data-room="{{ room|default('offtopic') }}"
+    {% if umami.enabled %}
+    data-umami-script="{{ umami.script_url }}"
+    data-umami-website-id="{{ umami.website_id }}"
+    {% endif %}>
     <header class="navbar bg-primary text-white shadow-sm sticky top-0 z-50">
         <nav>
             <a class="nav-btn text-xl" href="/">{{ t('home') }}</a>
@@ -29,7 +33,8 @@
                 {% for lang_opt in language_switcher %}
                 <a class="btn btn-sm btn-ghost text-2xl"
                    href="{{ lang_opt.href }}" lang="{{ lang_opt.code }}"
-                   title="{{ lang_opt.title }}">
+                   title="{{ lang_opt.title }}"
+                   data-track-language="{{ lang_opt.code }}">
                     {{ lang_opt.flag }}
                 </a>
                 {% endfor %}

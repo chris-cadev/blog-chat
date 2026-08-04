@@ -4,6 +4,18 @@ const RECONNECT_MAX_DELAY = 30000;
 const SYNC_INTERVAL = 60000;
 const HEARTBEAT_TIMEOUT = 90000;
 
+function trackUmami(
+  event: string,
+  data?: Record<string, string | undefined>,
+  options?: { beacon?: boolean }
+): void {
+  try {
+    window.trackUmami?.(event, data, options);
+  } catch {
+    /* ignore tracking failures; never break the chat */
+  }
+}
+
 let ws: WebSocket | null = null;
 let wsUrl = "";
 let reconnectAttempts = 0;
@@ -276,6 +288,7 @@ function bindChangeUsername() {
       document
         .getElementById("chat-messages")
         ?.setAttribute("data-username", value);
+      trackUmami("Username Change", { username: value });
       cancelEdit();
       forceReconnect();
     } catch {
@@ -505,6 +518,8 @@ function sendMessage(input: HTMLInputElement) {
   ws.send(text);
   input.value = "";
   updateCharCount();
+  const room = document.body.getAttribute("data-room") || "offtopic";
+  trackUmami("Chat Message Sent", { room });
 }
 
 function handleError(data: any) {

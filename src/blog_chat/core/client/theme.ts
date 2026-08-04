@@ -1,4 +1,5 @@
 const THEME_COOKIE_NAME = "theme-mode";
+import { trackUmami } from "./umami";
 
 export function initTheme() {
   const themeToggle = document.getElementById("theme-toggle") as HTMLInputElement | null;
@@ -21,6 +22,7 @@ export function initTheme() {
       const newTheme = themeToggle.checked ? "nord" : "nord-light";
       applyTheme(newTheme);
       setThemeCookie(newTheme);
+      trackUmami("Theme Toggle", { theme: newTheme });
     });
   }
 }

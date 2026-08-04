@@ -2,30 +2,38 @@ import re
 
 from fastapi.testclient import TestClient
 
-from blog_chat.app import app, CSP_TEMPLATE, FRAME_SRC_ALLOWLIST
+from blog_chat.app import app, build_csp, FRAME_SRC_ALLOWLIST
 
 
 class TestCSPTemplate:
     def test_frame_src_includes_nonce_placeholder(self):
-        csp = CSP_TEMPLATE.format(nonce="test-nonce-123")
+        csp = build_csp("test-nonce-123")
         assert "frame-src 'nonce-test-nonce-123'" in csp
 
     def test_frame_src_includes_allowed_hosts(self):
-        csp = CSP_TEMPLATE.format(nonce="test-nonce-123")
+        csp = build_csp("test-nonce-123")
         for host in FRAME_SRC_ALLOWLIST:
             assert host in csp
 
     def test_default_src_is_self(self):
-        csp = CSP_TEMPLATE.format(nonce="test-nonce-123")
+        csp = build_csp("test-nonce-123")
         assert "default-src 'self'" in csp
 
     def test_object_src_is_none(self):
-        csp = CSP_TEMPLATE.format(nonce="test-nonce-123")
+        csp = build_csp("test-nonce-123")
         assert "object-src 'none'" in csp
 
     def test_frame_ancestors_is_none(self):
-        csp = CSP_TEMPLATE.format(nonce="test-nonce-123")
+        csp = build_csp("test-nonce-123")
         assert "frame-ancestors 'none'" in csp
+
+    def test_default_script_src_is_self(self):
+        csp = build_csp("test-nonce-123")
+        assert "script-src 'self'" in csp
+
+    def test_default_connect_src_is_self_and_websockets(self):
+        csp = build_csp("test-nonce-123")
+        assert "connect-src 'self' wss: ws:" in csp
 
 
 class TestPostPage:

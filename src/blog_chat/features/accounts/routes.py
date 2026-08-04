@@ -3,6 +3,7 @@ from fastapi.responses import HTMLResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from blog_chat.core.database import get_db
+from blog_chat.core.logging import log_business_event
 from blog_chat.core.responses import create_templates
 from blog_chat.features.accounts.services import assign_username, create_token, get_username_from_cookie
 
@@ -32,6 +33,13 @@ async def set_username(request: Request, db: AsyncSession = Depends(get_db)):
 
     old_username = get_username_from_cookie(request)
     await assign_username(db, username, old_username, client_ip)
+
+    log_business_event(
+        "account.username_changed",
+        "Username changed",
+        username=username,
+        previous_username=old_username,
+    )
 
     token = create_token(username)
 
