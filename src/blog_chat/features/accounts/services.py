@@ -5,9 +5,34 @@ import secrets
 import jwt
 from fastapi import Request
 from coolname import generate as generate_coolname
+from sqlalchemy import select
 
 from blog_chat.core.config import JWT_ALGORITHM, JWT_SECRET
 from blog_chat.core.base import Base
+from blog_chat.features.accounts.models import User
+
+
+async def assign_username(
+    db,
+    username: str,
+    old_username: str | None,
+    ip: str | None,
+) -> None:
+    existing = (await db.execute(
+        select(User).where(User.username == username)
+    )).scalar_one_or_none()
+    if existing is not None:
+        return
+    if old_username and old_username != username:
+        old_user = (await db.execute(
+            select(User).where(User.username == old_username)
+        )).scalar_one_or_none()
+        if old_user is not None:
+            old_user.username = username
+            await db.commit()
+            return
+    db.add(User(username=username, ip_address=ip))
+    await db.commit()
 
 
 def generate_guest_name() -> str:

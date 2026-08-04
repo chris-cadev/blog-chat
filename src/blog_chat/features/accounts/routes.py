@@ -1,12 +1,10 @@
 from fastapi import APIRouter, Request, Depends
 from fastapi.responses import HTMLResponse
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select
 
 from blog_chat.core.database import get_db
 from blog_chat.core.responses import create_templates
-from blog_chat.features.accounts.models import User
-from blog_chat.features.accounts.services import create_token
+from blog_chat.features.accounts.services import assign_username, create_token, get_username_from_cookie
 
 router = APIRouter()
 
@@ -32,13 +30,8 @@ async def set_username(request: Request, db: AsyncSession = Depends(get_db)):
 
     client_ip = request.client.host if request.client else None
 
-    existing = await db.execute(select(User).where(User.username == username))
-    existing_user = existing.scalar_one_or_none()
-
-    if not existing_user:
-        new_user = User(username=username, ip_address=client_ip)
-        db.add(new_user)
-        await db.commit()
+    old_username = get_username_from_cookie(request)
+    await assign_username(db, username, old_username, client_ip)
 
     token = create_token(username)
 

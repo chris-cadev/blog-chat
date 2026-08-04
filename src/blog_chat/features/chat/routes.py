@@ -1,6 +1,7 @@
 from fastapi import APIRouter, WebSocket, WebSocketDisconnect, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
+from sqlalchemy.orm import selectinload
 from datetime import datetime, timezone
 from zoneinfo import ZoneInfo
 import asyncio
@@ -12,6 +13,7 @@ from blog_chat.core.db_watcher import DatabaseChangeWatcher, sqlite_db_path
 from blog_chat.core.filters import add_filter, add_markdown_filter
 from blog_chat.core.responses import create_templates
 from blog_chat.features.chat.models import Message
+from blog_chat.features.chat.services import get_or_create_user_id, resolve_user_id
 from blog_chat.features.chat.websocket import ConnectionManager
 from blog_chat.features.accounts.services import get_username_from_token
 
@@ -30,20 +32,25 @@ CONTROL_TYPES = {"sync"}
 async def load_history(db: AsyncSession, room: str, username: str, timezone_name: str | None) -> list[dict]:
     result = await db.execute(
         select(Message)
+        .options(selectinload(Message.user))
         .where(Message.room_slug == room)
         .order_by(Message.timestamp.desc())
         .limit(50)
     )
     messages = result.scalars().all()
+    current_user_id = await resolve_user_id(db, username)
     messages_list = []
     for m in messages:
+        display_name = m.user.username if m.user is not None else m.username
+        is_own = (m.user_id is not None and m.user_id == current_user_id) \
+            or m.username == username
         html = render_message_template(
-            m.username, m.content, m.timestamp.isoformat(), m.username == username,
+            display_name, m.content, m.timestamp.isoformat(), is_own,
             show_header=True, timezone_name=timezone_name)
         messages_list.append({
             "id": m.id,
             "html": html,
-            "username": m.username,
+            "username": display_name,
             "timestamp": m.timestamp.isoformat(),
         })
     return messages_list
@@ -173,11 +180,14 @@ async def websocket_endpoint(websocket: WebSocket, db: AsyncSession = Depends(ge
 
             client_ip = websocket.client.host if websocket.client else None
 
+            user_id = await get_or_create_user_id(db, username, client_ip)
+
             new_message = Message(
                 room_slug=room,
                 username=username,
                 content=message_text,
                 ip_address=client_ip,
+                user_id=user_id,
             )
             db.add(new_message)
             await db.commit()
@@ -190,11 +200,16 @@ async def websocket_endpoint(websocket: WebSocket, db: AsyncSession = Depends(ge
                 recipient_username: str,
                 recipient_timezone: str | None,
             ) -> dict:
+                recipient_user_id = await resolve_user_id(db, recipient_username)
+                is_own = (
+                    new_message.user_id is not None
+                    and new_message.user_id == recipient_user_id
+                ) or new_message.username == recipient_username
                 html = render_message_template(
                     new_message.username,
                     new_message.content,
                     timestamp_iso,
-                    new_message.username == recipient_username,
+                    is_own,
                     show_header=True,
                     timezone_name=recipient_timezone,
                 )

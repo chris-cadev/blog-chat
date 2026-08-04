@@ -1,11 +1,13 @@
 from datetime import datetime, timedelta
 
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 
 from blog_chat.core.base import Base
 from blog_chat.features.accounts.models import User
 from blog_chat.features.chat.models import Message
 from blog_chat.features.chat.routes import get_username_color, load_history
+from blog_chat.features.chat.services import get_or_create_user_id, resolve_user_id
 from blog_chat.features.chat.websocket import ConnectionManager, SlidingWindowLimiter
 
 
@@ -221,6 +223,115 @@ class TestLoadHistory:
         assert len(messages) == 50
         assert "msg-54" in messages[0]["html"]
         assert "msg-5" in messages[-1]["html"]
+
+
+class TestUserIdentity:
+    async def _make_db(self):
+        engine = create_async_engine("sqlite+aiosqlite:///:memory:")
+        maker = async_sessionmaker(engine, expire_on_commit=False)
+        async with engine.begin() as conn:
+            await conn.run_sync(Base.metadata.create_all)
+        async with maker() as db:
+            alice = User(username="Alice", ip_address="1.2.3.4")
+            bob = User(username="Bob", ip_address="5.6.7.8")
+            db.add_all([alice, bob])
+            await db.commit()
+            await db.refresh(alice)
+            await db.refresh(bob)
+            db.add(Message(
+                room_slug="offtopic",
+                username="Alice",
+                content="my-own-message",
+                ip_address="1.2.3.4",
+                user_id=alice.id,
+            ))
+            db.add(Message(
+                room_slug="offtopic",
+                username="Bob",
+                content="other-message",
+                ip_address="5.6.7.8",
+                user_id=bob.id,
+            ))
+            await db.commit()
+        return maker, alice.id
+
+    def test_own_messages_match_by_user_id_after_rename(self):
+        async def run():
+            maker, alice_id = await self._make_db()
+            async with maker() as db:
+                alice = (await db.execute(
+                    select(User).where(User.id == alice_id)
+                )).scalar_one()
+                alice.username = "Carol"
+                await db.commit()
+            async with maker() as db:
+                stored_username = (await db.execute(
+                    select(Message).where(Message.content == "my-own-message")
+                )).scalar_one().username
+                history = await load_history(db, "offtopic", "Carol", None)
+            return history, stored_username
+
+        history, stored_username = await_test(run())
+        own_html = next(m["html"] for m in history if "my-own-message" in m["html"])
+        other_html = next(m["html"] for m in history if "other-message" in m["html"])
+        assert stored_username == "Alice"
+        assert "chat-start" in own_html
+        assert "Carol" in own_html
+        assert "chat-end" in other_html
+
+    def test_legacy_messages_match_by_username(self):
+        async def run():
+            engine = create_async_engine("sqlite+aiosqlite:///:memory:")
+            maker = async_sessionmaker(engine, expire_on_commit=False)
+            async with engine.begin() as conn:
+                await conn.run_sync(Base.metadata.create_all)
+            async with maker() as db:
+                db.add(Message(
+                    room_slug="offtopic",
+                    username="Alice",
+                    content="legacy-message",
+                    user_id=None,
+                ))
+                await db.commit()
+            async with maker() as db:
+                history = await load_history(db, "offtopic", "Alice", None)
+            return history
+
+        history = await_test(run())
+        assert "chat-start" in history[0]["html"]
+
+    def test_get_or_create_user_id_is_stable(self):
+        async def run():
+            engine = create_async_engine("sqlite+aiosqlite:///:memory:")
+            maker = async_sessionmaker(engine, expire_on_commit=False)
+            async with engine.begin() as conn:
+                await conn.run_sync(Base.metadata.create_all)
+            async with maker() as db:
+                first = await get_or_create_user_id(db, "Dana", "9.9.9.9")
+            async with maker() as db:
+                second = await get_or_create_user_id(db, "Dana", "9.9.9.9")
+            return first, second
+
+        first, second = await_test(run())
+        assert first is not None
+        assert first == second
+
+    def test_resolve_user_id(self):
+        async def run():
+            engine = create_async_engine("sqlite+aiosqlite:///:memory:")
+            maker = async_sessionmaker(engine, expire_on_commit=False)
+            async with engine.begin() as conn:
+                await conn.run_sync(Base.metadata.create_all)
+            async with maker() as db:
+                await get_or_create_user_id(db, "Dana", "9.9.9.9")
+            async with maker() as db:
+                found = await resolve_user_id(db, "Dana")
+                missing = await resolve_user_id(db, "Nobody")
+            return found, missing
+
+        found, missing = await_test(run())
+        assert found is not None
+        assert missing is None
 
 
 class TestPresenceEndpoint:

@@ -16,6 +16,7 @@ let chatInited = false;
 let lastReceivedAt = 0;
 let historyLoaded = false;
 let currentMessageIds: string[] = [];
+let forceHistoryReload = false;
 
 function getTimezone(): string {
   return Intl.DateTimeFormat().resolvedOptions().timeZone;
@@ -374,10 +375,15 @@ function connect() {
       return;
     }
 
-    if (data.type === "history") loadChatHistory(data);
-    else if (data.type === "message") addMessage(data);
+    if (data.type === "history") {
+      loadChatHistory(data, forceHistoryReload);
+      forceHistoryReload = false;
+    } else if (data.type === "message") addMessage(data);
     else if (data.type === "presence") updatePresence(data.count);
-    else if (data.type === "refresh") requestSync();
+    else if (data.type === "refresh") {
+      forceHistoryReload = true;
+      requestSync();
+    }
   };
 
   ws.onclose = () => {
@@ -388,6 +394,7 @@ function connect() {
 }
 
 function forceReconnect() {
+  forceHistoryReload = true;
   if (ws) {
     ws.onclose = null;
     ws.close();
@@ -411,12 +418,12 @@ function scheduleReconnect() {
   }, delay);
 }
 
-function loadChatHistory(data: any) {
+function loadChatHistory(data: any, force = false) {
   const container = document.getElementById("chat-messages");
   if (!container) return;
 
   const incomingIds = (data.messages || []).map((m: any) => String(m.id));
-  if (historyLoaded && isPrefixOf(currentMessageIds, incomingIds)) {
+  if (!force && historyLoaded && isPrefixOf(currentMessageIds, incomingIds)) {
     return;
   }
   currentMessageIds = incomingIds;
