@@ -14,9 +14,10 @@
         {% if not username %}
         <form class="mb-4" hx-post="/api/set-username?room={{ room|default('offtopic') }}" hx-swap="outerHTML">
             <input type="hidden" name="room" value="{{ room|default('offtopic') }}" />
+            <label for="username-input" class="sr-only">{{ t('enter_name') }}</label>
             <div class="flex gap-2">
-                <input name="username" class="input input-bordered join-item flex-1" type="text"
-                    placeholder="{{ t('enter_name') }}" maxlength="50" />
+                <input id="username-input" name="username" class="input input-bordered join-item flex-1" type="text"
+                    placeholder="{{ t('enter_name') }}" maxlength="50" autocomplete="nickname" />
                 <button class="btn btn-primary join-item">{{ t('join') }}</button>
             </div>
         </form>
@@ -30,46 +31,21 @@
     </div>
 
     <div class="join w-full">
+        <label for="chat-input" class="sr-only">{{ t('type_message') }}</label>
         <input id="chat-input" class="input input-bordered join-item flex-1" type="text"
-            placeholder="{{ t('type_message') }}" maxlength="280" />
+            placeholder="{{ t('type_message') }}" maxlength="280" autocomplete="off" />
         <button id="send-btn" class="btn btn-primary join-item">{{ t('send') }}</button>
     </div>
-    <div class="flex justify-end mt-1">
-        <span id="char-count" class="text-xs text-base-content/50">0/280</span>
+    <div class="flex justify-between items-center mt-1">
+        <span id="chat-status" class="text-xs text-error hidden" role="status" aria-live="polite"></span>
+        <span id="char-count" class="text-xs text-base-content/50" role="status" aria-live="polite">0/280</span>
     </div>
 
     <div id="chat-messages" class="chat h-96 md:h-auto md:flex-1 overflow-y-auto mb-4 space-y-2 md:min-h-0"
+        role="log" aria-live="polite" aria-relevant="additions" aria-label="Chat messages"
         data-username="{{ username|default('') }}">
     </div>
     <div id="chat-empty" class="hidden text-center py-8 text-base-content/50">
         {{ t('no_messages') }}
     </div>
 </div>
-
-<script>
-    document.body.addEventListener('htmx:afterSwap', (e) => {
-        const usernameSection = document.getElementById('username-section');
-        if (!usernameSection) return;
-
-        const hasForm = usernameSection.querySelector('form');
-        if (!hasForm) {
-            window.location.reload();
-            return;
-        }
-
-        const username = usernameSection.querySelector('.font-bold');
-        if (username) {
-            const newUsername = username.textContent;
-            const messagesContainer = document.getElementById('chat-messages');
-            if (messagesContainer) {
-                messagesContainer.setAttribute('data-username', newUsername);
-            }
-            if (typeof initChat === 'function') {
-                if (ws) {
-                    ws.close();
-                }
-                initChat();
-            }
-        }
-    });
-</script>

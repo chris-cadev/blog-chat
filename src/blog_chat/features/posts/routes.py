@@ -46,9 +46,9 @@ TRANSLATIONS = {
     "es": {
         "home": "Inicio",
         "back_to_posts": "Volver a todos los artículos",
-        "posts_title": "Artículos del blog",
+        "posts_title": "Posts",
         "no_posts": "No se encontraron artículos.",
-        "posts_tagged": "Artículos etiquetados",
+        "posts_tagged": "Posts etiquetados",
         "chat_title": "Off-topic",
         "enter_name": "Escribe tu nombre",
         "join": "Unirse",

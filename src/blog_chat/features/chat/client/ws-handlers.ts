@@ -1,8 +1,16 @@
-let ws: WebSocket | null = null;
-export { ws };
 const MAX_CHARS = 280;
+const RECONNECT_BASE_DELAY = 1000;
+const RECONNECT_MAX_DELAY = 30000;
+
+let ws: WebSocket | null = null;
+let wsUrl = "";
+let reconnectAttempts = 0;
+let reconnectTimer: number | null = null;
+let manuallyClosed = false;
 let isSending = false;
-let timezoneSent = false;
+let pendingDraft = "";
+let timezoneCookieSet = false;
+let chatInited = false;
 
 function getTimezone(): string {
   return Intl.DateTimeFormat().resolvedOptions().timeZone;
@@ -14,19 +22,24 @@ function setTimezoneCookie(tz: string) {
   document.cookie = `chat_timezone=${tz};expires=${expires.toUTCString()};path=/;SameSite=Lax`;
 }
 
+function ensureTimezoneCookie() {
+  if (timezoneCookieSet) return;
+  const tz = getTimezone();
+  if (tz) {
+    setTimezoneCookie(tz);
+    timezoneCookieSet = true;
+  }
+}
+
 function formatRelativeTime(isoString: string): string {
   const date = new Date(isoString);
   const now = new Date();
-  const diffMs = now.getTime() - date.getTime();
-  const diffSec = Math.floor(diffMs / 1000);
-  const diffMin = Math.floor(diffSec / 60);
-  const diffHour = Math.floor(diffMin / 60);
-  const diffDay = Math.floor(diffHour / 24);
+  const diffSec = Math.floor((now.getTime() - date.getTime()) / 1000);
 
-  if (diffSec < 60) return `${diffSec}s ago`;
-  if (diffMin < 60) return `${diffMin}m ago`;
-  if (diffHour < 24) return `${diffHour}h ago`;
-  return `${diffDay}d ago`;
+  if (diffSec < 60) return `${Math.max(diffSec, 0)}s ago`;
+  if (diffSec < 3600) return `${Math.floor(diffSec / 60)}m ago`;
+  if (diffSec < 86400) return `${Math.floor(diffSec / 3600)}h ago`;
+  return `${Math.floor(diffSec / 86400)}d ago`;
 }
 
 function updateTimestamps() {
@@ -64,6 +77,25 @@ function setLoadingState(loading: boolean) {
   }
 }
 
+function showStatus(message: string, show = true) {
+  const status = document.getElementById("chat-status");
+  if (!status) return;
+  status.textContent = show ? message : "";
+  status.classList.toggle("hidden", !show);
+}
+
+function setConnectionState(state: "connecting" | "connected" | "reconnecting" | "disconnected") {
+  if (state === "connected") {
+    showStatus("");
+  } else if (state === "reconnecting") {
+    showStatus("Reconnecting…");
+  } else if (state === "connecting") {
+    showStatus("Connecting…");
+  } else {
+    showStatus("Disconnected");
+  }
+}
+
 function showEmptyState(show: boolean) {
   const empty = document.getElementById("chat-empty");
   if (empty) {
@@ -71,7 +103,7 @@ function showEmptyState(show: boolean) {
   }
 }
 
-function isAtBottom(): boolean {
+function isNearBottom(): boolean {
   const container = document.getElementById("chat-messages");
   if (!container) return true;
   const threshold = 100;
@@ -81,11 +113,11 @@ function isAtBottom(): boolean {
   );
 }
 
-function scrollToTop(smooth = false) {
+function scrollToBottom(smooth = false) {
   const container = document.getElementById("chat-messages");
   if (container) {
     container.scrollTo({
-      top: 0,
+      top: container.scrollHeight,
       behavior: smooth ? "smooth" : "auto",
     });
   }
@@ -96,39 +128,34 @@ function createScrollButton(): HTMLElement {
   btn.id = "scroll-to-bottom";
   btn.className =
     "btn btn-sm btn-primary fixed bottom-24 right-8 z-50 shadow-lg";
-  btn.innerHTML = "New messages";
+  btn.textContent = "New messages";
   btn.addEventListener("click", () => {
-    scrollToTop(true);
+    scrollToBottom(true);
     btn.remove();
   });
   return btn;
 }
 
+function resetSendingState() {
+  if (isSending) {
+    isSending = false;
+    pendingDraft = "";
+    setLoadingState(false);
+  }
+}
+
 export function initChat() {
+  if (chatInited) return;
+  chatInited = true;
+
+  ensureTimezoneCookie();
+
   const room = document.body.getAttribute("data-room") || "offtopic";
   const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
-  const wsUrl = `${protocol}//${window.location.host}/ws/chat?room=${room}`;
+  wsUrl = `${protocol}//${window.location.host}/ws/chat?room=${room}`;
 
-  ws = new WebSocket(wsUrl);
-  const handlers = {
-    history: loadChatHistory,
-    message: addMessage,
-    error: handleError,
-  };
-
-  type HandlerType = keyof typeof handlers;
-
-  ws.onmessage = (event) => {
-    const data = JSON.parse(event.data);
-
-    if (data.type === "error") {
-      handleError(data);
-      return;
-    }
-
-    const handler = handlers[data.type as HandlerType];
-    if (handler) handler(data);
-  };
+  bindUsernameRefresh();
+  connect();
 
   const input = document.getElementById("chat-input") as HTMLInputElement;
   const sendBtn = document.getElementById("send-btn");
@@ -148,19 +175,75 @@ export function initChat() {
   setInterval(updateTimestamps, 30000);
 }
 
+function bindUsernameRefresh() {
+  document.body.addEventListener("htmx:afterSwap", () => {
+    const section = document.getElementById("username-section");
+    if (section && !section.querySelector("form")) {
+      window.location.reload();
+    }
+  });
+}
+
+function connect() {
+  manuallyClosed = false;
+  setConnectionState("connecting");
+
+  ws = new WebSocket(wsUrl);
+
+  ws.onopen = () => {
+    reconnectAttempts = 0;
+    setConnectionState("connected");
+  };
+
+  ws.onmessage = (event) => {
+    let data: any;
+    try {
+      data = JSON.parse(event.data);
+    } catch {
+      return;
+    }
+
+    if (data.type === "error") {
+      handleError(data);
+      return;
+    }
+
+    if (data.type === "history") loadChatHistory(data);
+    else if (data.type === "message") addMessage(data);
+  };
+
+  ws.onclose = () => {
+    setConnectionState("disconnected");
+    resetSendingState();
+    if (!manuallyClosed) scheduleReconnect();
+  };
+}
+
+function scheduleReconnect() {
+  if (reconnectTimer !== null) return;
+  const delay = Math.min(
+    RECONNECT_BASE_DELAY * 2 ** reconnectAttempts,
+    RECONNECT_MAX_DELAY
+  );
+  reconnectAttempts += 1;
+  setConnectionState("reconnecting");
+  reconnectTimer = window.setTimeout(() => {
+    reconnectTimer = null;
+    connect();
+  }, delay);
+}
+
 function loadChatHistory(data: any) {
   const container = document.getElementById("chat-messages");
-  if (container) {
-    container.innerHTML = "";
-    if (data.messages.length === 0) {
-      showEmptyState(true);
-    } else {
-      showEmptyState(false);
-      data.messages.forEach((msg: any) => addHistoryMessage(msg));
-      if (isAtBottom()) {
-        scrollToTop();
-      }
-    }
+  if (!container) return;
+
+  container.innerHTML = "";
+  if (data.messages.length === 0) {
+    showEmptyState(true);
+  } else {
+    showEmptyState(false);
+    data.messages.forEach((msg: any) => addHistoryMessage(msg));
+    scrollToBottom();
   }
 }
 
@@ -180,65 +263,55 @@ function addHistoryMessage(msg: any) {
 function sendMessage(input: HTMLInputElement) {
   const text = input.value.trim();
   if (!text || text.length > MAX_CHARS) return;
-  if (!ws || ws.readyState !== WebSocket.OPEN) return;
+  if (!ws || ws.readyState !== WebSocket.OPEN) {
+    showStatus("Not connected. Reconnecting…");
+    return;
+  }
   if (isSending) return;
 
   isSending = true;
+  pendingDraft = text;
   setLoadingState(true);
 
-  let messageToSend = text;
-  if (!timezoneSent) {
-    const tz = getTimezone();
-    if (tz) {
-      messageToSend = `tz:${tz}|${text}`;
-      setTimezoneCookie(tz);
-    }
-    timezoneSent = true;
-  }
-
-  ws.send(messageToSend);
+  ws.send(text);
   input.value = "";
   updateCharCount();
 }
 
-export function onMessageSent() {
-  const input = document.getElementById("chat-input") as HTMLInputElement;
-  setLoadingState(false);
-  if (input) {
-    input.value = "";
-    updateCharCount();
-    input.focus();
-  }
-}
-
-export function onMessageError() {
-  setLoadingState(false);
-  const input = document.getElementById("chat-input") as HTMLInputElement;
-  if (input) input.focus();
-}
-
 function handleError(data: any) {
+  isSending = false;
   setLoadingState(false);
+
   const input = document.getElementById("chat-input") as HTMLInputElement;
-  if (input) {
-    input.value = data.message.split(".")[0] + ".";
-    input.focus();
+  if (pendingDraft) {
+    input.value = pendingDraft;
+    pendingDraft = "";
+    updateCharCount();
   }
+  showStatus(data.message || "Something went wrong. Try again.");
+  if (input) input.focus();
+
+  window.setTimeout(() => {
+    const status = document.getElementById("chat-status");
+    if (status && !status.classList.contains("hidden")) {
+      const connected = ws && ws.readyState === WebSocket.OPEN;
+      setConnectionState(connected ? "connected" : "reconnecting");
+    }
+  }, 5000);
 }
 
 function addMessage(data: any) {
   if (isSending) {
     isSending = false;
+    pendingDraft = "";
     setLoadingState(false);
-    const input = document.getElementById("chat-input") as HTMLInputElement;
-    if (input) input.focus();
   }
 
   const container = document.getElementById("chat-messages");
   if (!container) return;
 
   showEmptyState(false);
-  const wasAtBottom = isAtBottom();
+  const wasNearBottom = isNearBottom();
 
   const temp = document.createElement("div");
   temp.innerHTML = data.html;
@@ -249,10 +322,12 @@ function addMessage(data: any) {
     timeEl.setAttribute("datetime", data.timestamp);
   }
 
-  container.prepend(msgEl!);
+  if (msgEl) {
+    container.appendChild(msgEl);
+  }
 
-  if (wasAtBottom) {
-    scrollToTop();
+  if (wasNearBottom) {
+    scrollToBottom();
   } else {
     const existingBtn = document.getElementById("scroll-to-bottom");
     if (!existingBtn) {

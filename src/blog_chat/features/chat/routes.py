@@ -16,7 +16,6 @@ from blog_chat.features.accounts.services import get_username_from_token
 router = APIRouter()
 
 manager = ConnectionManager()
-user_timezones: dict[str, str] = {}
 
 templates = create_templates("src/blog_chat/features/chat/templates")
 add_markdown_filter(templates)
@@ -63,10 +62,12 @@ def render_message_template(username: str, content: str, timestamp: str, is_own:
 @router.websocket("/ws/chat")
 async def websocket_endpoint(websocket: WebSocket, db: AsyncSession = Depends(get_db)):
     room = websocket.query_params.get("room", "offtopic")
-    await manager.connect(websocket, room)
-
     token = websocket.cookies.get("chat_token", "")
     username = get_username_from_token(token)
+    timezone_name = websocket.cookies.get("chat_timezone")
+
+    if not await manager.connect(websocket, room, username, timezone_name):
+        return
 
     result = await db.execute(
         select(Message)
@@ -76,7 +77,6 @@ async def websocket_endpoint(websocket: WebSocket, db: AsyncSession = Depends(ge
     )
     messages = result.scalars().all()
     messages_list = []
-    timezone_name = websocket.cookies.get("chat_timezone")
     for m in messages:
         html = render_message_template(
             m.username, m.content, m.timestamp.isoformat(), m.username == username, 
@@ -93,16 +93,7 @@ async def websocket_endpoint(websocket: WebSocket, db: AsyncSession = Depends(ge
     try:
         while True:
             data = await websocket.receive_text()
-            
-            timezone_name = user_timezones.get(room) or websocket.cookies.get("chat_timezone")
             message_text = data.strip()
-            
-            if message_text.startswith("tz:"):
-                parts = message_text.split("|", 1)
-                if len(parts) == 2 and parts[0].startswith("tz:"):
-                    timezone_name = parts[0][3:]
-                    message_text = parts[1].strip()
-                    user_timezones[room] = timezone_name
 
             if not message_text:
                 continue
@@ -111,6 +102,13 @@ async def websocket_endpoint(websocket: WebSocket, db: AsyncSession = Depends(ge
                 await websocket.send_json({
                     "type": "error",
                     "message": f"Message too long. Maximum {MAX_MESSAGE_LENGTH} characters allowed."
+                })
+                continue
+
+            if manager.rate_limited(websocket):
+                await websocket.send_json({
+                    "type": "error",
+                    "message": "You are sending messages too quickly. Please wait a moment."
                 })
                 continue
 
@@ -126,22 +124,29 @@ async def websocket_endpoint(websocket: WebSocket, db: AsyncSession = Depends(ge
             await db.commit()
             await db.refresh(new_message)
 
-            html = render_message_template(
-                new_message.username,
-                new_message.content,
-                new_message.timestamp.isoformat(),
-                True,
-                show_header=True,
-                timezone_name=timezone_name
-            )
-            message_payload = {
-                "type": "message",
-                "id": new_message.id,
-                "html": html,
-                "username": new_message.username,
-                "timestamp": new_message.timestamp.isoformat(),
-            }
-            await manager.broadcast(message_payload, room)
+            timestamp_iso = new_message.timestamp.isoformat()
+
+            async def make_payload(
+                recipient_username: str,
+                recipient_timezone: str | None,
+            ) -> dict:
+                html = render_message_template(
+                    new_message.username,
+                    new_message.content,
+                    timestamp_iso,
+                    new_message.username == recipient_username,
+                    show_header=True,
+                    timezone_name=recipient_timezone,
+                )
+                return {
+                    "type": "message",
+                    "id": new_message.id,
+                    "html": html,
+                    "username": new_message.username,
+                    "timestamp": timestamp_iso,
+                }
+
+            await manager.broadcast(room, make_payload)
 
     except WebSocketDisconnect:
         manager.disconnect(websocket, room)

@@ -22,7 +22,7 @@ class TestParseToMarkdown:
 
     def test_parse_markdown_link(self):
         result = parse_to_markdown("[link](https://example.com)")
-        assert '<a href="https://example.com">link</a>' in result
+        assert '<a href="https://example.com" rel="noopener noreferrer nofollow">link</a>' in result
 
     def test_parse_none_becomes_empty_string(self):
         result = parse_to_markdown(None)
@@ -31,6 +31,29 @@ class TestParseToMarkdown:
     def test_parse_none_becomes_empty_string(self):
         result = parse_to_markdown(None)
         assert result == ""
+
+    def test_strips_script_tags(self):
+        result = parse_to_markdown("<script>alert(1)</script>hello")
+        assert "<script" not in result
+        assert "hello" in result
+
+    def test_strips_event_handler_attributes(self):
+        result = parse_to_markdown('<img src=x onerror=alert(1)>')
+        assert "onerror" not in result
+
+    def test_strips_javascript_urls(self):
+        result = parse_to_markdown("[x](javascript:alert(1))")
+        assert "javascript:" not in result
+        assert "<a" in result
+
+    def test_keeps_safe_formatting(self):
+        result = parse_to_markdown("**bold** [link](https://example.com)")
+        assert "<strong>bold</strong>" in result
+        assert '<a href="https://example.com"' in result
+
+    def test_adds_rel_noopener_to_links(self):
+        result = parse_to_markdown("[x](https://example.com)")
+        assert 'rel="noopener noreferrer nofollow"' in result
 
 
 class TestAddFilter:

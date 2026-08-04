@@ -1,8 +1,16 @@
 import markdown
+import nh3
+
+ALLOWED_URL_SCHEMES = {"http", "https", "mailto"}
 
 
 def parse_to_markdown(text: str) -> str:
-    return markdown.markdown(text or "")
+    html = markdown.markdown(text or "")
+    return nh3.clean(
+        html,
+        url_schemes=ALLOWED_URL_SCHEMES,
+        link_rel="noopener noreferrer nofollow",
+    )
 
 
 def add_filter(templates, name: str, func):

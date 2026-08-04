@@ -18,3 +18,7 @@ run = [
   ".venv/bin/alembic upgrade head",
   "docker compose up --build -d",
 ]
+
+[tasks.dev]
+description = "Run the development server with hot reload."
+run = "tmux has-session -t $(basename $PWD)-dev 2>/dev/null && tmux attach-session -t $(basename $PWD)-dev || { tmux new-session -d -s $(basename $PWD)-dev 'pdm watch'; tmux split-window -t $(basename $PWD)-dev 'pdm dev'; tmux attach-session -t $(basename $PWD)-dev; }"
