@@ -198,7 +198,7 @@ function getUsernameColor(username: string): string {
   const bytes = new TextEncoder().encode(username);
   for (let i = 0; i < bytes.length; i++) {
     hash ^= bytes[i];
-    hash = (hash * 0x01000193) >>> 0;
+    hash = Math.imul(hash, 0x01000193) >>> 0;
   }
   return `hsl(${hash % 360}, 70%, 45%)`;
 }
