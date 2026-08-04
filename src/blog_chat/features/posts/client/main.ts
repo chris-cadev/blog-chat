@@ -1,2 +1,5 @@
 import "./main.css";
-/* Posts feature entry point - placeholder */
+import { initIframeLoader } from "./iframe-loader";
+/* Posts feature entry point */
+
+initIframeLoader();

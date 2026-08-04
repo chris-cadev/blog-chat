@@ -216,6 +216,29 @@
     background: oklch(var(--p) / 0.3);
 }
 
+.markdown .iframe-loader {
+    position: relative;
+}
+
+.markdown .iframe-loader--absolute {
+    position: static;
+}
+
+.markdown .iframe-loader__spinner {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    z-index: 1;
+    pointer-events: none;
+    color: oklch(var(--p));
+    transition: opacity 0.3s ease;
+}
+
+.markdown .iframe-loader--loaded .iframe-loader__spinner {
+    opacity: 0;
+}
+
 .markdown :focus-visible {
     outline: 2px solid oklch(var(--p));
     outline-offset: 2px;
@@ -224,6 +247,7 @@
 @media (prefers-reduced-motion: reduce) {
     .markdown a,
     .markdown pre,
+    .markdown .iframe-loader__spinner,
     .markdown ::selection {
         transition: none;
     }

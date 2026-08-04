@@ -1,3 +1,6 @@
+import secrets
+import contextvars
+
 from blog_chat.features.chat.routes import router as chat_router
 from blog_chat.features.posts.routes import router as posts_router
 from blog_chat.features.accounts.routes import router as accounts_router
@@ -10,7 +13,16 @@ from fastapi import FastAPI, Request
 from blog_chat.core.database import init_db
 from blog_chat.core.responses import create_templates
 
-CSP = "; ".join([
+CSP_NONCE: contextvars.ContextVar[str] = contextvars.ContextVar("csp_nonce")
+
+FRAME_SRC_ALLOWLIST = [
+    "https://www.youtube.com",
+    "https://www.youtube-nocookie.com",
+    "https://w.soundcloud.com",
+    "https://firstcommit.debugchris.com",
+]
+
+CSP_TEMPLATE = "; ".join([
     "default-src 'self'",
     "script-src 'self'",
     "style-src 'self' 'unsafe-inline'",
@@ -21,18 +33,24 @@ CSP = "; ".join([
     "base-uri 'self'",
     "form-action 'self'",
     "frame-ancestors 'none'",
+    f"frame-src 'nonce-{{nonce}}' {' '.join(FRAME_SRC_ALLOWLIST)}",
 ])
 
 
 class SecurityHeadersMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next):
-        response = await call_next(request)
-        response.headers["Content-Security-Policy"] = CSP
-        response.headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains"
-        response.headers["X-Content-Type-Options"] = "nosniff"
-        response.headers["X-Frame-Options"] = "DENY"
-        response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
-        return response
+        nonce = secrets.token_urlsafe(16)
+        token = CSP_NONCE.set(nonce)
+        try:
+            response = await call_next(request)
+            response.headers["Content-Security-Policy"] = CSP_TEMPLATE.format(nonce=nonce)
+            response.headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains"
+            response.headers["X-Content-Type-Options"] = "nosniff"
+            response.headers["X-Frame-Options"] = "DENY"
+            response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
+            return response
+        finally:
+            CSP_NONCE.reset(token)
 
 
 @asynccontextmanager
