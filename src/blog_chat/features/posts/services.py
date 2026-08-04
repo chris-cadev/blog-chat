@@ -11,6 +11,7 @@ def get_posts(lang: str | None = None) -> list[dict]:
         post = parse_markdown_file(entry.path)
         if post and (lang is None or post.get("lang") == lang):
             posts.append(post)
+    posts.sort(key=lambda p: p.get("slug", ""))
     return sorted(posts, key=lambda p: p.get("created", ""), reverse=True)
 
 
