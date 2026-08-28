@@ -67,6 +67,10 @@ test = "pytest -v --cov=blog_chat --cov-report=term-missing --cov-report=html:co
 # Watch
 watch = "bun run watch"
 
+# Blog authoring
+post = "python scripts/new_post.py"
+set_slug = "python scripts/set_slug.py"
+
 [tool.pdm]
 distribution = true
 
