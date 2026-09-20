@@ -62,15 +62,25 @@ class TestPostPage:
 
     def _page_username(self, client, path="/en/firstcommit"):
         page = client.get(path)
-        match = re.search(r'font-bold[^>]*>([^<]+)<', page.text)
-        return match.group(1) if match else None
+        # new design uses #username-btn (may be minified without quotes), old used font-bold/username-edit-btn
+        for pat in [
+            r'id="?username-btn"?[^>]*>([^<]+)<',
+            r'id="?username-edit-btn"?[^>]*>([^<]+)<',
+            r'font-bold[^>]*>([^<]+)<',
+        ]:
+            match = re.search(pat, page.text)
+            if match:
+                v = match.group(1).strip()
+                if v:
+                    return v
+        return None
 
     def test_auto_assigns_guest_identity(self):
         with TestClient(app) as client:
             response = client.get("/en/firstcommit")
             assert response.status_code == 200
             assert response.cookies.get("chat_token")
-            assert 'id="username-edit-btn"' in response.text or "id=username-edit-btn" in response.text
+            assert 'username-btn' in response.text
             assert 'placeholder="Enter your name"' not in response.text
             name = self._page_username(client, "/en/firstcommit")
             assert name

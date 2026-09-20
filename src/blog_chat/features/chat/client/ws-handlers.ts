@@ -78,6 +78,7 @@ function updateCharCount() {
     counter.textContent = `${len}/${MAX_CHARS}`;
     counter.classList.toggle("text-error", len > MAX_CHARS);
     counter.classList.toggle("text-base-content/50", len <= MAX_CHARS);
+    counter.classList.toggle("error", len > MAX_CHARS);
   }
   updateInputHint();
 }
@@ -91,14 +92,24 @@ function updateInputHint() {
   hint.classList.toggle("hidden", input.value.length > 0 || !statusHidden);
 }
 
+function getSendBtn(): HTMLButtonElement | null {
+  return (document.getElementById("chat-send") as HTMLButtonElement) || (document.getElementById("send-btn") as HTMLButtonElement);
+}
+
 function setLoadingState(loading: boolean) {
-  const sendBtn = document.getElementById("send-btn") as HTMLButtonElement;
+  const sendBtn = getSendBtn();
   const input = document.getElementById("chat-input") as HTMLInputElement;
   if (sendBtn) {
     sendBtn.disabled = loading;
-    sendBtn.innerHTML = loading
-      ? '<span class="loading loading-spinner loading-sm"></span>'
-      : "Send";
+    // keep design's simple text "..." for new UI, spinner for old
+    if (sendBtn.id === "chat-send") {
+      sendBtn.textContent = loading ? "..." : sendBtn.getAttribute("data-label") || "Send";
+      if (!sendBtn.getAttribute("data-label")) sendBtn.setAttribute("data-label", "Send");
+    } else {
+      sendBtn.innerHTML = loading
+        ? '<span class="loading loading-spinner loading-sm"></span>'
+        : "Send";
+    }
   }
   if (input) {
     input.disabled = loading;
@@ -152,8 +163,8 @@ function scrollToTop(smooth = false) {
 function createScrollButton(): HTMLElement {
   const btn = document.createElement("button");
   btn.id = "scroll-to-top";
-  btn.className =
-    "btn btn-sm btn-primary fixed bottom-24 right-8 z-50 shadow-lg";
+  // design styling (works without daisyUI) + fallback
+  btn.style.cssText = `position: fixed; bottom: 100px; right: 24px; z-index: 50; font: inherit; font-size: 0.8125rem; padding: 6px 14px; background: var(--accent); color: var(--bg-primary); border: none; border-radius: 99px; cursor: pointer; box-shadow: 0 2px 12px rgba(0,0,0,0.3);`;
   btn.textContent = "New messages";
   btn.addEventListener("click", () => {
     scrollToTop(true);
@@ -186,12 +197,21 @@ export function initChat() {
   connect();
 
   const input = document.getElementById("chat-input") as HTMLInputElement;
-  const sendBtn = document.getElementById("send-btn");
+  const sendBtn = getSendBtn();
 
   if (input && sendBtn) {
     input.addEventListener("input", updateCharCount);
     sendBtn.addEventListener("click", () => sendMessage(input));
-    input.addEventListener("keypress", (e) => {
+    input.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" && !e.shiftKey) {
+        e.preventDefault();
+        sendMessage(input);
+      }
+    });
+    updateCharCount();
+  } else if (input) {
+    input.addEventListener("input", updateCharCount);
+    input.addEventListener("keydown", (e) => {
       if (e.key === "Enter" && !e.shiftKey) {
         e.preventDefault();
         sendMessage(input);
@@ -219,6 +239,50 @@ let usernameEditActive = false;
 let usernameSaving = false;
 
 function bindChangeUsername() {
+  const newBtn = document.getElementById("username-btn") as HTMLElement | null;
+  const chatMsgsEl = document.getElementById("chat-messages");
+  // New minimal inline editing (design/app.js) — prefer if present
+  if (newBtn) {
+    newBtn.addEventListener("click", () => {
+      const current = newBtn.textContent || "";
+      const input = document.createElement("input");
+      (input as HTMLInputElement).type = "text";
+      input.value = current;
+      (input as HTMLInputElement).maxLength = 50;
+      input.style.cssText = `font: inherit; font-weight: 600; color: var(--accent); background: var(--bg-surface); border: 1px solid var(--accent); border-radius: var(--radius-sm); padding: 2px 6px; width: 160px; outline: none;`;
+      const save = async () => {
+        const name = input.value.trim();
+        if (name && name !== current) {
+          try {
+            const room = document.body.getAttribute("data-room") || "offtopic";
+            const res = await fetch(`/api/set-username?room=${encodeURIComponent(room)}`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ username: name }),
+            });
+            if (!res.ok) throw new Error("bad");
+            newBtn.textContent = name;
+            (newBtn as HTMLElement).style.color = getUsernameColor(name);
+            chatMsgsEl?.setAttribute("data-username", name);
+            trackUmami("Username Change", { username: name });
+            forceReconnect();
+          } catch { /* keep old */ }
+        }
+        try { input.replaceWith(newBtn); } catch {}
+      };
+      newBtn.replaceWith(input);
+      input.focus();
+      (input as HTMLInputElement).select();
+      input.addEventListener("blur", save);
+      input.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") { e.preventDefault(); save(); }
+        if (e.key === "Escape") { try { input.replaceWith(newBtn); } catch {} }
+      });
+    });
+    return;
+  }
+
+  // Legacy editing (old daisyUI markup)
   const editBtn = document.getElementById("change-username-btn");
   const nameBtn = document.getElementById("username-edit-btn");
   const input = document.getElementById("username-input") as HTMLInputElement;
@@ -319,11 +383,12 @@ function bindChangeUsername() {
 
 function bindStarterPrompts() {
   const input = document.getElementById("chat-input") as HTMLInputElement;
-  const starterButtons = document.querySelectorAll<HTMLButtonElement>("[data-starter]");
+  const starterButtons = document.querySelectorAll<HTMLButtonElement>("[data-starter], [data-message], .chat-starter");
   starterButtons.forEach((btn) => {
     btn.addEventListener("click", () => {
       if (!input) return;
-      input.value = btn.dataset.starterMessage || btn.dataset.starter || "";
+      const msg = btn.getAttribute("data-message") || btn.dataset.starterMessage || btn.dataset.starter || btn.textContent || "";
+      input.value = msg;
       updateCharCount();
       input.focus();
     });
@@ -357,10 +422,12 @@ function initGlow() {
           if (inputGroup) {
             inputGroup.classList.add("chat-glow-ring");
           }
-          const newest = container.firstElementChild;
-          const bubble = newest?.querySelector(".chat-bubble");
+          const newest = container.firstElementChild as HTMLElement | null;
+          const bubble = newest?.querySelector(".chat-bubble") || newest?.querySelector(".chat-msg");
           if (bubble) {
             bubble.classList.add("chat-shimmer");
+          } else if (newest) {
+            newest.classList.add("chat-shimmer");
           }
         }, 1500);
         return;

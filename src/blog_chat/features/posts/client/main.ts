@@ -15,14 +15,14 @@ initIframeLoader();
 function bindLinkTracking() {
   document.addEventListener("click", (event) => {
     const target = event.target as HTMLElement;
-    const postEl = target.closest("[data-track-post]");
-    if (postEl) {
-      trackUmami("Post Click", { slug: postEl.getAttribute("data-track-post") });
-      return;
-    }
     const tagEl = target.closest("[data-track-tag]");
     if (tagEl) {
       trackUmami("Tag Click", { tag: tagEl.getAttribute("data-track-tag") });
+      return;
+    }
+    const postEl = target.closest("[data-track-post]");
+    if (postEl) {
+      trackUmami("Post Click", { slug: postEl.getAttribute("data-track-post") });
     }
   });
 }

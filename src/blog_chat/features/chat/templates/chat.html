@@ -1,68 +1,42 @@
-<div class="container mx-auto py-4 flex flex-col md:flex-1 md:min-h-0">
-    {% if not post %}
-    <div class="card bg-base-200 shadow-xl mb-4">
-        <div class="card-body p-4">
-            <h2 class="card-title flex items-center gap-2">
-                {{ t('chat_title') }}
-                <span class="badge badge-primary">chat</span>
-            </h2>
-        </div>
+<div class="chat-panel-header">
+    <div class="chat-panel-title">
+        {% if post %}{{ t('chat_title') }}{% else %}Off-topic{% endif %} <span class="badge">chat</span>
     </div>
-    {% endif %}
+    <span class="chat-presence" id="chat-presence" data-label="{{ t('online') }}" title="{{ t('people_online') }}" role="status" aria-live="polite">
+        <span class="loading-dots">...</span>
+    </span>
+</div>
 
-    <div id="username-section">
-        <div id="username-identity" class="mb-4 flex items-center justify-between">
-            <span class="text-sm">{{ t('logged_in_as') }}
-                <button id="username-edit-btn" type="button"
-                    class="font-bold border-b border-dotted border-base-content/40 hover:border-base-content/70 cursor-text"
-                    style="color: {{ username|username_color }};" title="{{ t('change_username') }}">{{ username }}</button>
-                <button id="change-username-btn" type="button"
-                    class="text-xs opacity-40 hover:opacity-100 transition-opacity align-middle"
-                    title="{{ t('change_username') }}">✎</button>
-                <input id="username-input" type="text" value="{{ username }}" maxlength="50" autocomplete="off"
-                    aria-label="{{ t('enter_name') }}"
-                    class="hidden font-bold bg-transparent border-0 border-b border-dashed border-base-content/50 outline-none p-0"
-                    style="color: {{ username|username_color }};" />
-                <button id="username-confirm-btn" type="button"
-                    class="hidden text-base-content/60 hover:text-primary transition-colors align-middle"
-                    title="{{ t('save') }}" aria-label="{{ t('save') }}">✓</button>
-            </span>
-        </div>
-    </div>
+<div class="chat-user">
+    <span>{{ t('logged_in_as') }}</span>
+    <button class="chat-user-name" id="username-btn" type="button" style="color: {{ username|username_color }};" title="{{ t('change_username') }}">{{ username }}</button>
+</div>
 
-    <div class="join w-full" id="chat-input-group">
-        <label for="chat-input" class="sr-only">{{ t('type_message') }}</label>
-        <input id="chat-input" class="input input-bordered join-item flex-1" type="text"
-            placeholder="{{ t('type_message') }}" maxlength="280" autocomplete="off" />
-        <button id="send-btn" class="btn btn-primary join-item">{{ t('send') }}</button>
-    </div>
-    <div class="flex items-center mt-1 gap-2">
-        <span id="chat-input-hint" class="text-xs text-base-content/50">{{ t('enter_to_send') }}</span>
-        <span id="chat-status" class="text-xs text-error hidden" role="status" aria-live="polite"></span>
-        <span id="chat-presence" class="badge badge-sm badge-ghost gap-1" data-label="{{ t('online') }}"
-            title="{{ t('people_online') }}" role="status" aria-live="polite">
-            <span class="loading loading-dots loading-xs"></span>
-        </span>
-        <span id="char-count" class="text-xs text-base-content/50 ml-auto" role="status" aria-live="polite">0/280</span>
-    </div>
-
-    <div id="chat-empty" class="hidden text-center py-8 text-base-content/50">
-        <div class="text-lg font-medium mb-3">{{ t('no_messages') }}</div>
-        <div id="starter-prompts" class="flex flex-wrap justify-center gap-2">
+<div class="chat-messages" id="chat-messages" role="log" aria-live="polite" data-username="{{ username|default('') }}">
+    <div class="chat-empty" id="chat-empty">
+        <p class="chat-empty-text">{{ t('no_messages') }}</p>
+        <div class="chat-starter-prompts" id="starter-prompts">
             {% if post %}
-            <button class="btn btn-sm btn-outline" type="button" data-starter="{{ t('starter_ask') }}" data-starter-message="{{ t('starter_ask_message') }}">{{ t('starter_ask') }}</button>
-            <button class="btn btn-sm btn-outline" type="button" data-starter="{{ t('starter_take') }}" data-starter-message="{{ t('starter_take_message') }}">{{ t('starter_take') }}</button>
-            <button class="btn btn-sm btn-outline" type="button" data-starter="{{ t('starter_say_hi') }}" data-starter-message="{{ t('starter_say_hi_message') }}">{{ t('starter_say_hi') }}</button>
+            <button class="chat-starter" type="button" data-message="{{ t('starter_ask_message') }}" data-starter="{{ t('starter_ask') }}" data-starter-message="{{ t('starter_ask_message') }}">{{ t('starter_ask') }}</button>
+            <button class="chat-starter" type="button" data-message="{{ t('starter_take_message') }}" data-starter="{{ t('starter_take') }}" data-starter-message="{{ t('starter_take_message') }}">{{ t('starter_take') }}</button>
+            <button class="chat-starter" type="button" data-message="{{ t('starter_say_hi_message') }}" data-starter="{{ t('starter_say_hi') }}" data-starter-message="{{ t('starter_say_hi_message') }}">{{ t('starter_say_hi') }}</button>
             {% else %}
-            <button class="btn btn-sm btn-outline" type="button" data-starter="{{ t('starter_say_hi') }}" data-starter-message="{{ t('starter_say_hi_message') }}">{{ t('starter_say_hi') }}</button>
-            <button class="btn btn-sm btn-outline" type="button" data-starter="{{ t('starter_reading') }}" data-starter-message="{{ t('starter_reading_message') }}">{{ t('starter_reading') }}</button>
-            <button class="btn btn-sm btn-outline" type="button" data-starter="{{ t('starter_share') }}" data-starter-message="{{ t('starter_share_message') }}">{{ t('starter_share') }}</button>
+            <button class="chat-starter" type="button" data-message="{{ t('starter_say_hi_message') }}" data-starter="{{ t('starter_say_hi') }}" data-starter-message="{{ t('starter_say_hi_message') }}">{{ t('starter_say_hi') }}</button>
+            <button class="chat-starter" type="button" data-message="{{ t('starter_reading_message') }}" data-starter="{{ t('starter_reading') }}" data-starter-message="{{ t('starter_reading_message') }}">{{ t('starter_reading') }}</button>
+            <button class="chat-starter" type="button" data-message="{{ t('starter_share_message') }}" data-starter="{{ t('starter_share') }}" data-starter-message="{{ t('starter_share_message') }}">{{ t('starter_share') }}</button>
             {% endif %}
         </div>
     </div>
+</div>
 
-    <div id="chat-messages" class="chat h-96 md:h-auto md:flex-1 overflow-y-auto mb-4 space-y-2 md:min-h-0"
-        role="log" aria-live="polite" aria-relevant="additions" aria-label="Chat messages"
-        data-username="{{ username|default('') }}">
+<div class="chat-input-area">
+    <div class="chat-input-row" id="chat-input-group">
+        <input type="text" class="chat-input" id="chat-input" placeholder="{{ t('type_message') }}" maxlength="280" autocomplete="off">
+        <button class="chat-send-btn" id="chat-send" type="button">{{ t('send') }}</button>
+    </div>
+    <div class="chat-input-meta">
+        <span id="chat-status" role="status" aria-live="polite"></span>
+        <span id="chat-input-hint" style="display:none;">{{ t('enter_to_send') }}</span>
+        <span class="chat-char-count" id="char-count" role="status" aria-live="polite">0/280</span>
     </div>
 </div>

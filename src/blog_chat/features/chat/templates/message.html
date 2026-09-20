@@ -1,17 +1,7 @@
-<div class="chat {% if isOwnMessage %}chat-start{% else %}chat-end{% endif %}">
+<div class="chat-msg chat {% if isOwnMessage %}chat-start self{% else %}chat-end other{% endif %}">
     {% if show_header %}
-    <div class="chat-header">
-        <span style="color: {{ userColor }};">{{ username }}</span>
-        <time class="text-xs opacity-50">{{ timestamp }}</time>
-    </div>
+    <div class="chat-msg-author" style="color: {{ userColor }};">{{ username }}</div>
     {% endif %}
-    {% if isOwnMessage %}
-    <div class="chat-bubble chat-bubble-primary">
-        {{ content | markdown | safe }}
-    </div>
-    {% else %}
-    <div class="chat-bubble chat-bubble-secondary">
-        {{ content | markdown | safe }}
-    </div>
-    {% endif %}
+    <div class="chat-msg-content">{{ content | markdown | safe }}</div>
+    <time class="chat-msg-time">{{ timestamp }}</time>
 </div>
