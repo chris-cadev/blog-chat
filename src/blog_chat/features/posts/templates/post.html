@@ -35,8 +35,8 @@
 {% block styles %}{% endblock %}
 
 {% block scripts %}
-<script type="module" src="/static/chat.js"></script>
-<script type="module" src="/static/posts.js"></script>
+<script type="module" src="{{ static_url('chat.js') }}"></script>
+<script type="module" src="{{ static_url('posts.js') }}"></script>
 {% endblock %}
 
 {% block content %}
