@@ -33,7 +33,7 @@ CSP_TEMPLATE = "; ".join([
     "default-src 'self'",
     "script-src {script_src}",
     "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
-    "img-src 'self' data:",
+    "img-src 'self' data: https:",
     "connect-src {connect_src}",
     "font-src 'self' https://fonts.gstatic.com",
     "object-src 'none'",
@@ -97,6 +97,7 @@ app.add_middleware(
 app.add_middleware(GZipMiddleware, minimum_size=500)
 app.add_middleware(TraceabilityMiddleware)
 app.mount("/static", StaticFiles(directory="static"), name="static")
+app.mount("/drafts", StaticFiles(directory="content/_drafts"), name="drafts")
 app.include_router(accounts_router)
 app.include_router(posts_router)
 app.include_router(chat_router)

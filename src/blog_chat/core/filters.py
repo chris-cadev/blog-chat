@@ -37,6 +37,15 @@ ALLOWED_STYLE_PROPERTIES = {
     "border-radius",
     "overflow",
     "display",
+    "flex",
+    "flex-direction",
+    "flex-wrap",
+    "gap",
+    "justify-content",
+    "align-items",
+    "align-content",
+    "aspect-ratio",
+    "background-color",
     "font-family",
     "font-size",
     "font-weight",
@@ -51,10 +60,21 @@ ALLOWED_STYLE_PROPERTIES = {
     "text-overflow",
 }
 
-ALLOWED_TAGS = nh3.ALLOWED_TAGS | {"iframe"}
+ALLOWED_TAGS = nh3.ALLOWED_TAGS | {"iframe", "audio", "source", "img", "figure", "figcaption", "picture", "section", "input", "button", "label"}
 ALLOWED_ATTRIBUTES = dict(nh3.ALLOWED_ATTRIBUTES)
 ALLOWED_ATTRIBUTES["iframe"] = IFRAME_ATTRIBUTES
-ALLOWED_ATTRIBUTES["div"] = {"style"}
+ALLOWED_ATTRIBUTES["audio"] = {"src", "controls", "preload", "type", "style", "controlslist"}
+ALLOWED_ATTRIBUTES["source"] = {"src", "type"}
+ALLOWED_ATTRIBUTES["img"] = {"src", "alt", "title", "loading", "width", "height", "style", "class"}
+ALLOWED_ATTRIBUTES["figure"] = {"style", "class"}
+ALLOWED_ATTRIBUTES["figcaption"] = {"style", "class"}
+ALLOWED_ATTRIBUTES["picture"] = {"style", "class"}
+ALLOWED_ATTRIBUTES["div"] = {"style", "class", "id"}
+ALLOWED_ATTRIBUTES["span"] = {"style", "class", "id"}
+ALLOWED_ATTRIBUTES["input"] = {"type", "placeholder", "style", "class", "id", "inputmode", "aria-label", "value"}
+ALLOWED_ATTRIBUTES["button"] = {"type", "style", "class", "id"}
+ALLOWED_ATTRIBUTES["label"] = {"style", "class", "for"}
+ALLOWED_ATTRIBUTES["section"] = {"style", "class", "id", "aria-label", "data-expected"}
 
 YT_ID_RE = re.compile(r"(?:youtube\.com/watch\?v=|youtu\.be/)([A-Za-z0-9_-]{11})")
 # raw markdown link wrapped in <p> that markdown won't convert (e.g. <p> [▶️ text](youtube) </p>)

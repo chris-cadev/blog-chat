@@ -24,6 +24,7 @@ export default defineConfig({
         main: './src/blog_chat/core/client/main.ts',
         chat: './src/blog_chat/features/chat/client/main.ts',
         posts: './src/blog_chat/features/posts/client/main.ts',
+        "audio-puzzle": './src/blog_chat/features/posts/client/audio-puzzle.ts',
       },
       output: {
         entryFileNames: '[name].js',
