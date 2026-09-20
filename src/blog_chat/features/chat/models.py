@@ -17,8 +17,8 @@ class Message(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True)
     room_slug: Mapped[str] = mapped_column(String(100), index=True)
-    user_id: Mapped[int | None] = mapped_column(
-        ForeignKey("users.id"), nullable=True)
+    user_id: Mapped[str | None] = mapped_column(
+        String(36), ForeignKey("users.id"), nullable=True)
     username: Mapped[str] = mapped_column(String(50))
     content: Mapped[str] = mapped_column(Text)
     timestamp: Mapped[datetime] = mapped_column(

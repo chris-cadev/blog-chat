@@ -41,10 +41,11 @@ class TestAssignUsername:
                 row = (await db.execute(
                     select(User).where(User.id == original_id)
                 )).scalar_one_or_none()
-                return original_id, row.username, row.id
+                return original_id, row.username, row.alias, row.id
 
-        original_id, username, row_id = asyncio_run(run())
-        assert username == "Carol"
+        original_id, username, alias, row_id = asyncio_run(run())
+        assert username == "Alice"
+        assert alias == "Carol"
         assert row_id == original_id
 
     def test_new_username_creates_row(self):
