@@ -11,7 +11,9 @@ CONTENT_DIR = Path("content")
 DRAFTS_DIR = CONTENT_DIR / "_drafts"
 
 
-def create_draft(title: str = "", now: datetime | None = None, drafts_dir: Path = DRAFTS_DIR) -> Path:
+def create_draft(title: str = "", now: datetime | None = None, drafts_dir: Path | None = None) -> Path:
+    if drafts_dir is None:
+        drafts_dir = DRAFTS_DIR
     now = now or datetime.now()
     base = drafts_dir / now.strftime("%Y-%m-%d-%H%M.md")
     path, n = base, 2
