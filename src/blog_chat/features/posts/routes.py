@@ -156,7 +156,7 @@ TRANSLATIONS = {
         "all_posts": "Todos los artículos",
         "tags_subtitle": "Explora las publicaciones por tema.",
         "tag_not_found": "Tag no encontrado",
-        "chat_title": "Off-topic",
+        "chat_title": "Fuera de tema",
         "enter_name": "Escribe tu nombre",
         "join": "Unirse",
         "logged_in_as": "Conectado como",
@@ -191,7 +191,7 @@ TRANSLATIONS = {
         "all_posts": "Tous les articles",
         "tags_subtitle": "Parcourir les articles par thématique.",
         "tag_not_found": "Tag non trouvé",
-        "chat_title": "Off-topic",
+        "chat_title": "Hors sujet",
         "enter_name": "Saisissez votre nom",
         "join": "Rejoindre",
         "logged_in_as": "Connecté en tant que",
@@ -383,13 +383,15 @@ def read_lang_index(request: Request, lang: str):
             language_switcher=_language_switcher(request, None, None),
         )
     posts = get_posts(lang)
+    pinned_post = posts[0] if posts else None
     log_business_event("page.view", "Blog index viewed", lang=lang, path=f"/{lang}/")
     return _render(
         "index.html",
         request,
         lang,
         posts=posts,
-        room="offtopic",
+        pinned_post=pinned_post,
+        room=pinned_post["slug"] if pinned_post else "offtopic",
         slug=None,
         language_switcher=_language_switcher(request, lang, None),
     )
@@ -478,12 +480,16 @@ def read_item(request: Request, lang: str, slug: str):
         )
     post = get_post(slug, lang)
     if not post:
+        _posts = get_posts(lang)
+        _pinned = _posts[0] if _posts else None
         return _render(
             "index.html",
             request,
             lang,
             status_code=404,
-            posts=get_posts(lang),
+            posts=_posts,
+            pinned_post=_pinned,
+            room=_pinned["slug"] if _pinned else "offtopic",
             error=_make_t(lang)("post_not_found"),
             slug=slug,
             language_switcher=_language_switcher(request, lang, slug),

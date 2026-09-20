@@ -1,6 +1,15 @@
 <div class="chat-panel-header">
     <div class="chat-panel-title">
-        {% if post %}{{ t('chat_title') }}{% else %}Off-topic{% endif %} <span class="badge">chat</span>
+        {% if post %}
+            <span class="chat-title-text" title="{{ post.title }}">{{ post.title }}</span>
+        {% elif tag or is_tags_page %}
+            {{ t('chat_title') }}
+        {% elif pinned_post %}
+            <span class="chat-pinned" aria-hidden="true">📌</span> <a href="/{{ lang }}/{{ pinned_post.slug }}" class="chat-title-link" title="{{ pinned_post.title }}">{{ pinned_post.title }}</a>
+        {% else %}
+            {{ t('chat_title') }}
+        {% endif %}
+        <span class="badge">chat</span>
     </div>
     <span class="chat-presence" id="chat-presence" data-label="{{ t('online') }}" title="{{ t('people_online') }}" role="status" aria-live="polite">
         <span class="loading-dots">...</span>
