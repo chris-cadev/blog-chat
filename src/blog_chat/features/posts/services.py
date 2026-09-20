@@ -24,3 +24,11 @@ def get_post(slug: str, lang: str | None = None) -> dict | None:
             if not post.get("lang"):
                 return post
     return None
+
+
+def get_post_by_lang_group(lang_group: str, lang: str) -> dict | None:
+    for entry in powerwalk.walk(CONTENT_DIR, filter="**/*.md"):
+        post = parse_markdown_file(entry.path)
+        if post and post.get("lang_group") == lang_group and post.get("lang") == lang:
+            return post
+    return None

@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block title %}{{ t('tags') }} — Chrislabs Blog{% endblock %}
+
+{% block styles %}
+<style>
+.tags-grid { display: flex; flex-wrap: wrap; gap: var(--sp-3); margin-top: var(--sp-6); }
+.tag-card { display: flex; align-items: center; gap: var(--sp-3); padding: var(--sp-3) var(--sp-4); background: var(--bg-surface); border: 1px solid var(--border); border-radius: var(--radius-md); text-decoration: none; color: inherit; transition: border-color var(--duration-fast), background var(--duration-fast); }
+.tag-card:hover { border-color: var(--accent); background: var(--accent-subtle); color: inherit; }
+.tag-card .tag { font-size: 0.8125rem; padding: 2px 8px; }
+.tag-card-count { font-size: 0.75rem; color: var(--text-faint); font-variant-numeric: tabular-nums; }
+.tag-section { margin-top: var(--sp-10); }
+.tag-section-title { font-family: var(--font-display); font-size: 1.25rem; font-weight: 600; color: var(--text-primary); margin-bottom: var(--sp-4); display: flex; align-items: center; gap: var(--sp-3); }
+.tag-section-title .tag { font-size: 0.875rem; padding: 2px 10px; }
+.tag-post-list { list-style: none; display: flex; flex-direction: column; gap: var(--sp-2); }
+.tag-post-item { display: flex; align-items: baseline; gap: var(--sp-3); padding: var(--sp-2) var(--sp-3); border-radius: var(--radius-sm); text-decoration: none; color: inherit; transition: background var(--duration-fast); }
+.tag-post-item:hover { background: var(--accent-subtle); color: inherit; }
+.tag-post-date { font-size: 0.8125rem; color: var(--text-faint); font-variant-numeric: tabular-nums; min-width: 80px; flex-shrink: 0; }
+.tag-post-title { font-size: 0.9375rem; color: var(--text-primary); font-weight: 500; }
+</style>
+{% endblock %}
+
+{% block content %}
+{% if error %}
+<div role="alert" style="padding: var(--sp-4); background: var(--bg-surface); border: 1px solid var(--border); border-radius: var(--radius-md); margin-bottom: var(--sp-6); color: var(--text-primary);">
+  <span>{{ error }}</span>
+</div>
+{% endif %}
+
+<h1 class="page-title">{{ t('tags') }}</h1>
+<p class="page-subtitle">{{ t('tags_subtitle') }}</p>
+
+<div class="tags-grid">
+  {% for tag_item, count in tags_with_counts %}
+  <a href="/{{ lang }}/tags/{{ tag_item }}" class="tag-card"><span class="tag tag-{{ tag_item|tag_class }}"{{ tag_item|tag_style }}>{{ tag_item }}</span><span class="tag-card-count">{{ count }} post{% if count != 1 %}s{% endif %}</span></a>
+  {% endfor %}
+</div>
+
+{% for tag_item, posts_for_tag in posts_by_tag.items() %}
+<section class="tag-section" id="{{ tag_item|tag_class }}">
+  <h2 class="tag-section-title"><span class="tag tag-{{ tag_item|tag_class }}"{{ tag_item|tag_style }}>{{ tag_item }}</span> {{ posts_for_tag|length }} post{% if posts_for_tag|length != 1 %}s{% endif %}</h2>
+  <ul class="tag-post-list">
+    {% for post in posts_for_tag %}
+    <li><a href="/{{ post.lang or lang }}/{{ post.slug }}" class="tag-post-item"><span class="tag-post-date">{{ post.created or '' }}</span><span class="tag-post-title">{{ post.title }}</span></a></li>
+    {% endfor %}
+  </ul>
+</section>
+{% endfor %}
+
+{% if not tags_with_counts %}
+<p class="tags-empty" style="color: var(--text-faint); font-style: italic; padding: var(--sp-4) 0;">No tags yet.</p>
+{% endif %}
+{% endblock %}
+
+{% block scripts %}
+<script type="module" src="/static/chat.js"></script>
+{% endblock %}

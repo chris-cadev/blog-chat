@@ -1,5 +1,10 @@
+import hashlib
+import re
+from collections import Counter, defaultdict
 from pathlib import Path
 from datetime import datetime
+
+from markupsafe import Markup
 
 from fastapi import APIRouter, Request
 from fastapi.responses import PlainTextResponse, Response, RedirectResponse
@@ -14,7 +19,7 @@ from blog_chat.features.accounts.services import (
     get_username_from_cookie,
 )
 from blog_chat.features.chat.routes import get_username_color
-from blog_chat.features.posts.services import get_post, get_posts
+from blog_chat.features.posts.services import get_post, get_post_by_lang_group, get_posts
 
 router = APIRouter()
 
@@ -22,9 +27,80 @@ posts_template_dirs = [
     Path("src/blog_chat/features/posts/templates"),
     Path("src/blog_chat/features/chat/templates"),
 ]
+def _tag_class(tag: str) -> str:
+    slug = re.sub(r"[^a-z0-9]+", "-", tag.lower()).strip("-")
+    return slug or "unknown"
+
+
+# Known slugs that already have a curated color in design/styles.css
+KNOWN_TAG_SLUGS = {
+    "life", "software", "meme", "joke", "laugh", "lol", "xd", "engineer",
+    "christmas", "transition", "symbiotechnology", "adaptation", "work",
+    "manufacturing", "project", "tool", "git", "github", "python", "inventor",
+    "thought", "csharp", "dotnet", "think",
+}
+
+def _tag_hue(tag: str) -> int:
+    # deterministic hash → hue 0-359 (stable across renders/processes)
+    h = hashlib.md5(tag.lower().encode("utf-8")).hexdigest()
+    return int(h[:8], 16) % 360
+
+def _tag_style(tag: str) -> Markup:
+    slug = _tag_class(tag)
+    if slug in KNOWN_TAG_SLUGS:
+        return Markup("")
+    hue = _tag_hue(tag)
+    return Markup(f' style="--tag-h:{hue}"')
+
+
 templates = create_templates(posts_template_dirs)
 add_markdown_filter(templates)
 add_filter(templates, "username_color", get_username_color)
+add_filter(templates, "tag_class", _tag_class)
+add_filter(templates, "tag_style", _tag_style)
+add_filter(templates, "tag_hue", _tag_hue)
+templates.env.globals["get_post_by_lang_group"] = get_post_by_lang_group
+
+# OWASP ASVS 5.1.3 / Input Validation Cheat Sheet: positive (allowlist) validation
+# Tags in content: letters (incl. accents), digits, hyphen, underscore, space, 1-64 chars.
+# Rejects payloads like "{:tag}", "../", "<script>", "%2e", etc. before business logic.
+_TAG_RE = re.compile(r"^[\w \-]{1,64}$", re.UNICODE)
+
+
+def _is_valid_tag(tag: str) -> bool:
+    return bool(_TAG_RE.fullmatch(tag))
+
+
+def _tags_data(lang: str):
+    posts = get_posts(lang)
+    counter: Counter = Counter()
+    by_tag: dict[str, list[dict]] = defaultdict(list)
+    for p in posts:
+        for t in p.get("tags") or []:
+            counter[t] += 1
+            by_tag[t].append(p)
+    tags_with_counts = sorted(counter.items(), key=lambda kv: (-kv[1], kv[0].lower()))
+    posts_by_tag = {k: sorted(v, key=lambda x: x.get("created", ""), reverse=True) for k, v in by_tag.items()}
+    posts_by_tag = {k: posts_by_tag[k] for k, _ in tags_with_counts}
+    return tags_with_counts, posts_by_tag
+
+
+def _render_tag_not_found(request: Request, lang: str) -> Response:
+    tags_with_counts, posts_by_tag = _tags_data(lang)
+    return _render(
+        "tags.html",
+        request,
+        lang,
+        status_code=404,
+        apply_lang_cookie=False,
+        tags_with_counts=tags_with_counts,
+        posts_by_tag=posts_by_tag,
+        is_tags_page=True,
+        error=_make_t(lang)("tag_not_found"),
+        room="offtopic",
+        slug=None,
+        language_switcher=_language_switcher(request, lang, None),
+    )
 
 LANGS = ("en", "es", "fr")
 LANG_FLAGS = {"en": "🇺🇸", "es": "🇲🇽", "fr": "🇫🇷"}
@@ -41,6 +117,10 @@ TRANSLATIONS = {
         "posts_title": "Blog Posts",
         "no_posts": "No posts found.",
         "posts_tagged": "Posts tagged",
+        "tags": "Tags",
+        "all_posts": "All posts",
+        "tags_subtitle": "Browse posts by topic.",
+        "tag_not_found": "Tag not found",
         "chat_title": "Off-topic",
         "enter_name": "Enter your name",
         "join": "Join",
@@ -72,6 +152,10 @@ TRANSLATIONS = {
         "posts_title": "Posts",
         "no_posts": "No se encontraron artículos.",
         "posts_tagged": "Posts etiquetados",
+        "tags": "Tags",
+        "all_posts": "Todos los artículos",
+        "tags_subtitle": "Explora las publicaciones por tema.",
+        "tag_not_found": "Tag no encontrado",
         "chat_title": "Off-topic",
         "enter_name": "Escribe tu nombre",
         "join": "Unirse",
@@ -103,6 +187,10 @@ TRANSLATIONS = {
         "posts_title": "Articles du blog",
         "no_posts": "Aucun article trouvé.",
         "posts_tagged": "Articles tagués",
+        "tags": "Étiquettes",
+        "all_posts": "Tous les articles",
+        "tags_subtitle": "Parcourir les articles par thématique.",
+        "tag_not_found": "Tag non trouvé",
         "chat_title": "Off-topic",
         "enter_name": "Saisissez votre nom",
         "join": "Rejoindre",
@@ -309,6 +397,9 @@ def read_lang_index(request: Request, lang: str):
 
 @router.get("/tags/{tag}")
 def read_tag_redirect(request: Request, tag: str):
+    if not _is_valid_tag(tag):
+        # fail-closed: malformed tags never reach lookup; show tags overview with tag_not_found
+        return _render_tag_not_found(request, _preferred_lang(request))
     return RedirectResponse(f"/{_preferred_lang(request)}/tags/{tag}")
 
 
@@ -316,7 +407,11 @@ def read_tag_redirect(request: Request, tag: str):
 def read_tag(request: Request, lang: str, tag: str):
     if lang not in LANGS:
         return RedirectResponse(f"/{_preferred_lang(request)}/tags/{tag}")
+    if not _is_valid_tag(tag):
+        return _render_tag_not_found(request, lang)
     posts = [p for p in get_posts(lang) if tag in (p.get("tags") or [])]
+    if not posts:
+        return _render_tag_not_found(request, lang)
     log_business_event(
         "page.view",
         "Tag page viewed",
@@ -330,6 +425,25 @@ def read_tag(request: Request, lang: str, tag: str):
         lang,
         posts=posts,
         tag=tag,
+        room="offtopic",
+        slug=None,
+        language_switcher=_language_switcher(request, lang, None),
+    )
+
+
+@router.get("/{lang}/tags")
+def read_tags(request: Request, lang: str):
+    if lang not in LANGS:
+        return RedirectResponse(f"/{_preferred_lang(request)}/tags")
+    tags_with_counts, posts_by_tag = _tags_data(lang)
+    log_business_event("page.view", "Tags overview viewed", lang=lang, path=f"/{lang}/tags")
+    return _render(
+        "tags.html",
+        request,
+        lang,
+        tags_with_counts=tags_with_counts,
+        posts_by_tag=posts_by_tag,
+        is_tags_page=True,
         room="offtopic",
         slug=None,
         language_switcher=_language_switcher(request, lang, None),
