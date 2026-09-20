@@ -15,12 +15,16 @@ lang: en
 lang_group: firstcommit
 ---
 
-<iframe loading="lazy" src="https://firstcommit.debugchris.com" title="Embedded content" style="width:100%; height:500px; border:0; border-radius:4px;"></iframe>
+I wanted to know when I had started an old project. I looked for a tool that shows the first commit of any GitHub repo and only found personal-history tools. I got annoyed and built one.
 
-I was about to finish my Friday plant duty when I started thinking about a project I had done before and when I had started it. To find the date, I tried looking for a tool that could give me the first commit of a project. My search led me to a few tools, but all were focused on personal repositories; none were focused on tracking the development of a specific repository. After some time searching, I got frustrated and decided to start building the tool myself.
+Paste any public URL below. You'll get date, author and original message without cloning.
 
-Nowadays, creating software is cheaper: just a few prompts and suddenly you have a functional site deployed on Vercel that your colleagues can access. A few more prompts and bug fixes later, and I had a simple website that I could confidently publish knowing it could be used without any problem.
+<iframe loading="lazy" src="https://firstcommit.debugchris.com" title="FirstCommit - first commit of a GitHub repo" style="width:100%; height:500px; border:0; border-radius:4px;"></iframe>
 
-It’s made with Python, and you can check the code here:
-[https://github.com/chris-cadev/first-commit/](https://github.com/chris-cadev/first-commit/)
+I was about to finish my Friday shift at the plant when that project came to mind. I wanted the exact start date, not a guess.
 
+I searched for a while. Everything I found asked for your username or analyzed your profile, nothing for a repo that isn't yours. After a bit I thought *I'll do it myself*.
+
+Building something like this is cheap today. A few prompts and you have a working site on Vercel your colleagues can open. A few more prompts and a couple of bugs later, I had something simple I could actually publish. No login, no cloning. Just paste the URL.
+
+It's made with Python. Code is at the [first-commit repository on GitHub](https://github.com/chris-cadev/first-commit/).

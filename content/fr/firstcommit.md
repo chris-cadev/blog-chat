@@ -15,11 +15,16 @@ lang: fr
 lang_group: firstcommit
 ---
 
-<iframe loading="lazy" src="https://firstcommit.debugchris.com" title="Embedded content" style="width:100%; height:500px; border:0; border-radius:4px;"></iframe>
+Je voulais savoir quand j'avais commencé un vieux projet. J'ai cherché un outil qui donne le premier commit de n'importe quel dépôt GitHub et je n'ai trouvé que des outils pour l'historique personnel. Je me suis énervé et je l'ai fait moi-même.
 
-J’étais sur le point de terminer ma journée de surveillance de l’usine un vendredi lorsque j’ai commencé à réfléchir à un projet que j’avais réalisé auparavant et à la date à laquelle je l’avais commencé. Pour trouver la date, j’ai essayé de chercher un outil capable de me donner le premier commit d’un projet. Ma recherche m’a conduit à quelques outils, mais tous étaient orientés vers des dépôts personnels ; aucun n’était destiné à suivre le développement d’un dépôt en particulier. Après un certain temps à chercher, je me suis énervé et j’ai décidé de créer l’outil moi-même.
+Collez une URL publique ci-dessous. Vous verrez date, auteur et message d'origine sans cloner.
 
-De nos jours, créer un logiciel est moins coûteux : quelques prompts et, soudainement, vous avez un site fonctionnel déployé sur Vercel que vos collègues peuvent consulter. Quelques autres prompts et corrections de bugs plus tard, j’avais un site web simple que je pouvais publier en toute confiance, sachant qu’il pouvait être utilisé sans problème.
+<iframe loading="lazy" src="https://firstcommit.debugchris.com" title="FirstCommit - premier commit d'un dépôt GitHub" style="width:100%; height:500px; border:0; border-radius:4px;"></iframe>
 
-Il est développé en Python, et vous pouvez consulter le code ici :
-[https://github.com/chris-cadev/first-commit/](https://github.com/chris-cadev/first-commit/)
+J'allais terminer ma garde du vendredi à l'usine quand ce projet m'est revenu en tête. Je voulais la date exacte du début, pas une approximation.
+
+J'ai cherché un moment. Tout ce que je trouvais demandait votre nom d'utilisateur ou analysait votre profil, rien pour un dépôt qui n'est pas le vôtre. Au bout d'un moment je me suis dit *je le fais moi-même*.
+
+Aujourd'hui, monter ce genre de chose coûte peu. Quelques prompts et vous avez un site fonctionnel sur Vercel que vos collègues peuvent ouvrir. Quelques prompts de plus et deux ou trois bugs corrigés, j'avais quelque chose de simple que je pouvais publier avec confiance. Sans connexion, sans clonage. Juste coller l'URL.
+
+C'est fait en Python. Le code est sur le [dépôt first-commit sur GitHub](https://github.com/chris-cadev/first-commit/).

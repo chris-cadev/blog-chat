@@ -16,11 +16,16 @@ lang: es
 lang_group: firstcommit
 ---
 
-<iframe loading="lazy" src="https://firstcommit.debugchris.com" title="Embedded content" style="width:100%; height:500px; border:0; border-radius:4px;"></iframe>
+Quería saber cuándo había empezado un proyecto viejo. Busqué una herramienta que me diera el primer commit de cualquier repo en GitHub y solo encontré cosas para historial personal. Me enojé un poco y la hice yo.
 
-Estaba a punto de terminar el viernes que me toca vigilancia de planta. Me quedé pensando en algún proyecto que ya había hecho antes y desde cuándo lo había empezado. Para buscar la fecha, intenté encontrar una herramienta que me diera el primer commit de un proyecto. Mi búsqueda terminó en algunas herramientas, pero todas enfocadas a lo personal; nada enfocada al desarrollo de un repositorio en particular. Después de un tiempo de buscar, me enojé y decidí empezar la herramienta yo mismo.
+Pega cualquier URL pública abajo y ves fecha, autor y mensaje original sin clonar nada.
 
-Hoy en día crear software es más barato: unos cuantos prompts y, de repente, tienes un sitio funcional montado en Vercel para que tus colegas lo puedan ver. Unos cuantos prompts y bugs resueltos después, y ya tenía un sitio web sencillo que podía publicar con confianza de que se podía usar sin ningún problema.
+<iframe loading="lazy" src="https://firstcommit.debugchris.com" title="FirstCommit - primer commit de un repo en GitHub" style="width:100%; height:500px; border:0; border-radius:4px;"></iframe>
 
-Esta hecho con python puedes ver el codigo aca:
-[https://github.com/chris-cadev/first-commit/](https://github.com/chris-cadev/first-commit/)
+Estaba por terminar la guardia del viernes en planta cuando me quedé pensando en ese proyecto. Quería la fecha exacta de inicio, no un aproximado.
+
+Busqué un rato. Todo lo que encontraba pedía tu usuario o analizaba tu perfil, nada pensado para un repositorio ajeno. Después de un rato me dije *lo hago yo*.
+
+Hoy montar algo así cuesta poco. Unos prompts y tenés un sitio funcional en Vercel que tus colegas pueden abrir. Unos prompts más y un par de bugs después, ya tenía algo sencillo que podía publicar con confianza. Sin login, sin clonar, solo pegar la URL.
+
+Está hecho con Python, podés ver el código en el [repositorio first-commit en GitHub](https://github.com/chris-cadev/first-commit/).
