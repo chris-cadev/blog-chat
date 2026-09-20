@@ -13,6 +13,8 @@ from blog_chat.core.filters import add_filter, add_markdown_filter
 from blog_chat.core.logging import log_business_event
 from blog_chat.core.responses import create_templates
 from blog_chat.core.config import SITE_URL, UMAMI_ACTIVE, UMAMI_SCRIPT_URL, UMAMI_WEBSITE_ID
+import uuid as _uuid
+
 from blog_chat.features.accounts.services import (
     create_token,
     generate_guest_name,
@@ -304,9 +306,10 @@ def _render(
     if apply_lang_cookie and lang in LANGS:
         response = _with_lang_cookie(response, lang)
     if generated:
+        guest_id = str(_uuid.uuid4())
         response.set_cookie(
             CHAT_TOKEN_COOKIE,
-            create_token(username),
+            create_token(guest_id, username),
             httponly=True,
             samesite="lax",
             path="/",

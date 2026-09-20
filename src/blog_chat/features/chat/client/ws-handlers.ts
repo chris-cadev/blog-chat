@@ -260,13 +260,31 @@ function bindChangeUsername() {
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({ username: name }),
             });
+            if (res.status === 409) {
+              let msg = `El nombre ${name} ya está en uso. Prueba con otro.`;
+              try {
+                const data = await res.json();
+                if (data?.message) msg = data.message;
+                if (data?.suggestion) msg += ` Sugerencia: ${data.suggestion}`;
+              } catch { /* html response */ }
+              showStatus(msg, true);
+              const status = document.getElementById("chat-status");
+              if (status) status.setAttribute("role", "alert");
+              input.setAttribute("aria-invalid", "true");
+              input.style.borderColor = "var(--color-error, #e11d48)";
+              input.focus(); input.select();
+              return;
+            }
             if (!res.ok) throw new Error("bad");
             newBtn.textContent = name;
             (newBtn as HTMLElement).style.color = getUsernameColor(name);
             chatMsgsEl?.setAttribute("data-username", name);
             trackUmami("Username Change", { username: name });
             forceReconnect();
-          } catch { /* keep old */ }
+          } catch (e) {
+            if ((e as Error)?.message === "bad") { /* keep old */ }
+            else return; // keep input for 409
+          }
         }
         try { input.replaceWith(newBtn); } catch {}
       };
@@ -341,6 +359,22 @@ function bindChangeUsername() {
           body: JSON.stringify({ username: value }),
         }
       );
+      if (res.status === 409) {
+        let msg = `El nombre ${value} ya está en uso. Prueba con otro.`;
+        try {
+          const data = await res.clone().json();
+          if (data?.message) msg = data.message;
+          if (data?.suggestion) msg += ` Sugerencia: ${data.suggestion}`;
+        } catch { /* fallback to html */ }
+        showStatus(msg, true);
+        const status = document.getElementById("chat-status");
+        if (status) status.setAttribute("role", "alert");
+        input.classList.add("text-error");
+        input.setAttribute("aria-invalid", "true");
+        window.setTimeout(() => { input.classList.remove("text-error"); input.removeAttribute("aria-invalid"); }, 3000);
+        input.focus(); input.select();
+        return;
+      }
       if (!res.ok) {
         input.classList.add("text-error");
         window.setTimeout(() => input.classList.remove("text-error"), 1500);

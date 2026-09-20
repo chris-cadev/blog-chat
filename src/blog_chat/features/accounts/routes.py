@@ -1,11 +1,21 @@
+import secrets
+
 from fastapi import APIRouter, Request, Depends
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, JSONResponse
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import select
 
 from blog_chat.core.database import get_db
 from blog_chat.core.logging import log_business_event
 from blog_chat.core.responses import create_templates
-from blog_chat.features.accounts.services import assign_username, create_token, get_username_from_cookie
+from blog_chat.features.accounts.models import User
+from blog_chat.features.accounts.services import (
+    assign_username,
+    create_token,
+    get_user_id_from_cookie,
+    get_alias_from_token,
+    decode_token,
+)
 
 router = APIRouter()
 
@@ -18,12 +28,16 @@ async def set_username(request: Request, db: AsyncSession = Depends(get_db)):
 
     if "application/json" in content_type:
         data = await request.json()
-        username = data.get("username", "").strip()
+        alias = str(data.get("username", "")).strip()
+        wants_json = True
     else:
         form = await request.form()
-        username = str(form.get("username", "")).strip()
+        alias = str(form.get("username", "")).strip()
+        wants_json = False
 
-    if not username or len(username) > 50:
+    if not alias or len(alias) > 50:
+        if wants_json:
+            return JSONResponse({"error": "invalid_alias", "message": "Nombre inválido. Usa 1-50 caracteres."}, status_code=400)
         html = templates.env.get_template(
             "invalid_user.html"
         ).render()
@@ -31,17 +45,67 @@ async def set_username(request: Request, db: AsyncSession = Depends(get_db)):
 
     client_ip = request.client.host if request.client else None
 
-    old_username = get_username_from_cookie(request)
-    await assign_username(db, username, old_username, client_ip)
+    # resolve current_user_id from cookie (sub) or legacy username fallback
+    current_user_id = get_user_id_from_cookie(request)
+    if current_user_id is None:
+        # legacy token: try to map alias in token to user id
+        token = request.cookies.get("chat_token", "")
+        payload = decode_token(token) if token else None
+        legacy_alias = None
+        if payload:
+            legacy_alias = payload.get("alias") or payload.get("username")
+        if legacy_alias:
+            row = (await db.execute(
+                select(User).where((User.alias == legacy_alias) | (User.username == legacy_alias))
+            )).scalar_one_or_none()
+            if row:
+                current_user_id = str(row.id)
+
+    result = await assign_username(db, alias, current_user_id, client_ip)
+
+    if result == "taken":
+        suggestion = f"{alias}-{secrets.randbelow(900)+100}"
+        log_business_event(
+            "account.username_conflict",
+            "Alias taken",
+            alias=alias,
+            result="taken",
+        )
+        if wants_json:
+            return JSONResponse(
+                {"error": "alias_taken", "message": f"El nombre {alias} ya está en uso.", "suggestion": suggestion},
+                status_code=409,
+            )
+        html = templates.env.get_template("alias_taken.html").render(requested=alias, suggestion=suggestion)
+        return HTMLResponse(html, status_code=409)
+
+    if result == "invalid":
+        if wants_json:
+            return JSONResponse({"error": "invalid_alias", "message": "Nombre inválido."}, status_code=400)
+        html = templates.env.get_template("invalid_user.html").render()
+        return HTMLResponse(html, status_code=400)
+
+    # ok -> fetch user to get its id for token
+    user = (await db.execute(select(User).where(User.alias == alias))).scalar_one_or_none()
+    # fallback if somehow not found (race), use current_user_id
+    user_id = str(user.id) if user else (current_user_id or alias)
+    user_alias = user.alias if user else alias
+
+    # determine previous for logging
+    previous_alias = None
+    token_prev = request.cookies.get("chat_token", "")
+    if token_prev:
+        previous_alias = get_alias_from_token(token_prev)
 
     log_business_event(
         "account.username_changed",
         "Username changed",
-        username=username,
-        previous_username=old_username,
+        username=user_alias,
+        previous_username=previous_alias,
+        user_id=user_id,
     )
 
-    token = create_token(username)
+    token = create_token(user_id, user_alias)
 
     room = request.query_params.get("room", "offtopic")
     connected_html = templates.env.get_template(

@@ -262,7 +262,7 @@ class TestUserIdentity:
                 alice = (await db.execute(
                     select(User).where(User.id == alice_id)
                 )).scalar_one()
-                alice.username = "Carol"
+                alice.alias = "Carol"
                 await db.commit()
             async with maker() as db:
                 stored_username = (await db.execute(

@@ -94,14 +94,16 @@ class TestPostPage:
             assert first
 
     def test_change_username_after_auto_identity(self):
+        import secrets as _secrets
+        unique = f"CustomName-{_secrets.randbelow(9000)+1000}"
         with TestClient(app) as client:
             self._page_username(client, "/en/firstcommit")
             response = client.post(
                 "/api/set-username?room=firstcommit",
-                data={"username": "CustomName", "room": "firstcommit"},
+                data={"username": unique, "room": "firstcommit"},
             )
             assert response.status_code == 200
-            assert self._page_username(client, "/en/firstcommit") == "CustomName"
+            assert self._page_username(client, "/en/firstcommit") == unique
 
     def test_interaction_hints_render(self):
         with TestClient(app) as client:

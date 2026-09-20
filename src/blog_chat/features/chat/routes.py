@@ -16,7 +16,8 @@ from blog_chat.core.responses import create_templates
 from blog_chat.features.chat.models import Message
 from blog_chat.features.chat.services import get_or_create_user_id, resolve_user_id
 from blog_chat.features.chat.websocket import ConnectionManager
-from blog_chat.features.accounts.services import get_username_from_token
+from blog_chat.features.accounts.services import get_alias_from_token, get_user_id_from_token, decode_token
+from blog_chat.features.accounts.models import User
 
 router = APIRouter()
 
@@ -32,7 +33,7 @@ HEARTBEAT_INTERVAL = 30
 CONTROL_TYPES = {"sync"}
 
 
-async def load_history(db: AsyncSession, room: str, username: str, timezone_name: str | None) -> list[dict]:
+async def load_history(db: AsyncSession, room: str, current_user_id: str | None, timezone_name: str | None) -> list[dict]:
     result = await db.execute(
         select(Message)
         .options(selectinload(Message.user))
@@ -41,12 +42,31 @@ async def load_history(db: AsyncSession, room: str, username: str, timezone_name
         .limit(50)
     )
     messages = result.scalars().all()
-    current_user_id = await resolve_user_id(db, username)
     messages_list = []
+    # resolve current alias if current_user_id is provided (support both uuid and legacy alias string)
+    current_alias = None
+    if current_user_id is not None:
+        # try as uuid
+        cur_user = await db.get(User, str(current_user_id))
+        if cur_user:
+            current_alias = cur_user.alias
+        else:
+            # fallback: current_user_id might itself be an alias string (legacy tests)
+            if len(str(current_user_id)) != 36:
+                current_alias = str(current_user_id)
+                resolved = await resolve_user_id(db, str(current_user_id))
+                if resolved:
+                    current_user_id = resolved
+            else:
+                current_alias = None
     for m in messages:
-        display_name = m.user.username if m.user is not None else m.username
-        is_own = (m.user_id is not None and m.user_id == current_user_id) \
-            or m.username == username
+        # alias is current display, username is audit snapshot
+        display_name = m.user.alias if m.user is not None and hasattr(m.user, 'alias') else m.username
+        is_own = (m.user_id is not None and current_user_id is not None and str(m.user_id) == str(current_user_id))
+        # legacy fallback where user_id is NULL -> match by alias snapshot
+        if not is_own and m.user_id is None and current_alias is not None:
+            if m.username == current_alias:
+                is_own = True
         html = render_message_template(
             display_name, m.content, m.timestamp.isoformat(), is_own,
             show_header=True, timezone_name=timezone_name)
@@ -129,16 +149,20 @@ def parse_control_message(text: str) -> dict | None:
 async def websocket_endpoint(websocket: WebSocket, db: AsyncSession = Depends(get_db)):
     room = websocket.query_params.get("room", "offtopic")
     token = websocket.cookies.get("chat_token", "")
-    username = get_username_from_token(token)
+    alias = get_alias_from_token(token) or "Guest"
+    user_id = get_user_id_from_token(token)
+    # legacy fallback: resolve user_id from alias if token had no sub
+    if user_id is None and alias != "Guest":
+        user_id = await resolve_user_id(db, alias)
     timezone_name = websocket.cookies.get("chat_timezone")
 
-    if not await manager.connect(websocket, room, username, timezone_name):
+    if not await manager.connect(websocket, room, alias, timezone_name):
         logger.warning(
             "chat.connect.rejected",
             extra={
                 "event": "chat.connect.rejected",
                 "room": room,
-                "username": username,
+                "username": alias,
                 "detail": "ops",
             },
         )
@@ -146,12 +170,12 @@ async def websocket_endpoint(websocket: WebSocket, db: AsyncSession = Depends(ge
 
     logger.info(
         "chat.user.joined",
-        extra={"event": "chat.user.joined", "room": room, "username": username, "detail": "ops"},
+        extra={"event": "chat.user.joined", "room": room, "username": alias, "detail": "ops"},
     )
 
     await websocket.send_json({
         "type": "history",
-        "messages": await load_history(db, room, username, timezone_name),
+        "messages": await load_history(db, room, user_id, timezone_name),
     })
 
     try:
@@ -173,7 +197,7 @@ async def websocket_endpoint(websocket: WebSocket, db: AsyncSession = Depends(ge
                 if control.get("type") == "sync":
                     await websocket.send_json({
                         "type": "history",
-                        "messages": await load_history(db, room, username, timezone_name),
+                        "messages": await load_history(db, room, user_id, timezone_name),
                     })
                 continue
 
@@ -187,7 +211,7 @@ async def websocket_endpoint(websocket: WebSocket, db: AsyncSession = Depends(ge
                     extra={
                         "event": "chat.message.rejected",
                         "room": room,
-                        "username": username,
+                        "username": alias,
                         "reason": "too_long",
                         "detail": "ops",
                     },
@@ -204,7 +228,7 @@ async def websocket_endpoint(websocket: WebSocket, db: AsyncSession = Depends(ge
                     extra={
                         "event": "chat.message.rejected",
                         "room": room,
-                        "username": username,
+                        "username": alias,
                         "reason": "rate_limited",
                         "detail": "ops",
                     },
@@ -217,14 +241,17 @@ async def websocket_endpoint(websocket: WebSocket, db: AsyncSession = Depends(ge
 
             client_ip = websocket.client.host if websocket.client else None
 
-            user_id = await get_or_create_user_id(db, username, client_ip)
+            resolved_user_id = await get_or_create_user_id(db, alias, client_ip)
+            # keep user_id in sync if guest first message created the user
+            if user_id is None and resolved_user_id:
+                user_id = resolved_user_id
 
             new_message = Message(
                 room_slug=room,
-                username=username,
+                username=alias,
                 content=message_text,
                 ip_address=client_ip,
-                user_id=user_id,
+                user_id=resolved_user_id,
             )
             db.add(new_message)
             await db.commit()
@@ -235,7 +262,7 @@ async def websocket_endpoint(websocket: WebSocket, db: AsyncSession = Depends(ge
                 "chat.message.sent",
                 "Chat message sent",
                 room=room,
-                username=username,
+                username=alias,
                 message_id=new_message.id,
             )
 
@@ -248,8 +275,12 @@ async def websocket_endpoint(websocket: WebSocket, db: AsyncSession = Depends(ge
                 recipient_user_id = await resolve_user_id(db, recipient_username)
                 is_own = (
                     new_message.user_id is not None
-                    and new_message.user_id == recipient_user_id
-                ) or new_message.username == recipient_username
+                    and recipient_user_id is not None
+                    and str(new_message.user_id) == str(recipient_user_id)
+                )
+                # legacy where recipient has no user_id yet
+                if not is_own and new_message.user_id is None:
+                    is_own = new_message.username == recipient_username
                 html = render_message_template(
                     new_message.username,
                     new_message.content,
@@ -275,5 +306,5 @@ async def websocket_endpoint(websocket: WebSocket, db: AsyncSession = Depends(ge
         await manager.broadcast_presence(room)
         logger.info(
             "chat.user.left",
-            extra={"event": "chat.user.left", "room": room, "username": username, "detail": "ops"},
+            extra={"event": "chat.user.left", "room": room, "username": alias, "detail": "ops"},
         )
