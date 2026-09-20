@@ -9,19 +9,19 @@ lang: fr
 lang_group: dia-del-inventor
 ---
 
-<div style="width:100%; display: flex; justify-content: center;">
+<div style="width:100%; display:flex; justify-content:center;">
 
-![](/static/posts/Alan_Turing-smiling.jpg)
+<img src="/static/posts/Alan_Turing-smiling.jpg" alt="Alan Turing souriant" style="max-width:100%; height:auto;" loading="lazy">
 
 </div>
 
 J'ai trouvé Alan Turing souriant, et j'ai trouvé intéressant de découvrir une image comme celle-ci. Ça m'attire l'attention parce que nous avons tous plutôt l'image mentale d'un inventeur comme celui-ci:
 
-<div style="display:flex; gap: 32px; align-items:center;">
+<div style="display:flex; gap:32px; align-items:center; flex-wrap:wrap; justify-content:center;">
 
-![](/static/posts/Vegapunk_Anime_Infobox.webp)
+<img src="/static/posts/Vegapunk_Anime_Infobox.webp" alt="Vegapunk" style="max-width:45%; height:auto;" loading="lazy">
 
-![](/static/posts/einstein_lengua.jpeg)
+<img src="/static/posts/einstein_lengua.jpeg" alt="Einstein tirant la langue" style="max-width:45%; height:auto;" loading="lazy">
 
 </div>
 

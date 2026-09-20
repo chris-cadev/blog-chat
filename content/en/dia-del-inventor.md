@@ -9,19 +9,19 @@ lang: en
 lang_group: dia-del-inventor
 ---
 
-<div style="width:100%; display: flex; justify-content: center;">
+<div style="width:100%; display:flex; justify-content:center;">
 
-![](/static/posts/Alan_Turing-smiling.jpg)
+<img src="/static/posts/Alan_Turing-smiling.jpg" alt="Alan Turing smiling" style="max-width:100%; height:auto;" loading="lazy">
 
 </div>
 
 The person in the photo is Alan Turing. I found him smiling, and I found it interesting to discover an image like this of him. It attracts my attention because we all have rather the mental image of an inventor like this:
 
-<div style="display:flex; gap: 32px; align-items:center;">
+<div style="display:flex; gap:32px; align-items:center; flex-wrap:wrap; justify-content:center;">
 
-![](/static/posts/Vegapunk_Anime_Infobox.webp)
+<img src="/static/posts/Vegapunk_Anime_Infobox.webp" alt="Vegapunk" style="max-width:45%; height:auto;" loading="lazy">
 
-![](/static/posts/einstein_lengua.jpeg)
+<img src="/static/posts/einstein_lengua.jpeg" alt="Einstein sticking out tongue" style="max-width:45%; height:auto;" loading="lazy">
 
 </div>
 

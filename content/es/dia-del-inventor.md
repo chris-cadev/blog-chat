@@ -9,9 +9,9 @@ lang: es
 lang_group: dia-del-inventor
 ---
 
-<div style="width:100%; display: flex; justify-content: center;">
+<div style="width:100%; display:flex; justify-content:center;">
 
-![](/static/posts/Alan_Turing-smiling.jpg)
+<img src="/static/posts/Alan_Turing-smiling.jpg" alt="Alan Turing sonriendo" style="max-width:100%; height:auto;" loading="lazy">
 
 </div>
 
@@ -19,11 +19,11 @@ Quien aparece en la foto es **Alan Turing**. Lo encontré sonriendo, y me pareci
 
 Me llama la atención porque todos tenemos más bien la imagen mental de un inventor así:
 
-<div style="display:flex; gap: 32px; align-items:center;">
+<div style="display:flex; gap:32px; align-items:center; flex-wrap:wrap; justify-content:center;">
 
-![](/static/posts/Vegapunk_Anime_Infobox.webp)
+<img src="/static/posts/Vegapunk_Anime_Infobox.webp" alt="Vegapunk" style="max-width:45%; height:auto;" loading="lazy">
 
-![](/static/posts/einstein_lengua.jpeg)
+<img src="/static/posts/einstein_lengua.jpeg" alt="Einstein sacando la lengua" style="max-width:45%; height:auto;" loading="lazy">
 
 </div>
 
