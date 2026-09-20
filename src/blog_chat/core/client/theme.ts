@@ -1,50 +1,92 @@
-const THEME_COOKIE_NAME = "theme-mode";
 import { trackUmami } from "./umami";
 
-export function initTheme() {
-  const themeToggle = document.getElementById("theme-toggle") as HTMLInputElement | null;
+const THEME_STORAGE_KEY = "blog-theme-mode";
+const THEME_COOKIE_NAME = "theme-mode";
 
-  const savedTheme = getThemeFromCookie();
-  if (savedTheme) {
-    applyTheme(savedTheme);
+export function initTheme() {
+  const themeToggle = document.getElementById("theme-toggle") as HTMLElement | null;
+  const html = document.documentElement;
+
+  function getStoredTheme(): string {
+    try {
+      const ls = localStorage.getItem(THEME_STORAGE_KEY);
+      if (ls === "dark" || ls === "light") return ls;
+    } catch {}
+    const cookie = getThemeFromCookie();
+    if (cookie === "nord" || cookie === "nord-light") return cookie === "nord" ? "dark" : "light";
+    if (cookie === "dark" || cookie === "light") return cookie;
+    return "dark";
+  }
+
+  function applyTheme(mode: string) {
+    const isDark = mode === "dark";
+    html.setAttribute("data-theme-mode", isDark ? "dark" : "light");
+    // compat for any legacy selectors
+    html.setAttribute("data-theme", isDark ? "nord" : "nord-light");
+    try {
+      localStorage.setItem(THEME_STORAGE_KEY, isDark ? "dark" : "light");
+    } catch {}
+    setThemeCookie(isDark ? "nord" : "nord-light");
     if (themeToggle) {
-      themeToggle.checked = savedTheme === "nord";
-    }
-  } else {
-    applyTheme("nord");
-    if (themeToggle) {
-      themeToggle.checked = true;
+      if (themeToggle instanceof HTMLInputElement) {
+        themeToggle.checked = isDark;
+      } else {
+        themeToggle.textContent = isDark ? "☀️" : "🌙";
+      }
     }
   }
+
+  applyTheme(getStoredTheme());
 
   if (themeToggle) {
-    themeToggle.addEventListener("change", () => {
-      const newTheme = themeToggle.checked ? "nord" : "nord-light";
-      applyTheme(newTheme);
-      setThemeCookie(newTheme);
-      trackUmami("Theme Toggle", { theme: newTheme });
-    });
+    if (themeToggle instanceof HTMLInputElement) {
+      themeToggle.addEventListener("change", () => {
+        const newMode = (themeToggle as HTMLInputElement).checked ? "dark" : "light";
+        applyTheme(newMode);
+        trackUmami("Theme Toggle", { theme: newMode });
+      });
+    } else {
+      themeToggle.addEventListener("click", () => {
+        const current = html.getAttribute("data-theme-mode") === "dark" ? "dark" : "light";
+        const next = current === "dark" ? "light" : "dark";
+        applyTheme(next);
+        trackUmami("Theme Toggle", { theme: next });
+      });
+    }
   }
+
+  initChatPanel();
 }
 
-function applyTheme(theme: string) {
-  const html = document.documentElement;
-  if (theme === "nord") {
-    html.setAttribute("data-theme", "nord");
-    html.setAttribute("data-theme-mode", "dark");
-  } else {
-    html.setAttribute("data-theme", "nord-light");
-    html.setAttribute("data-theme-mode", "light");
+function initChatPanel() {
+  const chatPanel = document.getElementById("chat-panel");
+  const chatToggle = document.getElementById("chat-toggle");
+  const chatBackdrop = document.getElementById("chat-backdrop");
+  if (!chatPanel || !chatToggle) return;
+
+  function openChat() {
+    chatPanel!.classList.add("open");
+    chatBackdrop?.classList.add("open");
+    chatToggle!.classList.add("active");
   }
+  function closeChat() {
+    chatPanel!.classList.remove("open");
+    chatBackdrop?.classList.remove("open");
+    chatToggle!.classList.remove("active");
+  }
+
+  chatToggle.addEventListener("click", () => {
+    if (chatPanel.classList.contains("open")) closeChat();
+    else openChat();
+  });
+  chatBackdrop?.addEventListener("click", closeChat);
 }
 
 function getThemeFromCookie(): string | null {
   const cookies = document.cookie.split(";");
   for (const cookie of cookies) {
     const [name, value] = cookie.trim().split("=");
-    if (name === THEME_COOKIE_NAME) {
-      return value;
-    }
+    if (name === THEME_COOKIE_NAME) return value;
   }
   return null;
 }

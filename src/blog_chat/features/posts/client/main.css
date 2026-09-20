@@ -1,16 +1,1 @@
-@import "./markdown.css";
-
-.post-list {
-    list-style: none;
-    padding: 0;
-}
-
-.post-list li {
-    padding: 0.5rem 0;
-    border-bottom: 1px solid oklch(var(--b3));
-}
-
-.post-list a {
-    color: oklch(var(--p));
-    text-decoration: underline;
-}
+/* consolidated into main.css */

@@ -32,10 +32,10 @@ FRAME_SRC_ALLOWLIST = [
 CSP_TEMPLATE = "; ".join([
     "default-src 'self'",
     "script-src {script_src}",
-    "style-src 'self' 'unsafe-inline'",
+    "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
     "img-src 'self' data:",
     "connect-src {connect_src}",
-    "font-src 'self'",
+    "font-src 'self' https://fonts.gstatic.com",
     "object-src 'none'",
     "base-uri 'self'",
     "form-action 'self'",
