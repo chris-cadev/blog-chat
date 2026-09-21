@@ -12,15 +12,13 @@ lang: en
 lang_group: how-to-use-net-framework-in-vscode
 ---
 
-# How to use .NET Framework in VS Code
+At a factory in Tijuana, everything ran on Microsoft and IBM — .NET, C#, Windows Server. Visual Studio was the standard IDE, but loading it with large solutions was heavy. VS Code was the lightweight alternative: it started fast, didn't eat RAM, and for everyday tasks like editing configs or debugging scripts, it was more than enough.
 
-En una fábrica en Tijuana, todo corría sobre Microsoft y IBM — .NET, C#, Windows Server. Visual Studio era el IDE estándar, pero cargarlo con soluciones grandes pesaba. VS Code era la alternativa ligera: arrancaba rápido, no comía RAM, y para tareas cotidianas como editar configs o debugear scripts, sobraba.
-
-Lo que faltaba era un `EditorConfig` que unificara las reglas de formato entre ambos editores. Sin él, cada uno formateaba a su manera y los diffs eran un caos. Aquí está el que funcionó, listo para copiar.
+What was missing was an `EditorConfig` that unified formatting rules between both editors. Without it, each one formatted its own way and diffs were a mess. Here's the one that worked, ready to copy.
 
 ## EditorConfig essentials
 
-Empieza con las reglas globales: charset UTF-8, newlines consistentes, y indentación por tipo de archivo. Esto asegura que VS y VS Code compartan las mismas reglas base.
+Start with the global rules: UTF-8 charset, consistent newlines, and indentation per file type. This ensures VS and VS Code share the same base rules.
 
 ```toml
 # Top-most EditorConfig file
@@ -65,7 +63,7 @@ end_of_line = crlf
 
 ## C# formatting rules
 
-Las reglas de formato de C# evitan diffs innecesarios entre editores. Lo más importante: dónde van los braces, cómo se indentan los blocks, y los espacios alrededor de operadores.
+C# formatting rules prevent unnecessary diffs between editors. The most important part: where braces go, how blocks are indented, and spaces around operators.
 
 ```toml
 [*.cs]
@@ -102,7 +100,7 @@ csharp_space_before_semicolon_in_for_statement = false
 
 ## Naming conventions
 
-Las naming conventions son críticas en equipo. Si todos siguen las mismas reglas, los code reviews se enfocan en lógica, no en estilo.
+Naming conventions are critical in a team. If everyone follows the same rules, code reviews focus on logic, not style.
 
 ```toml
 # Async methods should end with Async
@@ -152,7 +150,7 @@ dotnet_naming_style.prefix_underscore.capitalization = camel_case
 
 ## Diagnostic severities
 
-Estas son las reglas de diagnóstico que realmente importan en el día a día. Las IDE van por lo visual, las CA por calidad de código. El config completo tiene más de 60 reglas — usa las que necesites.
+These are the diagnostic rules that actually matter day-to-day. IDE rules handle the visual stuff, CA rules handle code quality. The full config has over 60 rules — use the ones you need.
 
 ```toml
 # IDE diagnostics
@@ -184,7 +182,7 @@ dotnet_diagnostic.CA2235.severity = warning # Mark all non-serializable fields
 
 ## web.config: language encoding
 
-Si tu app maneja internacionalización o necesita una culture específica, el `web.config` debe declarar encoding y culture explícitamente. Sin esto, ASP.NET usa la culture del servidor — que en una fábrica en Tijuana probablemente no es la que quieres.
+If your app handles internationalization or needs a specific culture, the `web.config` must declare encoding and culture explicitly. Without this, ASP.NET uses the server's culture — which in a factory in Tijuana probably isn't the one you want.
 
 ```xml
 <system.web>
@@ -199,6 +197,6 @@ Si tu app maneja internacionalización o necesita una culture específica, el `w
 
 ## Getting the full config
 
-Este post cubre las secciones más útiles. El config completo tiene más de 300 líneas con todas las reglas de naming, formatting, y diagnostics de .NET.
+This post covers the most useful sections. The full config has over 300 lines with all the naming, formatting, and diagnostics rules for .NET.
 
-Copia las secciones que necesites, o descarga el config completo desde el repositorio del proyecto. Lo importante es que VS y VS Code compartan el mismo `EditorConfig` — eso es lo que evita los diffs de formato que te vuelven loco en code review.
+Copy the sections you need, or download the full config from the project repository. The important thing is that VS and VS Code share the same `EditorConfig` — that's what prevents the formatting diffs that drive you crazy during code review.
