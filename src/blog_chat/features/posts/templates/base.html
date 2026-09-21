@@ -45,6 +45,10 @@
                         {% set _href = '/' + l + '/tags' %}
                     {% else %}
                         {% set _href = '/' + l + '/' %}
+                        {% set _page = request.query_params.get('page') %}
+                        {% if _page %}
+                            {% set _href = _href + '?page=' + _page %}
+                        {% endif %}
                     {% endif %}
                     <a href="{{ _href }}" lang="{{ l }}" title="{{ l }}" class="{% if is_active %}active{% endif %}" data-track-language="{{ l }}">{% if l == 'en' %}🇬🇧{% elif l == 'es' %}🇲🇽{% else %}🇫🇷{% endif %}</a>
                     {% endfor %}

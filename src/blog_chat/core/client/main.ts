@@ -16,3 +16,19 @@ function bindLanguageTracking() {
 }
 
 bindLanguageTracking();
+
+function syncLangSwitcher() {
+  const search = window.location.search;
+  document.querySelectorAll<HTMLElement>("[data-track-language]").forEach((el) => {
+    const a = el.closest("a");
+    if (a) {
+      const url = new URL(a.href);
+      url.search = search;
+      a.href = url.href;
+    }
+  });
+}
+
+document.addEventListener("DOMContentLoaded", syncLangSwitcher);
+document.body.addEventListener("htmx:afterSwap", syncLangSwitcher);
+window.addEventListener("popstate", syncLangSwitcher);
