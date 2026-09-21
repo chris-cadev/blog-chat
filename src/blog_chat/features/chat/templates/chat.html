@@ -4,6 +4,8 @@
             <span class="chat-title-text" title="{{ post.title }}">{{ post.title }}</span>
         {% elif tag or is_tags_page %}
             {{ t('chat_title') }}
+        {% elif chat_post %}
+            <span class="chat-title-text" title="{{ chat_post.title }}">{{ chat_post.title }}</span>
         {% elif pinned_post %}
             <span class="chat-pinned" aria-hidden="true">📌</span> <a href="/{{ lang }}/{{ pinned_post.slug }}" class="chat-title-link" title="{{ pinned_post.title }}">{{ pinned_post.title }}</a>
         {% else %}
@@ -25,7 +27,7 @@
     <div class="chat-empty" id="chat-empty">
         <p class="chat-empty-text">{{ t('no_messages') }}</p>
         <div class="chat-starter-prompts" id="starter-prompts">
-            {% if post %}
+            {% if post or chat_post %}
             <button class="chat-starter" type="button" data-message="{{ t('starter_ask_message') }}" data-starter="{{ t('starter_ask') }}" data-starter-message="{{ t('starter_ask_message') }}">{{ t('starter_ask') }}</button>
             <button class="chat-starter" type="button" data-message="{{ t('starter_take_message') }}" data-starter="{{ t('starter_take') }}" data-starter-message="{{ t('starter_take_message') }}">{{ t('starter_take') }}</button>
             <button class="chat-starter" type="button" data-message="{{ t('starter_say_hi_message') }}" data-starter="{{ t('starter_say_hi') }}" data-starter-message="{{ t('starter_say_hi_message') }}">{{ t('starter_say_hi') }}</button>

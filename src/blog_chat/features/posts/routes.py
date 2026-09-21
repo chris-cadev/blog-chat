@@ -402,6 +402,7 @@ def read_lang_index(request: Request, lang: str, page: int = Query(1, ge=1)):
     page_posts, total_pages, current_page = _paginate(regular_posts, page)
     log_business_event("page.view", "Blog index viewed", lang=lang, path=f"/{lang}/")
     is_htmx = request.headers.get("HX-Request")
+    chat_post = pinned_posts[0] if pinned_posts else (regular_posts[0] if regular_posts else None)
     return _render(
         "_posts_page.html" if is_htmx else "index.html",
         request,
@@ -409,7 +410,8 @@ def read_lang_index(request: Request, lang: str, page: int = Query(1, ge=1)):
         posts=page_posts,
         pinned_posts=pinned_posts,
         pinned_post=pinned_posts[0] if pinned_posts else None,
-        room=pinned_posts[0]["slug"] if pinned_posts else "offtopic",
+        chat_post=chat_post,
+        room=chat_post["slug"] if chat_post else "offtopic",
         slug=None,
         page=current_page,
         total_pages=total_pages,
