@@ -6,7 +6,7 @@ from datetime import datetime
 
 from markupsafe import Markup
 
-from fastapi import APIRouter, Request
+from fastapi import APIRouter, Query, Request
 from fastapi.responses import PlainTextResponse, Response, RedirectResponse
 
 from blog_chat.core.filters import add_filter, add_markdown_filter
@@ -67,10 +67,19 @@ templates.env.globals["get_post_by_lang_group"] = get_post_by_lang_group
 # Tags in content: letters (incl. accents), digits, hyphen, underscore, space, 1-64 chars.
 # Rejects payloads like "{:tag}", "../", "<script>", "%2e", etc. before business logic.
 _TAG_RE = re.compile(r"^[\w \-]{1,64}$", re.UNICODE)
+PER_PAGE = 10
 
 
 def _is_valid_tag(tag: str) -> bool:
     return bool(_TAG_RE.fullmatch(tag))
+
+
+def _paginate(items: list, page: int, per_page: int = PER_PAGE) -> tuple[list, int, int]:
+    total = len(items)
+    total_pages = max(1, (total + per_page - 1) // per_page)
+    page = max(1, min(page, total_pages))
+    start = (page - 1) * per_page
+    return items[start:start + per_page], total_pages, page
 
 
 def _tags_data(lang: str):
@@ -299,8 +308,9 @@ def _render(
     if status_code is not None:
         template_kwargs["status_code"] = status_code
     response = templates.TemplateResponse(
+        request,
         template_name,
-        _context(request, lang, **extra),
+        context=_context(request, lang, **extra),
         **template_kwargs,
     )
     if apply_lang_cookie and lang in LANGS:
@@ -372,7 +382,7 @@ def read_root(request: Request):
 
 
 @router.get("/{lang}/")
-def read_lang_index(request: Request, lang: str):
+def read_lang_index(request: Request, lang: str, page: int = Query(1, ge=1)):
     if lang not in LANGS:
         return _render(
             "index.html",
@@ -385,17 +395,25 @@ def read_lang_index(request: Request, lang: str):
             slug=None,
             language_switcher=_language_switcher(request, None, None),
         )
-    posts = get_posts(lang)
-    pinned_post = posts[0] if posts else None
+    all_posts = get_posts(lang)
+    pinned_posts = [p for p in all_posts if p.get("pinned")][:3]
+    pinned_slugs = {p["slug"] for p in pinned_posts}
+    regular_posts = [p for p in all_posts if p["slug"] not in pinned_slugs]
+    page_posts, total_pages, current_page = _paginate(regular_posts, page)
     log_business_event("page.view", "Blog index viewed", lang=lang, path=f"/{lang}/")
+    is_htmx = request.headers.get("HX-Request")
     return _render(
-        "index.html",
+        "_posts_page.html" if is_htmx else "index.html",
         request,
         lang,
-        posts=posts,
-        pinned_post=pinned_post,
-        room=pinned_post["slug"] if pinned_post else "offtopic",
+        posts=page_posts,
+        pinned_posts=pinned_posts,
+        pinned_post=pinned_posts[0] if pinned_posts else None,
+        room=pinned_posts[0]["slug"] if pinned_posts else "offtopic",
         slug=None,
+        page=current_page,
+        total_pages=total_pages,
+        total_posts=len(regular_posts),
         language_switcher=_language_switcher(request, lang, None),
     )
 
@@ -409,14 +427,15 @@ def read_tag_redirect(request: Request, tag: str):
 
 
 @router.get("/{lang}/tags/{tag}")
-def read_tag(request: Request, lang: str, tag: str):
+def read_tag(request: Request, lang: str, tag: str, page: int = Query(1, ge=1)):
     if lang not in LANGS:
         return RedirectResponse(f"/{_preferred_lang(request)}/tags/{tag}")
     if not _is_valid_tag(tag):
         return _render_tag_not_found(request, lang)
-    posts = [p for p in get_posts(lang) if tag in (p.get("tags") or [])]
-    if not posts:
+    all_posts = [p for p in get_posts(lang) if tag in (p.get("tags") or [])]
+    if not all_posts:
         return _render_tag_not_found(request, lang)
+    page_posts, total_pages, current_page = _paginate(all_posts, page)
     log_business_event(
         "page.view",
         "Tag page viewed",
@@ -424,14 +443,18 @@ def read_tag(request: Request, lang: str, tag: str):
         tag=tag,
         path=f"/{lang}/tags/{tag}",
     )
+    is_htmx = request.headers.get("HX-Request")
     return _render(
-        "index.html",
+        "_posts_page.html" if is_htmx else "index.html",
         request,
         lang,
-        posts=posts,
+        posts=page_posts,
         tag=tag,
         room="offtopic",
         slug=None,
+        page=current_page,
+        total_pages=total_pages,
+        total_posts=len(all_posts),
         language_switcher=_language_switcher(request, lang, None),
     )
 
@@ -484,13 +507,15 @@ def read_item(request: Request, lang: str, slug: str):
     post = get_post(slug, lang)
     if not post:
         _posts = get_posts(lang)
-        _pinned = _posts[0] if _posts else None
+        _pinned_posts = [p for p in _posts if p.get("pinned")][:3]
+        _pinned = _pinned_posts[0] if _pinned_posts else None
         return _render(
             "index.html",
             request,
             lang,
             status_code=404,
             posts=_posts,
+            pinned_posts=_pinned_posts,
             pinned_post=_pinned,
             room=_pinned["slug"] if _pinned else "offtopic",
             error=_make_t(lang)("post_not_found"),

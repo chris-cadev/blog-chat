@@ -1,0 +1,94 @@
+{% if pinned_posts and page == 1 %}
+<div class="pinned-section">
+  {% for pp in pinned_posts %}
+  <div class="post-card pinned">
+    <a href="/{{ pp.lang or lang or 'en' }}/{{ pp.slug }}" class="post-card-link" data-track-post="{{ pp.slug }}">
+      <span class="post-card-date">{{ pp.updated or pp.created or '' }}</span>
+      <div class="post-card-body">
+        <h2>{{ pp.title }}</h2>
+        {% set excerpt = (pp.description or pp.content) | plain_excerpt(160) %}
+        {% if excerpt %}
+        <p class="post-card-excerpt">{{ excerpt }}</p>
+        {% endif %}
+      </div>
+    </a>
+    {% if pp.tags %}
+    <div class="post-card-tags">
+      {% for tag_item in pp.tags %}
+      <a href="/{{ lang }}/tags/{{ tag_item }}" class="tag tag-{{ tag_item|tag_class }}"{{ tag_item|tag_style }} data-track-tag="{{ tag_item }}">{{ tag_item }}</a>
+      {% endfor %}
+    </div>
+    {% endif %}
+  </div>
+  {% endfor %}
+</div>
+{% endif %}
+
+{% if not posts %}
+<p style="color: var(--text-muted);">{{ t('no_posts') }}</p>
+{% else %}
+<ul class="post-list">
+  {% for post in posts %}
+  <li>
+    <div class="post-card">
+      <a href="/{{ post.lang or lang or 'en' }}/{{ post.slug }}" class="post-card-link" data-track-post="{{ post.slug }}">
+        <span class="post-card-date">{{ post.updated or post.created or '' }}</span>
+        <div class="post-card-body">
+          <h2>{{ post.title }}</h2>
+          {% set excerpt = (post.description or post.content) | plain_excerpt(160) %}
+          {% if excerpt %}
+          <p class="post-card-excerpt">{{ excerpt }}</p>
+          {% endif %}
+        </div>
+      </a>
+      {% if post.tags %}
+      <div class="post-card-tags">
+        {% for tag_item in post.tags %}
+        <a href="/{{ lang }}/tags/{{ tag_item }}" class="tag tag-{{ tag_item|tag_class }}"{{ tag_item|tag_style }} data-track-tag="{{ tag_item }}">{{ tag_item }}</a>
+        {% endfor %}
+      </div>
+      {% endif %}
+    </div>
+  </li>
+  {% endfor %}
+</ul>
+
+{% if total_pages > 1 %}
+<nav class="pagination" aria-label="Page navigation">
+  {% set base_url = '/'+lang+'/' if not tag else '/'+lang+'/tags/'+tag+'/' %}
+  {% if page > 1 %}
+  <a href="{{ base_url }}?page={{ page - 1 }}" class="pagination-prev" rel="prev"
+     hx-get="{{ base_url }}?page={{ page - 1 }}"
+     hx-target="#posts-page"
+     hx-swap="innerHTML"
+     hx-push-url="true">← Prev</a>
+  {% else %}
+  <span class="pagination-prev disabled">← Prev</span>
+  {% endif %}
+
+  <span class="pagination-pages">
+    {% for p in range(1, total_pages + 1) %}
+      {% if p == page %}
+      <span class="pagination-current" aria-current="page">{{ p }}</span>
+      {% else %}
+      <a href="{{ base_url }}?page={{ p }}" class="pagination-link"
+         hx-get="{{ base_url }}?page={{ p }}"
+         hx-target="#posts-page"
+         hx-swap="innerHTML"
+         hx-push-url="true">{{ p }}</a>
+      {% endif %}
+    {% endfor %}
+  </span>
+
+  {% if page < total_pages %}
+  <a href="{{ base_url }}?page={{ page + 1 }}" class="pagination-next" rel="next"
+     hx-get="{{ base_url }}?page={{ page + 1 }}"
+     hx-target="#posts-page"
+     hx-swap="innerHTML"
+     hx-push-url="true">Next →</a>
+  {% else %}
+  <span class="pagination-next disabled">Next →</span>
+  {% endif %}
+</nav>
+{% endif %}
+{% endif %}

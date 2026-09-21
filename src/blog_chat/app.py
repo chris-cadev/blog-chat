@@ -11,7 +11,7 @@ from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.middleware.cors import CORSMiddleware
 from starlette.middleware.gzip import GZipMiddleware
 from fastapi import FastAPI, Request
-from blog_chat.core.config import UMAMI_ACTIVE, UMAMI_HOST
+from blog_chat.core.config import APP_ENV, UMAMI_ACTIVE, UMAMI_HOST
 from blog_chat.core.database import init_db
 from blog_chat.core.logging import configure_logging, get_logger
 from blog_chat.core.responses import create_templates
@@ -97,7 +97,8 @@ app.add_middleware(
 app.add_middleware(GZipMiddleware, minimum_size=500)
 app.add_middleware(TraceabilityMiddleware)
 app.mount("/static", StaticFiles(directory="static"), name="static")
-app.mount("/drafts", StaticFiles(directory="content/_drafts"), name="drafts")
+if APP_ENV == "development":
+    app.mount("/drafts", StaticFiles(directory="content/_drafts"), name="drafts")
 app.include_router(accounts_router)
 app.include_router(posts_router)
 app.include_router(chat_router)
