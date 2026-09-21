@@ -5,7 +5,11 @@ bun = "latest"
 
 [tasks.test]
 description = "Run the test suite with coverage"
-run = ".venv/bin/pytest -v --cov=blog_chat --cov-report=term-missing --cov-report=html:coverage_html --cov-report=json:coverage_html/coverage.json"
+run = ".venv/bin/pytest -v --ignore=tests/test_e2e --cov=blog_chat --cov-report=term-missing --cov-report=html:coverage_html --cov-report=json:coverage_html/coverage.json"
+
+[tasks.test_e2e]
+description = "Run end-to-end tests with Playwright"
+run = ".venv/bin/pytest tests/test_e2e -v"
 
 [tasks.build]
 description = "Build frontend assets into static/"

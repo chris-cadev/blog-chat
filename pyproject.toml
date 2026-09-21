@@ -39,6 +39,12 @@ test = [
 build-backend = "pdm.backend"
 requires = ["pdm-backend"]
 
+[tool.pytest.ini_options]
+filterwarnings = [
+  "ignore::DeprecationWarning:websockets.legacy.*",
+  "ignore::DeprecationWarning:uvicorn.protocols.websockets.*",
+]
+
 [tool.pdm.scripts]
 # Dev scripts
 client_install = "bun install"
@@ -62,7 +68,8 @@ export_requirements = {shell = "pdm export -f requirements --without-hashes --pr
 prod = "uvicorn blog_chat.app:app --host 0.0.0.0 --port 9091"
 
 # Testing
-test = "pytest -v --cov=blog_chat --cov-report=term-missing --cov-report=html:coverage_html --cov-report=json:coverage_html/coverage.json"
+test = "pytest -v --ignore=tests/test_e2e --cov=blog_chat --cov-report=term-missing --cov-report=html:coverage_html --cov-report=json:coverage_html/coverage.json"
+test_e2e = "pytest tests/test_e2e -v"
 
 # Watch
 watch = "bun run watch"
@@ -80,4 +87,5 @@ dev = [
     "pytest>=9.1.1",
     "pytest-asyncio>=1.4.0",
     "pytest-cov>=7.1.0",
+    "playwright>=1.63.0",
 ]
