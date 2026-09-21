@@ -122,7 +122,11 @@ def parse_to_markdown(text: str) -> str:
 
         text = MARKDOWN_YT_P_RE.sub(_repl_raw, text)
 
-    html = markdown.markdown(text or "")
+    html = markdown.markdown(
+        text or "",
+        extensions=["fenced_code", "codehilite"],
+        extension_configs={"codehilite": {"css_class": "highlight", "guess_lang": False}},
+    )
     # post-process: standalone <p><a href="youtube">...</a></p> -> embed
     def _repl_html(m):
         url, inner = m.group(1), m.group(2)
