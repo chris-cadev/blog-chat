@@ -5,6 +5,12 @@ import pytest
 import uvicorn
 
 from blog_chat.app import app
+from blog_chat.features.chat.routes import db_watcher
+
+
+@pytest.fixture(autouse=True, scope="session")
+def _disable_db_watcher():
+    db_watcher.start = lambda: None
 
 PORT = 8199
 
