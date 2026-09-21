@@ -1,10 +1,18 @@
 ---
+title: cómo usar net framework en vscode
 slug: how-to-use-net-framework-in-vscode
+tags:
+  - dotnet
+  - vscode
+  - herramientas
+created: '2026-08-03'
+updated: '2026-08-03'
+lang: es
 lang_group: how-to-use-net-framework-in-vscode
 ---
 
 
-## Language encoding in web.config
+## Codificación de idioma en web.config
 ```xml
 <system.web>
   <globalization
@@ -15,7 +23,7 @@ lang_group: how-to-use-net-framework-in-vscode
       uiCulture="es-ES" />
 </system.web>
 ```
-## Full Editor config
+## Editor config completo
 
 ```toml
 # Top-most EditorConfig file
