@@ -5,8 +5,8 @@ tags:
   - pressure
   - creativity
   - philosophy
-created: '2026-08-03'
-updated: '2026-08-03'
+created: '2026-01-06'
+updated: '2026-01-06'
 lang: en
 lang_group: por-favor-presionanos-vida
 ---

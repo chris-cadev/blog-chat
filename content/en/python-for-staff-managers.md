@@ -5,8 +5,8 @@ tags:
   - think
   - software
   - leadership
-created: '2026-08-03'
-updated: '2026-08-03'
+created: '2025-11-26'
+updated: '2025-11-26'
 lang: en
 lang_group: python-for-staff-managers
 ---

@@ -5,8 +5,8 @@ tags:
   - videojuegos
   - youtube
   - descubrimiento
-created: '2026-08-03'
-updated: '2026-08-03'
+created: '2025-12-11'
+updated: '2025-12-11'
 lang: es
 lang_group: your-only-move-is-hustle
 ---

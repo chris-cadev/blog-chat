@@ -5,8 +5,8 @@ tags:
   - dotnet
   - vscode
   - outils
-created: '2026-08-03'
-updated: '2026-08-03'
+created: '2025-11-26'
+updated: '2025-11-26'
 lang: fr
 lang_group: how-to-use-net-framework-in-vscode
 ---

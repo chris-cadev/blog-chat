@@ -2,8 +2,8 @@
 title: ideas
 slug: ideas
 tags: []
-created: '2026-08-03'
-updated: '2026-08-03'
+created: '2025-11-03'
+updated: '2025-11-03'
 lang: en
 lang_group: ideas
 ---

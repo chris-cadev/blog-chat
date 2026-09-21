@@ -1,7 +1,6 @@
 ---
 title: Trapped in inaction
 slug: trapped-in-inaction
-pinned: true
 tags:
   - life
   - christmass

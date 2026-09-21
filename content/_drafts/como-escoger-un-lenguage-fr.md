@@ -5,8 +5,8 @@ tags:
   - programmation
   - décision
   - outils
-created: '2026-08-03'
-updated: '2026-08-03'
+created: '2025-11-21'
+updated: '2025-11-21'
 lang: fr
 lang_group: como-escoger-un-lenguage
 ---
