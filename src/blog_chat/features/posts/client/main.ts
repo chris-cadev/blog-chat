@@ -112,3 +112,32 @@ function bindLinkTracking() {
 }
 
 bindLinkTracking();
+
+function initCopyButtons() {
+  document.querySelectorAll<HTMLElement>(".article-body pre").forEach((pre) => {
+    const btn = document.createElement("button");
+    btn.className = "copy-btn";
+    btn.textContent = "Copy";
+    btn.setAttribute("aria-label", "Copy code to clipboard");
+    btn.addEventListener("click", async () => {
+      const code = pre.querySelector("code") ?? pre;
+      try {
+        await navigator.clipboard.writeText(code.textContent ?? "");
+        btn.textContent = "Copied!";
+        btn.classList.add("copied");
+        setTimeout(() => {
+          btn.textContent = "Copy";
+          btn.classList.remove("copied");
+        }, 1500);
+      } catch {
+        btn.textContent = "Failed";
+      }
+    });
+    pre.appendChild(btn);
+  });
+}
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", initCopyButtons);
+} else {
+  initCopyButtons();
+}
