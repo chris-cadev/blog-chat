@@ -275,8 +275,8 @@ img { max-width: 100%; height: auto; display: block; }
   display: flex;
   align-items: baseline;
   flex-wrap: wrap;
-  gap: var(--sp-4);
-  padding: var(--sp-3) var(--sp-4);
+  gap: var(--sp-3);
+  padding: var(--sp-3) 0;
   background: transparent;
   border: none;
   border-bottom: 1px solid var(--border);
@@ -324,6 +324,10 @@ img { max-width: 100%; height: auto; display: block; }
   line-height: 1.35;
   letter-spacing: -0.01em;
   margin-bottom: 2px;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+  overflow: hidden;
 }
 
 .post-card-excerpt {
@@ -339,7 +343,7 @@ img { max-width: 100%; height: auto; display: block; }
 .post-card-tags {
   display: flex;
   flex-wrap: wrap;
-  gap: 4px;
+  gap: var(--sp-1);
   flex: 0 1 auto;
   min-width: 0;
   max-width: 42%;
