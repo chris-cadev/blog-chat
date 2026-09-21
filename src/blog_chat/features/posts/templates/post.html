@@ -32,7 +32,12 @@
 
 {% block title %}{{ post.title }} — Chrislabs Blog{% endblock %}
 
-{% block styles %}{% endblock %}
+{% block styles %}
+<style>
+.article-meta time { font-variant-numeric: tabular-nums; }
+.article-meta .date-updated { font-size: 0.8125rem; color: var(--text-faint); }
+</style>
+{% endblock %}
 
 {% block scripts %}
 <script type="module" src="{{ static_url('chat.js') }}"></script>
@@ -46,10 +51,11 @@
         <div class="article-meta">
             <span class="article-author">Chris</span>
             <span>·</span>
-            {% if post.updated %}
-            <time datetime="{{ post.updated }}">Updated {{ post.updated }}</time>
-            {% elif post.created %}
+            {% if post.created %}
             <time datetime="{{ post.created }}">{{ post.created }}</time>
+            {% endif %}
+            {% if post.updated and post.updated != post.created %}
+            <time class="date-updated" datetime="{{ post.updated }}">(updated {{ post.updated }})</time>
             {% endif %}
         </div>
         {% if post.tags %}
