@@ -4,6 +4,7 @@ slug: meta-rules
 tags:
   - ingeniero
   - vida
+  - reflexion
 created: '2025-11-12'
 updated: '2025-11-12'
 description: Soy un ingeniero, en lo explícito de la palabra. Sigo reglas, y esas reglas hacen

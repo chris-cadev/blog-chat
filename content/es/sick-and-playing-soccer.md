@@ -1,6 +1,10 @@
 ---
 title: Enfermo y jugando fut
 slug: sick-and-playing-soccer
+tags:
+  - deporte
+  - concentracion
+  - salud
 created: '2025-11-07'
 updated: '2025-11-07'
 description: Casi siempre que juego futbol siento como que no la armo, aunque sé que sí hago una

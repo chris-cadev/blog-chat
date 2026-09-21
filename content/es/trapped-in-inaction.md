@@ -4,6 +4,7 @@ slug: trapped-in-inaction
 tags:
   - vida
   - navidad
+  - reflexion
 created: '2025-11-10'
 updated: '2025-11-10'
 description: Ahora que tengo todo listo para empezar a dejar registros de mis pensamientos en público

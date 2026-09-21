@@ -4,6 +4,7 @@ slug: platicando-con-mi-apa
 tags:
   - life
   - software
+  - family
 created: '2025-11-24'
 updated: '2025-11-24'
 description: Today, chatting with my dad, I realized that the programming has always been pretty

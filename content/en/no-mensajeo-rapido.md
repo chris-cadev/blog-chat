@@ -3,6 +3,10 @@ title: I don't usually message quickly.
 slug: no-mensajeo-rapido
 created: '2025-01-04'
 updated: '2025-01-04'
+tags:
+  - communication
+  - technology
+  - life
 lang: en
 lang_group: no-mensajeo-rapido
 ---

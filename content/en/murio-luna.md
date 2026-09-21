@@ -3,6 +3,10 @@ title: Luna died
 slug: murio-luna
 created: '2025-11-02'
 updated: '2025-11-02'
+tags:
+  - pet
+  - loss
+  - life
 lang: en
 lang_group: murio-luna
 ---

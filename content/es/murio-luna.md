@@ -1,6 +1,10 @@
 ---
 title: Se murió la Luna
 slug: murio-luna
+tags:
+  - mascota
+  - perdida
+  - vida
 created: '2025-11-02'
 updated: '2025-11-02'
 lang: es

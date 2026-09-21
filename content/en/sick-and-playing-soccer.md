@@ -6,6 +6,10 @@ updated: '2025-11-07'
 description: Almost every time I play football I feel like I don't play it, although I know I do
   play one or the other. This time I played, I realized that by bringing in my stuffed
   nose I was breathing a little slower
+tags:
+  - sport
+  - focus
+  - health
 lang: en
 lang_group: sick-and-playing-soccer
 ---

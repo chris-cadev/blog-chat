@@ -3,6 +3,10 @@ title: I Want to Reach Ataraxia
 slug: ataraxia
 created: '2025-10-31'
 updated: '2025-10-31'
+tags:
+  - life
+  - philosophy
+  - goals
 lang: en
 lang_group: ataraxia
 ---

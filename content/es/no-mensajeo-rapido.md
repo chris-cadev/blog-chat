@@ -1,6 +1,10 @@
 ---
 title: No suelo mensajear rápido
 slug: no-mensajeo-rapido
+tags:
+  - comunicacion
+  - tecnologia
+  - vida
 created: '2025-01-04'
 updated: '2025-01-04'
 lang: es

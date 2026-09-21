@@ -1,5 +1,12 @@
 ---
+title: por favor, presionanos vida
 slug: por-favor-presionanos-vida
+tags:
+  - presion
+  - creatividad
+  - filosofia
+created: '2026-08-03'
+updated: '2026-08-03'
 lang: es
 lang_group: por-favor-presionanos-vida
 ---

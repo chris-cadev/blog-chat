@@ -3,6 +3,10 @@ title: beaten as a child
 slug: golpe-de-niño
 created: '2005-05-01'
 updated: '2005-05-01'
+tags:
+  - childhood
+  - school
+  - life
 lang: en
 lang_group: golpe-de-niño
 ---

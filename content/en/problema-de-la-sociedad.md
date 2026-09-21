@@ -3,6 +3,8 @@ title: The problem of society
 slug: problema-de-la-sociedad
 tags:
   - thought
+  - society
+  - philosophy
 created: '2012-11-26'
 updated: '2012-11-26'
 lang: en

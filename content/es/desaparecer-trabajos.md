@@ -1,5 +1,12 @@
 ---
+title: desaparecer trabajos
 slug: desaparecer-trabajos
+tags:
+  - trabajo
+  - sociedad
+  - futuro
+created: '2026-08-03'
+updated: '2026-08-03'
 lang: es
 lang_group: desaparecer-trabajos
 ---

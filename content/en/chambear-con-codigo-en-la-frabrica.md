@@ -4,6 +4,7 @@ slug: chambear-con-codigo-en-la-frabrica
 tags:
   - software
   - manufacturing
+  - factory
 created: '2025-10-31'
 updated: '2025-10-31'
 lang: en

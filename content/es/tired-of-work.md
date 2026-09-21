@@ -1,6 +1,10 @@
 ---
 title: Tired and Sick
 slug: tired-of-work
+tags:
+  - trabajo
+  - salud
+  - descanso
 created: '2025-11-05'
 updated: '2025-11-05'
 lang: es

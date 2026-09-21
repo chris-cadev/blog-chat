@@ -5,6 +5,8 @@ tags:
   - software
   - csharp
   - dotnet
+created: '2026-08-03'
+updated: '2026-08-03'
 lang: en
 lang_group: learnings-of-legacy-code
 ---

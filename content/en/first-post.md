@@ -3,6 +3,10 @@ title: Why to share is something I feel as my self?
 slug: first-post
 created: '2024-12-14'
 updated: '2024-12-14'
+tags:
+  - blog
+  - writing
+  - reflection
 lang: en
 lang_group: first-post
 ---

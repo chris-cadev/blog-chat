@@ -4,6 +4,7 @@ slug: platicando-con-mi-apa
 tags:
   - vida
   - software
+  - familia
 created: '2025-11-24'
 updated: '2025-11-24'
 description: Hoy, platicando con mi _apá_, me di cuenta de que la programación siempre ha sido

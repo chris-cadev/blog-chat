@@ -4,6 +4,7 @@ slug: ataraxia
 tags:
   - vida
   - meta
+  - filosofia
 created: '2025-10-31'
 updated: '2025-10-31'
 lang: es

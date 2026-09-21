@@ -1,6 +1,10 @@
 ---
 title: golpe de niño
 slug: golpe-de-niño
+tags:
+  - infancia
+  - escuela
+  - vida
 created: '2005-05-01'
 updated: '2005-05-01'
 lang: es

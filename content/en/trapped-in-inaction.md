@@ -1,9 +1,11 @@
 ---
 title: Trapped in inaction
 slug: trapped-in-inaction
+pinned: true
 tags:
   - life
   - christmass
+  - reflection
 created: '2025-11-10'
 updated: '2025-11-10'
 description: Now that I've got everything ready to start posting my thoughts publicly even though

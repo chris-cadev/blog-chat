@@ -3,6 +3,10 @@ title: Tired and Sick
 slug: tired-of-work
 created: '2025-11-05'
 updated: '2025-11-05'
+tags:
+  - work
+  - health
+  - burnout
 lang: en
 lang_group: tired-of-work
 ---

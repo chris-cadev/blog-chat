@@ -1,6 +1,10 @@
 ---
 title: ¿Por qué compartir es algo que siento como parte de mí misma?
 slug: first-post
+tags:
+  - blog
+  - escritura
+  - reflexion
 created: '2024-12-14'
 updated: '2024-12-14'
 lang: es

@@ -3,6 +3,8 @@ title: mi hermano interrumpe
 slug: mi-hermano-interrumpe
 tags:
   - vida
+  - familia
+  - creacion
 created: '2011-11-26'
 updated: '2011-11-26'
 lang: es

@@ -3,6 +3,10 @@ title: chest pain
 slug: dolor-en-el-pecho
 created: '2017-09-01'
 updated: '2017-09-01'
+tags:
+  - health
+  - university
+  - life
 lang: en
 lang_group: dolor-en-el-pecho
 ---

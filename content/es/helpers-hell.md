@@ -1,6 +1,10 @@
 ---
 title: Infierno de Helpers
 slug: helpers-hell
+tags:
+  - software
+  - codigo
+  - desarrollo
 created: '2025-01-10'
 updated: '2025-01-10'
 description: 'Este blog explora cómo las discusiones innecesarias sobre los "helpers" y la nomenclatura

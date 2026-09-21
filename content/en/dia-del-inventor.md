@@ -3,6 +3,8 @@ title: Inventor day (2025)
 slug: dia-del-inventor
 tags:
   - inventor
+  - technology
+  - thought
 created: '2025-02-17'
 updated: '2025-02-17'
 lang: en

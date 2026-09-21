@@ -4,6 +4,7 @@ slug: meta-rules
 tags:
   - engineer
   - life
+  - reflection
 created: '2025-11-12'
 updated: '2025-11-12'
 description: I am an engineer, in the explicit sense of the word. I follow rules, and those rules

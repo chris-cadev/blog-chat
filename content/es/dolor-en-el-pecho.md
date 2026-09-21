@@ -1,6 +1,10 @@
 ---
 title: dolor en el pecho
 slug: dolor-en-el-pecho
+tags:
+  - salud
+  - universidad
+  - vida
 created: '2017-09-01'
 updated: '2017-09-01'
 lang: es

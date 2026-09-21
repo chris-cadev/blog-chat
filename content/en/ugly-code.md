@@ -3,6 +3,8 @@ title: My take on "ugly code" post of Jimmy Miller
 slug: ugly-code
 tags:
   - work
+  - software
+  - coding
 created: '2025-11-04'
 updated: '2025-11-04'
 lang: en

@@ -5,6 +5,10 @@ created: '2025-01-10'
 updated: '2025-01-10'
 description: 'This blog explores how unnecessary discussions about helpers and code naming conventions
   can distract from what''s essential: business logic and simplicity in software development.'
+tags:
+  - software
+  - coding
+  - naming
 lang: en
 lang_group: helpers-hell
 ---
