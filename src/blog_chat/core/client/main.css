@@ -1055,3 +1055,35 @@ img { max-width: 100%; height: auto; display: block; }
 
 /* ── Selection ──────────────────────────────────────────── */
 ::selection { background: rgba(0, 168, 107, 0.3); }
+
+/* ── 404 page ───────────────────────────────────────────── */
+.not-found {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 50vh;
+  text-align: center;
+  gap: 1rem;
+}
+.not-found-code {
+  font-family: var(--font-display);
+  font-size: clamp(4rem, 15vw, 8rem);
+  font-weight: 700;
+  color: var(--text-muted);
+  line-height: 1;
+  margin: 0;
+}
+.not-found-text {
+  font-size: 1.25rem;
+  color: var(--text-secondary);
+  margin: 0;
+}
+.not-found-link {
+  color: var(--accent);
+  text-decoration: none;
+  font-weight: 500;
+}
+.not-found-link:hover {
+  text-decoration: underline;
+}

@@ -154,6 +154,7 @@ TRANSLATIONS = {
         "starter_reading_message": "What are you reading right now?",
         "language_not_found": "Language not found",
         "post_not_found": "Post not found",
+        "page_not_found": "Page not found",
         "people_online": "People currently in chat",
         "online": "online",
     },
@@ -189,6 +190,7 @@ TRANSLATIONS = {
         "starter_reading_message": "¿Qué estás leyendo ahora?",
         "language_not_found": "Idioma no encontrado",
         "post_not_found": "Artículo no encontrado",
+        "page_not_found": "Página no encontrada",
         "people_online": "Personas en el chat ahora",
         "online": "en línea",
     },
@@ -224,6 +226,7 @@ TRANSLATIONS = {
         "starter_reading_message": "Que lisez-vous en ce moment ?",
         "language_not_found": "Langue introuvable",
         "post_not_found": "Article introuvable",
+        "page_not_found": "Page introuvable",
         "people_online": "Personnes actuellement dans le chat",
         "online": "en ligne",
     },
@@ -337,6 +340,13 @@ def _context(request: Request, lang: str | None, **extra) -> dict:
     }
     ctx.update(extra)
     return ctx
+
+
+def render_404(request: Request):
+    lang = _preferred_lang(request)
+    username = get_username_from_cookie(request) or generate_guest_name()
+    ctx = _context(request, lang, username=username)
+    return templates.TemplateResponse(request, "404.html", context=ctx, status_code=404)
 
 
 @router.get("/robots.txt", response_class=PlainTextResponse)
@@ -504,6 +514,8 @@ def read_item(request: Request, lang: str, slug: str):
             posts=get_posts(),
             error=_make_t("en")("post_not_found"),
             slug=None,
+            page=1,
+            total_pages=1,
             language_switcher=_language_switcher(request, None, None),
         )
     post = get_post(slug, lang)
@@ -522,6 +534,8 @@ def read_item(request: Request, lang: str, slug: str):
             room=_pinned["slug"] if _pinned else "offtopic",
             error=_make_t(lang)("post_not_found"),
             slug=slug,
+            page=1,
+            total_pages=1,
             language_switcher=_language_switcher(request, lang, slug),
         )
     log_business_event(

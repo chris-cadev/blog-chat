@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block title %}404 — {{ t('page_not_found') }}{% endblock %}
+
+{% block content %}
+<div class="not-found">
+    <h1 class="not-found-code">404</h1>
+    <p class="not-found-text">{{ t('page_not_found') }}</p>
+    <a href="/{{ lang or 'en' }}/" class="not-found-link">&larr; {{ t('back_to_posts') }}</a>
+</div>
+{% endblock %}

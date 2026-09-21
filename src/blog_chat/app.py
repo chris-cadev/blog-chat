@@ -5,12 +5,14 @@ from blog_chat.features.chat.routes import router as chat_router
 from blog_chat.features.chat.routes import db_watcher
 from blog_chat.features.posts.routes import router as posts_router
 from blog_chat.features.accounts.routes import router as accounts_router
+from blog_chat.features.posts.routes import render_404
 from contextlib import asynccontextmanager
 from fastapi.staticfiles import StaticFiles
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.middleware.cors import CORSMiddleware
 from starlette.middleware.gzip import GZipMiddleware
 from fastapi import FastAPI, Request
+from starlette.exceptions import HTTPException as StarletteHTTPException
 from blog_chat.core.config import APP_ENV, UMAMI_ACTIVE, UMAMI_HOST
 from blog_chat.core.database import init_db
 from blog_chat.core.logging import configure_logging, get_logger
@@ -103,3 +105,11 @@ app.include_router(accounts_router)
 app.include_router(posts_router)
 app.include_router(chat_router)
 app.include_router(analytics_router)
+
+
+@app.exception_handler(StarletteHTTPException)
+async def http_exception_handler(request: Request, exc: StarletteHTTPException):
+    if exc.status_code == 404:
+        return render_404(request)
+    from fastapi.responses import JSONResponse
+    return JSONResponse({"detail": exc.detail}, status_code=exc.status_code)
