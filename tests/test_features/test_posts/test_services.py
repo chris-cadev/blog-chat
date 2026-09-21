@@ -60,9 +60,9 @@ class TestGetPostsOrdering:
         monkeypatch.setattr("blog_chat.features.posts.services.CONTENT_DIR", tmp_path)
         return tmp_path
 
-    def test_newest_first_ties_alphabetical(self, ordering_dir):
+    def test_newest_first_same_date_reverse_alpha(self, ordering_dir):
         slugs = [p["slug"] for p in get_posts("en")]
-        assert slugs == ["a", "b", "z", "adate", "nodate"]
+        assert slugs == ["b", "a", "z", "nodate", "adate"]
 
 
 class TestGetPostLanguageNeutralFallback:
