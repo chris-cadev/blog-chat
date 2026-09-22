@@ -67,15 +67,25 @@
   {% endif %}
 
   <span class="pagination-pages">
+    {% set ns = namespace(dots_left=false, dots_right=false) %}
     {% for p in range(1, total_pages + 1) %}
-      {% if p == page %}
-      <span class="pagination-current" aria-current="page">{{ p }}</span>
-      {% else %}
-      <a href="{{ base_url }}?page={{ p }}" class="pagination-link"
-         hx-get="{{ base_url }}?page={{ p }}"
-         hx-target="#posts-page"
-         hx-swap="innerHTML"
-         hx-push-url="true">{{ p }}</a>
+      {% if p == 1 or p == total_pages or (p >= page - 2 and p <= page + 2) %}
+        {% set ns.dots_left = false %}
+        {% if p == page %}
+        <span class="pagination-current" aria-current="page">{{ p }}</span>
+        {% else %}
+        <a href="{{ base_url }}?page={{ p }}" class="pagination-link"
+           hx-get="{{ base_url }}?page={{ p }}"
+           hx-target="#posts-page"
+           hx-swap="innerHTML"
+           hx-push-url="true">{{ p }}</a>
+        {% endif %}
+      {% elif p < page - 2 and not ns.dots_left %}
+        {% set ns.dots_left = true %}
+        <span class="pagination-ellipsis">…</span>
+      {% elif p > page + 2 and not ns.dots_right %}
+        {% set ns.dots_right = true %}
+        <span class="pagination-ellipsis">…</span>
       {% endif %}
     {% endfor %}
   </span>

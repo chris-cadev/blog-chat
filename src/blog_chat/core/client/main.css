@@ -530,6 +530,17 @@ img { max-width: 100%; height: auto; display: block; }
   pointer-events: none;
 }
 
+.pagination-ellipsis {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 32px;
+  height: 32px;
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  user-select: none;
+}
+
 /* ── Article page ───────────────────────────────────────── */
 .article-header {
   margin-bottom: var(--sp-10);
