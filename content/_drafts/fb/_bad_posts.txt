@@ -1,0 +1,46 @@
+2014-03-30-asdfghjkl-1-asesorias-camachin-ft-jorge-ceron-szakca-el-fl-207.md	only_metadata
+2015-12-28-p-001-aftereffects-169.md	only_metadata
+2016-02-22-christian-camacho-added-a-new-photo-160.md	title_is_action: Christian Camacho added a new photo.
+2016-02-28-christian-camacho-added-a-new-photo-158.md	title_is_action: Christian Camacho added a new photo.,comment_noise: 2 signals
+2016-02-28-christian-camacho-added-a-new-photo-180.md	title_is_action: Christian Camacho added a new photo.,comment_noise: 2 signals
+2016-03-19-christian-camacho-added-a-new-video-d-154.md	title_is_action: Christian Camacho added a new video.  :D,only_metadata
+2016-05-09-christian-camacho-shared-a-link-148.md	title_is_action: Christian Camacho shared a link.
+2016-06-27-christian-camacho-shared-a-link-145.md	title_is_action: Christian Camacho shared a link.
+2016-07-24-christian-camacho-added-a-new-photo-143.md	title_is_action: Christian Camacho added a new photo.
+2016-11-06-christian-camacho-added-a-new-photo-133.md	title_is_action: Christian Camacho added a new photo.
+2016-12-20-christian-camacho-added-a-new-photo-130.md	title_is_action: Christian Camacho added a new photo.
+2016-12-26-christian-camacho-shared-a-link-124.md	title_is_action: Christian Camacho shared a link.
+2016-12-28-christian-camacho-shared-a-link-123.md	title_is_action: Christian Camacho shared a link.
+2017-02-12-christian-camacho-added-2-new-photos-119.md	title_is_action: Christian Camacho added 2 new photos.,comment_noise: 2 signals
+2018-03-14-christian-camacho-shared-a-post-100.md	title_is_action: Christian Camacho shared a post.
+2018-03-20-christian-camacho-shared-a-photo-97.md	title_is_action: Christian Camacho shared a photo.  ^_^
+2018-03-31-christian-camacho-shared-a-post-88.md	title_is_action: Christian Camacho shared a post.,comment_noise: 2 signals
+2018-04-03-christian-camacho-shared-a-post-83.md	title_is_action: Christian Camacho shared a post.,comment_noise: 2 signals
+2018-04-08-christian-camacho-shared-a-post-81.md	title_is_action: Christian Camacho shared a post.,comment_noise: 2 signals
+2018-04-12-christian-camacho-shared-a-photo-80.md	title_is_action: Christian Camacho shared a photo.
+2018-05-23-christian-camacho-shared-a-post-78.md	title_is_action: Christian Camacho shared a post.,comment_noise: 2 signals
+2018-06-02-christian-camacho-shared-a-link-77.md	title_is_action: Christian Camacho shared a link.
+2018-07-11-christian-camacho-shared-a-post.md	title_is_action: Christian Camacho shared a post.,comment_noise: 2 signals
+2018-08-22-christian-camacho-shared-a-link.md	title_is_action: Christian Camacho shared a link.
+2018-10-11-christian-camacho-shared-a-group.md	title_is_action: Christian Camacho shared a group.,comment_noise: 2 signals
+2018-10-12-christian-camacho-shared-a-link.md	title_is_action: Christian Camacho shared a link.
+2019-03-30-christian-camacho-added-a-new-photo.md	title_is_action: Christian Camacho added a new photo.
+2019-10-20-christian-camacho-shared-a-link.md	title_is_action: Christian Camacho shared a link.,comment_noise: 2 signals
+2020-08-15-christian-camacho-shared-a-link.md	title_is_action: Christian Camacho shared a link.
+2021-08-02-victor-gutierrez-5y-a-ver-tocame-una-reply.md	missing_photo: URL has /photo but no image in markdown
+2021-12-24-juditg-rodriguez-4y-reply.md	body_too_short: 0 chars,missing_photo: URL has /photo but no image in markdown
+2021-12-30-christian-camacho-shared-a-link.md	title_is_action: Christian Camacho shared a link.,comment_noise: 2 signals
+2022-05-03-alondra-portilla-4y-propiedad-de-alondra-marca-registrad.md	body_too_short: 0 chars,missing_photo: URL has /photo but no image in markdown
+2023-04-12-christian-camacho-added-a-new-photo.md	title_is_action: Christian Camacho added a new photo.
+2023-06-25-christian-camacho-shared-a-post.md	title_is_action: Christian Camacho shared a post.
+2023-07-05-christian-camacho-shared-a-post.md	title_is_action: Christian Camacho shared a post.,comment_noise: 2 signals
+2023-08-28-christian-camacho-added-a-new-photo.md	title_is_action: Christian Camacho added a new photo.
+2023-09-30-christian-said-2y-fresco-pa-reply.md	body_too_short: 0 chars,missing_photo: URL has /photo but no image in markdown
+2023-12-01-christian-camacho-added-a-new-photo.md	title_is_action: Christian Camacho added a new photo.
+2024-06-10-christian-camacho-shared-a-post.md	title_is_action: Christian Camacho shared a post.,comment_noise: 2 signals
+2024-10-03-christian-camacho-shared-a-post.md	title_is_action: Christian Camacho shared a post.  😔
+2025-03-28-christian-camacho-1y-https-x-com-raphael-erba-status-1.md	body_too_short: 0 chars,missing_photo: URL has /photo but no image in markdown
+2025-10-05-jorge-luis-avila-madrigal-50w-juegas-mine-reply.md	body_too_short: 0 chars,missing_photo: URL has /photo but no image in markdown
+2026-04-24-tijuana-pc-doctor-added-a-new-photo-125.md	title_is_action: Tijuana PC Doctor added a new photo.
+2026-04-24-tijuana-pc-doctor-added-a-new-photo.md	title_is_action: Tijuana PC Doctor added a new photo.
+2026-05-13-crow-systems-added-a-new-photo.md	title_is_action: Crow Systems added a new photo.
