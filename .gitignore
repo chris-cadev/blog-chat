@@ -10,3 +10,4 @@ static/
 .env
 dist
 *coverage*
+facebook_chrome_profile*/

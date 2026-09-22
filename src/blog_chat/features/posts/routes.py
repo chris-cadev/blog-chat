@@ -21,7 +21,7 @@ from blog_chat.features.accounts.services import (
     get_username_from_cookie,
 )
 from blog_chat.features.chat.routes import get_username_color
-from blog_chat.features.posts.services import get_post, get_post_by_lang_group, get_posts
+from blog_chat.features.posts.services import get_fb_post, get_fb_posts, get_post, get_post_by_lang_group, get_posts
 
 router = APIRouter()
 
@@ -487,6 +487,54 @@ def read_tags(request: Request, lang: str):
         room="offtopic",
         slug=None,
         language_switcher=_language_switcher(request, lang, None),
+    )
+
+
+@router.get("/{lang}/fb/{slug:path}")
+def read_fb_item(request: Request, lang: str, slug: str):
+    if lang not in LANGS:
+        return _render(
+            "index.html",
+            request,
+            "en",
+            status_code=404,
+            apply_lang_cookie=False,
+            posts=get_posts(),
+            error=_make_t("en")("post_not_found"),
+            slug=None,
+            page=1,
+            total_pages=1,
+            language_switcher=_language_switcher(request, None, None),
+        )
+    post = get_fb_post(slug)
+    if not post:
+        return _render(
+            "index.html",
+            request,
+            lang,
+            status_code=404,
+            posts=get_posts(lang),
+            error=_make_t(lang)("post_not_found"),
+            slug=slug,
+            page=1,
+            total_pages=1,
+            language_switcher=_language_switcher(request, lang, slug),
+        )
+    log_business_event(
+        "page.view",
+        "FB post viewed",
+        lang=lang,
+        slug=slug,
+        path=request.url.path,
+    )
+    return _render(
+        "post.html",
+        request,
+        lang,
+        post=post,
+        room=slug,
+        slug=slug,
+        language_switcher=_language_switcher(request, lang, f"fb/{slug}"),
     )
 
 

@@ -27,6 +27,8 @@ dependencies = [
   "alembic>=1.18.4",
   "nh3>=0.3.6",
   "coolname>=5.0.0",
+  "dateparser>=1.4.3",
+  "requests>=2.34.2",
 ]
 [project.optional-dependencies]
 test = [

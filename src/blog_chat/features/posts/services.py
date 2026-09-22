@@ -53,3 +53,31 @@ def get_post_by_lang_group(lang_group: str, lang: str) -> dict | None:
         if post and post.get("lang_group") == lang_group and post.get("lang") == lang:
             return post
     return None
+
+
+FB_DIR = CONTENT_DIR / "_drafts" / "fb"
+
+
+def get_fb_post(slug: str) -> dict | None:
+    for entry in powerwalk.walk(FB_DIR, filter="**/*.md"):
+        post = parse_markdown_file(entry.path)
+        if post and post.get("slug") == slug:
+            return post
+    return None
+
+
+def get_fb_posts() -> list[dict]:
+    posts = []
+    for entry in powerwalk.walk(FB_DIR, filter="**/*.md"):
+        post = parse_markdown_file(entry.path)
+        if post:
+            posts.append(post)
+    return sorted(
+        posts,
+        key=lambda p: (
+            str(p.get("created", "")),
+            str(p.get("updated") or p.get("created", "")),
+            p.get("title", "").lower(),
+        ),
+        reverse=True,
+    )
