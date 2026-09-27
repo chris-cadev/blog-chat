@@ -9,7 +9,7 @@ updated: '2025-10-31'
 lang: fr
 lang_group: my-take-on-write-simpler-software-bashbunni
 ---
-https://www.youtube.com/watch?v=XiQaDrXD9w8
+[www.youtube.com/watch?v=XiQaDrXD9w8](https://www.youtube.com/watch?v=XiQaDrXD9w8)
 
 Mon avis là-dessus est que parfois nous allons vraiment assez profondément pour créer un problème dans notre tête, et nous ne prenons pas toute la responsabilité de ne pas matérialiser ces problèmes en logiciel ou systèmes.
 
