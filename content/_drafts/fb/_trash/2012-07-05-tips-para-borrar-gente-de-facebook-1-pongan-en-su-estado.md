@@ -11,7 +11,6 @@ lang: es
 lang_group: tips-para-borrar-gente-de-facebook-1-pongan-en-su-estado
 ---
 
-![May be an illustration of text](/drafts/fb/assets/tips-para-borrar-gente-de-facebook-1-pongan-en-su-estado_0.jpg)
 
 Tips para borrar gente de facebook:
 #1
@@ -19,4 +18,3 @@ pongan en su estado ''Peña para presidente''
 todos los que le den me gusta los van borrando
 así eliminan gente ignorante ;D
 
-![May be an illustration of text](/drafts/fb/assets/tips-para-borrar-gente-de-facebook-1-pongan-en-su-estado_img_0.png)

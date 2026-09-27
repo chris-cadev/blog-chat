@@ -12,8 +12,12 @@ lang: es
 lang_group: una-de-las-canciones-que-jamas-me-aburriré-de-oír-es-la-de-v
 ---
 
-![Facebook image](/drafts/fb/assets/una-de-las-canciones-que-jamas-me-aburriré-de-oír-es-la-de-v_mem_0.jpg)
+Una de las canciones que jamas me aburriré de oír es la de Viva la Vida
+Shared post
+Alejandro Lugo
+  ·
+la de coldplay?
+Christian Camacho
+  ·
+sep :B
 
-![Facebook image](/drafts/fb/assets/una-de-las-canciones-que-jamas-me-aburriré-de-oír-es-la-de-v_mem_1.jpg)
-
-![Facebook image](/drafts/fb/assets/una-de-las-canciones-que-jamas-me-aburriré-de-oír-es-la-de-v_mem_2.jpg)

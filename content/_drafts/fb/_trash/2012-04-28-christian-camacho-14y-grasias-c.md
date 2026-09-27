@@ -14,3 +14,25 @@ lang_group: christian-camacho-14y-grasias-c
 ![Facebook post](/drafts/fb/assets/christian-camacho-14y-grasias-c_post.png)
 
 <video controls src="/drafts/fb/assets/christian-camacho-14y-grasias-c_v0.mp4" style="width:100%; max-height:600px; border-radius:4px;"></video>
+
+mi nuevo intro que les parece?
+Enrike y Muñoz miren xD
+Comments
+See all
+Comments
+Christian Camacho
+  ·
+grasias C:
+Humberto Lizm
+  ·
+chido
+Gabriel Robledo
+  ·
+Chido
+Mario R. Cabrera
+  ·
+A la verga me orgasmio bueno no esta chido 😃
+Alejandro Lugo
+  ·
+SUM 41???
+

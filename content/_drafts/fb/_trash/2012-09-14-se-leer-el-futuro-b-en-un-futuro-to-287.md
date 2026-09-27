@@ -12,8 +12,22 @@ lang: es
 lang_group: se-leer-el-futuro-b-en-un-futuro-to
 ---
 
-![Facebook image](/drafts/fb/assets/se-leer-el-futuro-b-en-un-futuro-to_mem_0.jpg)
+Se leer el futuro :B
 
-![Facebook image](/drafts/fb/assets/se-leer-el-futuro-b-en-un-futuro-to_mem_1.jpg)
+...
 
-![Facebook image](/drafts/fb/assets/se-leer-el-futuro-b-en-un-futuro-to_mem_2.jpg)
+...
+
+..
+
+.
+
+..
+
+...
+
+..
+
+.
+
+En un futuro todos morirán D:

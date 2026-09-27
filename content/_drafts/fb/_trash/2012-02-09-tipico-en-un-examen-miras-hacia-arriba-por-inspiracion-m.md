@@ -11,4 +11,7 @@ lang: es
 lang_group: tipico-en-un-examen-miras-hacia-arriba-por-inspiracion-m
 ---
 
-VIERNES — POR ÚNICA OCASIÓN
+Tipico en un examen
+miras hacia arriba.... Por inspiracion
+miras hacia abajo.... Por desesperacion
+y hacia los lados ...... por informacion

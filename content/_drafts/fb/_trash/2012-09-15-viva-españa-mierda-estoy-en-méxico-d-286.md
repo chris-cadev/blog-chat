@@ -12,8 +12,19 @@ lang: es
 lang_group: viva-españa-mierda-estoy-en-méxico-d
 ---
 
-![Facebook image](/drafts/fb/assets/viva-españa-mierda-estoy-en-méxico-d_mem_0.jpg)
+Christian Camacho
+September 15, 2012  ·
+Shared with Friends
+Viva España!!...
+mierda... estoy en México D:
+Shared post
+Alejandra Castillo
+  ·
+jajajaj A:
+Cristian Fernández Salazar
+  ·
+Lo sabia mexicanos que festejan su independencia pero creen que son de otros países
+Christian Camacho
+  ·
+xD
 
-![Facebook image](/drafts/fb/assets/viva-españa-mierda-estoy-en-méxico-d_mem_1.jpg)
-
-![Facebook image](/drafts/fb/assets/viva-españa-mierda-estoy-en-méxico-d_mem_2.jpg)

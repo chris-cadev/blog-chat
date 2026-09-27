@@ -12,8 +12,25 @@ lang: es
 lang_group: quede-en-la-mañana-como-programador-de-software-celebremos
 ---
 
-![Facebook image](/drafts/fb/assets/quede-en-la-mañana-como-programador-de-software-celebremos_mem_0.jpg)
+Christian Camacho
+January 17, 2013  ·
+Shared with Friends
+Quede en la mañana como programador de software, celebremos!!
+*Bailando* un momento, yo ni se bailar xD
+Shared post
+Gabriel Robledo
+  ·
+A mi no me jodas.
+Gabriel Robledo
+  ·
+:I
+Arturo Espinoza
+  ·
+Eres un maldito(:
+Alejandro Lugo
+  ·
+Aún ni me inscribo 😃
+Christian Camacho
+  ·
+sep :I
 
-![Facebook image](/drafts/fb/assets/quede-en-la-mañana-como-programador-de-software-celebremos_mem_1.jpg)
-
-![Facebook image](/drafts/fb/assets/quede-en-la-mañana-como-programador-de-software-celebremos_mem_2.jpg)

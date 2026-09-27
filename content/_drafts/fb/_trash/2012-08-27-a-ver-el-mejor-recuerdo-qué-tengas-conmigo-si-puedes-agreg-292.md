@@ -12,4 +12,15 @@ lang: es
 lang_group: a-ver-el-mejor-recuerdo-qué-tengas-conmigo-si-puedes-agreg-20120827
 ---
 
-Me dijo un ser humano que hablo como ''cholo''
+Me dijo un ser humano que hablo como ''cholo'' 😳
+Shared post
+Christian Camacho
+  ·
+que si digo persona sonare muy poco cientifico :3
+Alejandro Lugo
+  ·
+jeje cholo ._.
+Christian Camacho
+  ·
+no ni me imagines -.-
+

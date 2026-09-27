@@ -12,4 +12,15 @@ lang: es
 lang_group: a-ver-el-mejor-recuerdo-qué-tengas-conmigo-si-puedes-agreg-20120902
 ---
 
-Dale a like si quieres que te elimine
+Christian Camacho
+September 2, 2012  ·
+Shared with Friends
+Dale a like si quieres que te elimine :3
+Shared post
+Antonio RG
+  ·
+we k pedo tte kieres kedar sin amigos o ke pedo
+Christian Camacho
+  ·
+quiere ver que pedo, haber si tengo gente que es ignorante (que no lee) para borrarla :3
+
