@@ -91,7 +91,7 @@ def _tags_data(lang: str):
             counter[t] += 1
             by_tag[t].append(p)
     tags_with_counts = sorted(counter.items(), key=lambda kv: (-kv[1], kv[0].lower()))
-    posts_by_tag = {k: sorted(v, key=lambda x: x.get("created", ""), reverse=True) for k, v in by_tag.items()}
+    posts_by_tag = {k: sorted(v, key=lambda x: str(x.get("created", "")), reverse=True) for k, v in by_tag.items()}
     posts_by_tag = {k: posts_by_tag[k] for k, _ in tags_with_counts}
     return tags_with_counts, posts_by_tag
 

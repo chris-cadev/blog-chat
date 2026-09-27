@@ -13,7 +13,7 @@ def _flatten_tags(raw):
     for item in raw:
         if isinstance(item, list):
             result.extend(_flatten_tags(item))
-        else:
+        elif item is not None and item != "":
             result.append(item)
     return result
 

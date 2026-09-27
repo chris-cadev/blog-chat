@@ -60,10 +60,11 @@ ALLOWED_STYLE_PROPERTIES = {
     "text-overflow",
 }
 
-ALLOWED_TAGS = nh3.ALLOWED_TAGS | {"iframe", "audio", "source", "img", "figure", "figcaption", "picture", "section", "input", "button", "label"}
+ALLOWED_TAGS = nh3.ALLOWED_TAGS | {"iframe", "audio", "video", "source", "img", "figure", "figcaption", "picture", "section", "input", "button", "label"}
 ALLOWED_ATTRIBUTES = dict(nh3.ALLOWED_ATTRIBUTES)
 ALLOWED_ATTRIBUTES["iframe"] = IFRAME_ATTRIBUTES
 ALLOWED_ATTRIBUTES["audio"] = {"src", "controls", "preload", "type", "style", "controlslist"}
+ALLOWED_ATTRIBUTES["video"] = {"src", "controls", "poster", "width", "height", "preload", "type", "style", "class"}
 ALLOWED_ATTRIBUTES["source"] = {"src", "type"}
 ALLOWED_ATTRIBUTES["img"] = {"src", "alt", "title", "loading", "width", "height", "style", "class"}
 ALLOWED_ATTRIBUTES["figure"] = {"style", "class"}
