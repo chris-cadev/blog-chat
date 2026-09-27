@@ -741,6 +741,19 @@ img { max-width: 100%; height: auto; display: block; }
   line-height: 1.6;
 }
 
+.ascii-art .highlight,
+.ascii-art pre {
+  text-align: center;
+  background: transparent;
+  border: none;
+}
+.ascii-art pre code {
+  display: inline-block;
+  text-align: left;
+  font-size: 1em;
+  line-height: 1.4;
+}
+
 .article-body ul, .article-body ol {
   padding-left: 1.5em;
   margin-top: 1.25em;
@@ -1221,3 +1234,23 @@ img { max-width: 100%; height: auto; display: block; }
 .highlight .vi { color: #F8F8F2 } /* Name.Variable.Instance */
 .highlight .vm { color: #F8F8F2 } /* Name.Variable.Magic */
 .highlight .il { color: #AE81FF } /* Literal.Number.Integer.Long */
+
+/* Image zoom via details/summary */
+.article-body figure.zoomable details {
+  cursor: zoom-in;
+}
+.article-body figure.zoomable details[open] {
+  cursor: zoom-out;
+}
+.article-body figure.zoomable details summary {
+  list-style: none;
+  font-size: 0.8rem;
+  color: var(--text-faint);
+  text-align: center;
+  margin-top: var(--sp-1);
+}
+.article-body figure.zoomable details summary::marker { display: none; }
+.article-body figure.zoomable details[open] img {
+  max-width: 100%;
+  height: auto;
+}

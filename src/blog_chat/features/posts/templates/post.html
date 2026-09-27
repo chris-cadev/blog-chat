@@ -67,7 +67,7 @@
         {% endif %}
     </header>
 
-    <div class="article-body">
+    <div class="article-body {{ post.css_class or '' }}">
         {{ post.content | markdown | safe }}
     </div>
 

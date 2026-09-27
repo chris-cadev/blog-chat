@@ -43,5 +43,6 @@ def parse_markdown_file(file_path: Path) -> dict | None:
         "lang": frontmatter.get("lang", None),
         "lang_group": frontmatter.get("lang_group", None),
         "pinned": bool(frontmatter.get("pinned", False)),
+        "css_class": frontmatter.get("css_class", None),
         "content": body.strip(),
     }
