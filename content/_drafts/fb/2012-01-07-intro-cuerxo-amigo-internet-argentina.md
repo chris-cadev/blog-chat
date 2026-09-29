@@ -18,7 +18,7 @@ lang_group: intro-cuerxo-amigo-internet-argentina
 
 Una intro que hice para Cuerxo, un amigo de internet de Argentina, en Flash. Solo dura 9 segundos pero los comentarios dicen más que el video.
 
-<video controls src="/drafts/fb/assets/fer-macouzet-14y-que-no-lo-puedo-ver-o-o_v0.mp4" style="width:100%; max-height:600px; border-radius:4px;"></video>
+<video controls src="assets/fer-macouzet-14y-que-no-lo-puedo-ver-o-o_v0.mp4" style="width:100%; max-height:600px; border-radius:4px;"></video>
 
 ### Los recuerdos
 
@@ -29,7 +29,7 @@ En ese tiempo era muy agresivo con lo que no me gustaba. Adolescente, supongo.
 <details>
 <summary>Nota de voz — los recuerdos</summary>
 
-<audio controls src="/drafts/handy-1790527212.wav" style="width:100%; margin-top:8px;"></audio>
+<audio controls src="../handy-1790527212.wav" style="width:100%; margin-top:8px;"></audio>
 
 </details>
 

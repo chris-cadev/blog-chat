@@ -14,7 +14,7 @@ lang: es
 lang_group: itachi-itachi-itachi
 ---
 
-<video controls src="/drafts/fb/assets/itachi-itachi-itachi.mp4" style="width:100%; max-height:600px; border-radius:4px;"></video>
+<video controls src="assets/itachi-itachi-itachi.mp4" style="width:100%; max-height:600px; border-radius:4px;"></video>
 
 Este es el tipo de contenido que me gustaba ver en internet por ahí de 2011. Parodies de anime, humor absurdo, cosas que compartías en Facebook sin pensarlo mucho.
 

@@ -16,7 +16,7 @@ lang: es
 lang_group: para-tenerlo-en-cuenta
 ---
 
-![alt text](/drafts/fb/462702874_4132923793605821_8663974078531040007_n.jpg)
+![alt text](./462702874_4132923793605821_8663974078531040007_n.jpg)
 Es correcto
 
 Autor de la tira: [owlturd](https://owlturd.com)

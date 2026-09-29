@@ -18,4 +18,4 @@ lang_group: rainbow-triangle-primeros-pasos-unity
 
 Rainbow Triangle es un juego que desarrollé en Unity, allá por 2016. Primeros experimentos con C# y JavaScript para la lógica del juego. Sigue disponible en [rt.chrislabs.net](https://rt.chrislabs.net)
 
-<video controls src="/drafts/fb/assets/rainbow-triangle-mi-juego_v0.mp4" style="width:100%; max-height:600px; border-radius:4px;"></video>
+<video controls src="assets/rainbow-triangle-mi-juego_v0.mp4" style="width:100%; max-height:600px; border-radius:4px;"></video>

@@ -13,7 +13,7 @@ lang: es
 lang_group: mooh-kemouche-comentario-fracking
 ---
 
-<video controls src="/drafts/fb/assets/mooh-kemouche-11y-reply-see-trans_v0.mp4" style="width:100%; max-height:600px; border-radius:4px;"></video>
+<video controls src="assets/mooh-kemouche-11y-reply-see-trans_v0.mp4" style="width:100%; max-height:600px; border-radius:4px;"></video>
 
 Mooh Kemouche me dejó este comentario en árabe:
 

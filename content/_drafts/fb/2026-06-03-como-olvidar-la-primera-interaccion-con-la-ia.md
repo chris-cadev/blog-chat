@@ -16,4 +16,4 @@ lang_group: como-olvidar-la-primera-interaccion-con-la-ia
 
 Cleverbot fue uno de los primeros emuladores de lenguaje que puedes usar gratis desde el navegador. Esta captura es de Windows 7, cuando todavía era novedad hablar con una máquina que simulaba entender.
 
-![Captura de pantalla, windows 7, clever bot](/drafts/fb/assets/como-olvidar-la-primera-interaccion-con-la-ia_mem_0.jpg)
+![Captura de pantalla, windows 7, clever bot](assets/como-olvidar-la-primera-interaccion-con-la-ia_mem_0.jpg)

@@ -18,4 +18,4 @@ Un AMV de Hyouka que hice. Yoseline Osuna Tirado me dejó este comentario:
 
 > **Yoseline Osuna Tirado:** 13y Te quedó muy bien, ya quisiera yo poder hacer un video así xD
 
-<video controls src="/drafts/fb/assets/yoseline-osuna-tirado-13y-te-quedo-muy-bien-ya-quisiera_v0.mp4" style="width:100%; max-height:600px; border-radius:4px;"></video>
+<video controls src="assets/yoseline-osuna-tirado-13y-te-quedo-muy-bien-ya-quisiera_v0.mp4" style="width:100%; max-height:600px; border-radius:4px;"></video>
