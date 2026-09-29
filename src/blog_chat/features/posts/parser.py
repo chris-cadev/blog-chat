@@ -4,6 +4,33 @@ import yaml
 from pathlib import Path
 
 
+_REL_PATH_RE = re.compile(r"(!\[[^\]]*\]\()([^)]+)(\))")
+_SOURCE_SRC_RE = re.compile(r'(<source\s[^>]*src=")([^"]+)(")')
+
+
+def _rewrite_relative_paths(body: str, file_path: Path) -> str:
+    is_draft = "_drafts" in file_path.parts
+    prefix = "/drafts" if is_draft else "/static/posts"
+
+    def _replace_md(m: re.Match) -> str:
+        alt, ref, close = m.group(1), m.group(2), m.group(3)
+        if ref.startswith(("/", "http://", "https://", "mailto:")):
+            return m.group(0)
+        name = ref.split("/")[-1]
+        return f"{alt}{prefix}/{name}{close}"
+
+    def _replace_src(m: re.Match) -> str:
+        pre, src, close = m.group(1), m.group(2), m.group(3)
+        if src.startswith(("/", "http://", "https://", "mailto:")):
+            return m.group(0)
+        name = src.split("/")[-1]
+        return f'{pre}{prefix}/{name}{close}'
+
+    body = _REL_PATH_RE.sub(_replace_md, body)
+    body = _SOURCE_SRC_RE.sub(_replace_src, body)
+    return body
+
+
 def _flatten_tags(raw):
     if not raw:
         return []
@@ -44,5 +71,5 @@ def parse_markdown_file(file_path: Path) -> dict | None:
         "lang_group": frontmatter.get("lang_group", None),
         "pinned": bool(frontmatter.get("pinned", False)),
         "css_class": frontmatter.get("css_class", None),
-        "content": body.strip(),
+        "content": _rewrite_relative_paths(body.strip(), file_path),
     }
