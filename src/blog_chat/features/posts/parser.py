@@ -4,30 +4,41 @@ import yaml
 from pathlib import Path
 
 
-_REL_PATH_RE = re.compile(r"(!\[[^\]]*\]\()([^)]+)(\))")
-_SOURCE_SRC_RE = re.compile(r'(<source\s[^>]*src=")([^"]+)(")')
+_MD_IMG_RE = re.compile(r"(!\[[^\]]*\]\()([^)]+)(\))")
+_HTML_SRC_RE = re.compile(r'((?:img|source|video|audio)\s[^>]*src=")([^"]+)(")')
+
+
+_MEDIA_RE = re.compile(r"\.(jpe?g|png|gif|webp|svg|bmp|ico|wav|mp3|ogg|opus|mp4|webm|mov|avi|mkv)$", re.IGNORECASE)
 
 
 def _rewrite_relative_paths(body: str, file_path: Path) -> str:
-    is_draft = "_drafts" in file_path.parts
-    prefix = "/drafts" if is_draft else "/static/posts"
+    def _resolve(rel: str) -> str:
+        if rel.startswith(("/", "http://", "https://", "mailto:")):
+            return rel
+        resolved = (file_path.parent / rel).resolve()
+        try:
+            suffix = resolved.relative_to(Path("content").resolve())
+        except ValueError:
+            return rel
+        parts = suffix.parts
+        if not parts:
+            return rel
+        if parts[0] == "_drafts":
+            return "/drafts" + "/" + "/".join(parts[1:])
+        if len(parts) >= 2 and _MEDIA_RE.search(parts[-1]):
+            return "/static/posts/" + parts[-1]
+        return rel
 
     def _replace_md(m: re.Match) -> str:
         alt, ref, close = m.group(1), m.group(2), m.group(3)
-        if ref.startswith(("/", "http://", "https://", "mailto:")):
-            return m.group(0)
-        name = ref.split("/")[-1]
-        return f"{alt}{prefix}/{name}{close}"
+        return f"{alt}{_resolve(ref)}{close}"
 
     def _replace_src(m: re.Match) -> str:
         pre, src, close = m.group(1), m.group(2), m.group(3)
-        if src.startswith(("/", "http://", "https://", "mailto:")):
-            return m.group(0)
-        name = src.split("/")[-1]
-        return f'{pre}{prefix}/{name}{close}'
+        return f'{pre}{_resolve(src)}{close}'
 
-    body = _REL_PATH_RE.sub(_replace_md, body)
-    body = _SOURCE_SRC_RE.sub(_replace_src, body)
+    body = _MD_IMG_RE.sub(_replace_md, body)
+    body = _HTML_SRC_RE.sub(_replace_src, body)
     return body
 
 
