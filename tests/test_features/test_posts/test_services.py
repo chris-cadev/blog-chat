@@ -75,3 +75,43 @@ class TestGetPostLanguageNeutralFallback:
         post = get_post("platform/first", "en")
         assert post is not None
         assert post["slug"] == "platform/first"
+
+
+class TestLegalPagesExcluded:
+    @pytest.fixture
+    def legal_dir(self, tmp_path, monkeypatch):
+        (tmp_path / "en").mkdir()
+        (tmp_path / "es").mkdir()
+        (tmp_path / "legal").mkdir()
+        (tmp_path / "legal" / "en").mkdir()
+        (tmp_path / "legal" / "es").mkdir()
+        (tmp_path / "en" / "blog-post.md").write_text(
+            "---\ntitle: Blog Post\nslug: blog-post\ncreated: '2024-01-01'\nlang: en\n---\n\nBody",
+            encoding="utf-8",
+        )
+        (tmp_path / "legal" / "en" / "privacy-policy.md").write_text(
+            "---\ntitle: Privacy Policy\nslug: privacy-policy\ncreated: '2024-01-01'\nlang: en\n---\n\nLegal body",
+            encoding="utf-8",
+        )
+        (tmp_path / "legal" / "en" / "terms.md").write_text(
+            "---\ntitle: Terms\nslug: terms\ncreated: '2024-01-01'\nlang: en\n---\n\nLegal body",
+            encoding="utf-8",
+        )
+        monkeypatch.setattr("blog_chat.features.posts.services.CONTENT_DIR", tmp_path)
+        return tmp_path
+
+    def test_get_posts_excludes_legal_pages(self, legal_dir):
+        posts = get_posts("en")
+        slugs = [p["slug"] for p in posts]
+        assert "blog-post" in slugs
+        assert "privacy-policy" not in slugs
+        assert "terms" not in slugs
+        assert len(posts) == 1
+
+    def test_get_post_can_fetch_legal_pages(self, legal_dir):
+        privacy = get_post("privacy-policy", "en")
+        assert privacy is not None
+        assert privacy["title"] == "Privacy Policy"
+        terms = get_post("terms", "en")
+        assert terms is not None
+        assert terms["title"] == "Terms"

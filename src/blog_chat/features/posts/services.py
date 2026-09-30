@@ -17,10 +17,16 @@ def _is_trashed(path: Path) -> bool:
     return "_trash" in path.parts
 
 
+def _is_legal(path: Path) -> bool:
+    return "legal" in path.parts
+
+
 def get_posts(lang: str | None = None) -> list[dict]:
     posts = []
     for entry in powerwalk.walk(CONTENT_DIR, filter="**/*.md"):
         if _is_trashed(entry.path):
+            continue
+        if _is_legal(entry.path):
             continue
         if not _IS_DEV and _is_draft(entry.path):
             continue

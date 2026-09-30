@@ -1106,12 +1106,27 @@ img { max-width: 100%; height: auto; display: block; }
 
 /* ── Footer ─────────────────────────────────────────────── */
 .site-footer {
-  padding: var(--sp-6);
-  text-align: center;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--sp-4) var(--sp-6);
   color: var(--text-faint);
   font-size: 0.8125rem;
   border-top: 1px solid var(--border);
   background: var(--panel-bg);
+}
+.site-footer p { margin: 0; }
+.footer-nav {
+  display: flex;
+  gap: var(--sp-4);
+}
+.footer-nav a {
+  color: var(--text-faint);
+  text-decoration: none;
+}
+.footer-nav a:hover {
+  color: var(--text);
+  text-decoration: underline;
 }
 
 /* ── Responsive ─────────────────────────────────────────── */

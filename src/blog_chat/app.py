@@ -29,6 +29,8 @@ FRAME_SRC_ALLOWLIST = [
     "https://www.youtube-nocookie.com",
     "https://w.soundcloud.com",
     "https://firstcommit.debugchris.com",
+    "https://rt.chrislabs.net",
+    "https://www.facebook.com",
 ]
 
 CSP_TEMPLATE = "; ".join([
