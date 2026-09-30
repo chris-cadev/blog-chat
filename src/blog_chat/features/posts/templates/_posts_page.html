@@ -55,7 +55,7 @@
 
 {% if total_pages > 1 %}
 <nav class="pagination" aria-label="Page navigation">
-  {% set base_url = '/'+lang+'/' if not tag else '/'+lang+'/tags/'+tag+'/' %}
+  {% set base_url = '/'+lang+'/' if not tag else '/'+lang+'/tags/'+tag %}
   {% if page > 1 %}
   <a href="{{ base_url }}?page={{ page - 1 }}" class="pagination-prev" rel="prev"
      hx-get="{{ base_url }}?page={{ page - 1 }}"
@@ -96,8 +96,14 @@
      hx-target="#posts-page"
      hx-swap="innerHTML"
      hx-push-url="true">Next →</a>
+  <a href="{{ base_url }}?page={{ total_pages }}" class="pagination-last"
+     hx-get="{{ base_url }}?page={{ total_pages }}"
+     hx-target="#posts-page"
+     hx-swap="innerHTML"
+     hx-push-url="true">»</a>
   {% else %}
   <span class="pagination-next disabled">Next →</span>
+  <span class="pagination-last disabled">»</span>
   {% endif %}
 </nav>
 {% endif %}

@@ -121,6 +121,13 @@ def many_posts(tmp_path, monkeypatch):
     return tmp_path
 
 
+@pytest.fixture
+def few_posts(tmp_path, monkeypatch):
+    _make_posts(tmp_path, 3)
+    monkeypatch.setattr("blog_chat.features.posts.services.CONTENT_DIR", tmp_path)
+    return tmp_path
+
+
 class TestPaginationHCIDisplay:
     """Windowed pagination with ellipsis, first/last landmarks, prev/next."""
 
@@ -248,12 +255,6 @@ class TestPaginationHCIDisplay:
 class TestPaginationSmallDataset:
     """Edge cases with few pages."""
 
-    @pytest.fixture
-    def few_posts(self, tmp_path, monkeypatch):
-        _make_posts(tmp_path, 3)
-        monkeypatch.setattr("blog_chat.features.posts.services.CONTENT_DIR", tmp_path)
-        return tmp_path
-
     def test_no_pagination_widget_when_single_page(self, few_posts):
         with TestClient(app) as client:
             resp = client.get("/en/")
@@ -284,3 +285,116 @@ class TestPaginationSmallDataset:
             resp = client.get("/en/?page=2")
             nav = _pagination_html(resp.text)
             assert "pagination-next disabled" in nav
+
+
+# ── Tag pagination (tax) ─────────────────────────────────────
+
+
+def _make_tagged_posts(tmp_path, count, tag="python"):
+    """Create *count* posts all tagged with *tag*."""
+    for i in range(count):
+        (tmp_path / f"post-{i:03d}.md").write_text(
+            f"---\ntitle: Post {i}\nslug: post-{i:03d}\n"
+            f"created: '2024-01-{i % 28 + 1:02d}'\nlang: en\n"
+            f"tags: [{tag}]\n---\n\nBody {i}",
+            encoding="utf-8",
+        )
+
+
+@pytest.fixture
+def tagged_posts(tmp_path, monkeypatch):
+    _make_tagged_posts(tmp_path, 25, tag="python")
+    monkeypatch.setattr("blog_chat.features.posts.services.CONTENT_DIR", tmp_path)
+    return tmp_path
+
+
+class TestTagPagination:
+    """Tag pages must paginate the same way as the main index."""
+
+    def test_tag_page_renders(self, tagged_posts):
+        with TestClient(app) as client:
+            resp = client.get("/en/tags/python")
+            assert resp.status_code == 200
+            assert "pagination" in resp.text
+
+    def test_tag_htmx_partial_render(self, tagged_posts):
+        """HTMX request must return fragment, not full page."""
+        with TestClient(app) as client:
+            resp = client.get(
+                "/en/tags/python?page=2",
+                headers={"HX-Request": "true"},
+            )
+            assert resp.status_code == 200
+            assert "pagination" in resp.text
+            assert "<html" not in resp.text
+
+    def test_tag_page_2_link_uses_hx_get(self, tagged_posts):
+        """Pagination links must use hx-get for HTMX navigation."""
+        with TestClient(app) as client:
+            resp = client.get("/en/tags/python")
+            nav = _pagination_html(resp.text)
+            assert 'hx-get="/en/tags/python?page=2"' in nav
+
+    def test_tag_no_trailing_slash_in_links(self, tagged_posts):
+        """Tag pagination URLs must NOT have trailing slash."""
+        with TestClient(app) as client:
+            resp = client.get("/en/tags/python")
+            nav = _pagination_html(resp.text)
+            assert "/tags/python/" not in nav
+
+    def test_tag_htmx_page_3(self, tagged_posts):
+        with TestClient(app) as client:
+            resp = client.get(
+                "/en/tags/python?page=3",
+                headers={"HX-Request": "true"},
+            )
+            assert resp.status_code == 200
+            nav = _pagination_html(resp.text)
+            assert "pagination" in nav
+            assert "<html" not in resp.text
+
+
+# ── "To end" (»  ) link ─────────────────────────────────────────
+
+
+class TestPaginationToEnd:
+    """The » link jumps to the last page."""
+
+    def test_to_end_rendered_when_multipage(self, many_posts):
+        with TestClient(app) as client:
+            resp = client.get("/en/")
+            nav = _pagination_html(resp.text)
+            assert "pagination-last" in nav
+
+    def test_to_end_disabled_on_last_page(self, many_posts):
+        with TestClient(app) as client:
+            resp = client.get("/en/?page=6")
+            nav = _pagination_html(resp.text)
+            assert "pagination-last disabled" in nav
+
+    def test_to_end_links_to_last_page(self, many_posts):
+        with TestClient(app) as client:
+            resp = client.get("/en/?page=1")
+            nav = _pagination_html(resp.text)
+            assert 'href="/en/?page=6"' in nav
+            assert 'hx-get="/en/?page=6"' in nav
+
+    def test_to_end_htmx_attributes(self, many_posts):
+        with TestClient(app) as client:
+            resp = client.get("/en/")
+            nav = _pagination_html(resp.text)
+            assert "hx-target=" in nav
+            assert "hx-swap=" in nav
+            assert "hx-push-url=" in nav
+
+    def test_to_end_not_rendered_on_single_page(self, few_posts):
+        with TestClient(app) as client:
+            resp = client.get("/en/")
+            assert "pagination-last" not in resp.text
+
+    def test_to_end_on_tag_page(self, tagged_posts):
+        with TestClient(app) as client:
+            resp = client.get("/en/tags/python")
+            nav = _pagination_html(resp.text)
+            assert "pagination-last" in nav
+            assert 'href="/en/tags/python?page=3"' in nav
