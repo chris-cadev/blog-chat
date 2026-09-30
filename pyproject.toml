@@ -29,6 +29,7 @@ dependencies = [
   "coolname>=5.0.0",
   "dateparser>=1.4.3",
   "requests>=2.34.2",
+  "mermaidx>=0.9.5",
 ]
 [project.optional-dependencies]
 test = [
@@ -53,7 +54,7 @@ client_install = "bun install"
 client_watch = "bun run watch"
 dev = "fastapi dev src/blog_chat/app.py"
 migration_create = "alembic revision --autogenerate -m"
-post_install = {composite = ["migrate", "client_install", "build"]}
+post_install = {composite = ["migrate", "client_install", "build", "prerender"]}
 
 # Dev cleanup
 backup = {shell = "tar -czvf ../blog_chat-db-$(date +%Y%m%d-%H%M%S).tar.gz blog_chat.db"}
@@ -62,6 +63,7 @@ drop_db = {composite = ["backup", "rm -rf blog_chat.db"]}
 
 # Build & migration
 build = "bun run build"
+prerender = "python scripts/prerender_mermaid.py"
 migrate = "alembic upgrade head"
 
 # Prod scripts

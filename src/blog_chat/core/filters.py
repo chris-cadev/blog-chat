@@ -1,4 +1,5 @@
 import re
+from pathlib import Path
 
 import markdown
 import nh3
@@ -58,15 +59,18 @@ ALLOWED_STYLE_PROPERTIES = {
     "word-break",
     "line-break",
     "text-overflow",
+    "cursor",
+    "box-shadow",
 }
 
-ALLOWED_TAGS = nh3.ALLOWED_TAGS | {"iframe", "audio", "video", "source", "img", "figure", "figcaption", "picture", "section", "input", "button", "label"}
+ALLOWED_TAGS = nh3.ALLOWED_TAGS | {"iframe", "audio", "video", "source", "img", "figure", "figcaption", "picture", "section", "input", "button", "label", "svg", "g", "path", "circle", "rect", "text", "tspan", "polygon", "defs", "marker", "linearGradient", "stop", "filter", "foreignObject", "script"}
 ALLOWED_ATTRIBUTES = dict(nh3.ALLOWED_ATTRIBUTES)
 ALLOWED_ATTRIBUTES["iframe"] = IFRAME_ATTRIBUTES
 ALLOWED_ATTRIBUTES["audio"] = {"src", "controls", "preload", "type", "style", "controlslist"}
 ALLOWED_ATTRIBUTES["video"] = {"src", "controls", "poster", "width", "height", "preload", "type", "style", "class"}
 ALLOWED_ATTRIBUTES["source"] = {"src", "type"}
 ALLOWED_ATTRIBUTES["img"] = {"src", "alt", "title", "loading", "width", "height", "style", "class"}
+ALLOWED_ATTRIBUTES["a"] = {"href", "hreflang", "class", "target", "title"}
 ALLOWED_ATTRIBUTES["figure"] = {"style", "class"}
 ALLOWED_ATTRIBUTES["figcaption"] = {"style", "class"}
 ALLOWED_ATTRIBUTES["picture"] = {"style", "class"}
@@ -76,6 +80,44 @@ ALLOWED_ATTRIBUTES["input"] = {"type", "placeholder", "style", "class", "id", "i
 ALLOWED_ATTRIBUTES["button"] = {"type", "style", "class", "id"}
 ALLOWED_ATTRIBUTES["label"] = {"style", "class", "for"}
 ALLOWED_ATTRIBUTES["section"] = {"style", "class", "id", "aria-label", "data-expected"}
+ALLOWED_ATTRIBUTES["p"] = {"id", "class"}
+ALLOWED_ATTRIBUTES["pre"] = {"class", "id"}
+ALLOWED_ATTRIBUTES["script"] = {"src", "type", "nonce"}
+
+_SVG_ATTRS = {
+    "id", "class", "style", "viewBox", "xmlns", "width", "height",
+    "role", "aria-roledescription",
+    "d", "points", "transform", "marker-end",
+    "cx", "cy", "r", "x", "y", "x1", "y1", "x2", "y2",
+    "dx", "dy", "text-anchor", "font-style", "font-weight",
+    "offset", "stop-color", "stop-opacity", "flood-color", "flood-opacity",
+    "stdDeviation", "gradientUnits", "orient", "refX", "refY",
+    "markerWidth", "markerHeight", "markerUnits",
+    "data-id", "data-edge", "data-et", "data-look", "data-points",
+}
+_SVG_TAGS = {"svg", "g", "path", "circle", "rect", "text", "tspan", "polygon", "defs", "marker", "linearGradient", "stop", "filter", "foreignObject"}
+for _tag in _SVG_TAGS:
+    ALLOWED_ATTRIBUTES[_tag] = _SVG_ATTRS
+
+MERMAID_FENCE_RE = re.compile(r"```mermaid\s*\n(.*?)\n```", re.DOTALL)
+MERMAID_CAPTION_RE = re.compile(r"^%%\s*caption:\s*(.+)$", re.MULTILINE)
+_MERMAID_SLOTS: dict[str, str] = {}
+_MERMAID_CACHE: dict[tuple[str, str], str] = {}
+_MERMAID_DIR = Path("static/mermaid")
+
+
+def _mermaid_hash(code: str) -> str:
+    import hashlib
+    return hashlib.sha256(code.encode()).hexdigest()[:16]
+
+
+def _read_prendered_svg(code: str, theme: str) -> str | None:
+    h = _mermaid_hash(code)
+    svg_file = _MERMAID_DIR / f"{h}-{theme}.svg"
+    try:
+        return svg_file.read_text(encoding="utf-8")
+    except FileNotFoundError:
+        return None
 
 YT_ID_RE = re.compile(r"(?:youtube\.com/watch\?v=|youtu\.be/)([A-Za-z0-9_-]{11})")
 # raw markdown link wrapped in <p> that markdown won't convert (e.g. <p> [▶️ text](youtube) </p>)
@@ -113,6 +155,45 @@ def parse_to_markdown(text: str) -> str:
     from blog_chat.app import CSP_NONCE
 
     if text:
+        import uuid
+        _MERMAID_SLOTS.clear()
+
+        def _mermaid_to_svg(m):
+            import mermaidx
+            try:
+                raw = m.group(1).strip()
+                caption_m = MERMAID_CAPTION_RE.search(raw)
+                caption = caption_m.group(1).strip() if caption_m else None
+                code = MERMAID_CAPTION_RE.sub("", raw).strip()
+
+                dark = _read_prendered_svg(code, "dark")
+                if dark is None:
+                    dark = _MERMAID_CACHE.get((code, "dark"))
+                    if dark is None:
+                        dark = mermaidx.render(code, theme="dark").svg()
+                        _MERMAID_CACHE[(code, "dark")] = dark
+                light = _read_prendered_svg(code, "light")
+                if light is None:
+                    light = _MERMAID_CACHE.get((code, "default"))
+                    if light is None:
+                        light = mermaidx.render(code, theme="default").svg()
+                        _MERMAID_CACHE[(code, "default")] = light
+
+                figcaption = f"<figcaption>{caption}</figcaption>" if caption else ""
+                svg = (
+                    f'<figure class="mermaid-figure">'
+                    f'<span class="mermaid-diagram" data-theme="dark">{dark}</span>'
+                    f'<span class="mermaid-diagram" data-theme="light">{light}</span>'
+                    f'{figcaption}'
+                    f'</figure>'
+                )
+            except Exception:
+                svg = f'<pre class="mermaid">{m.group(1).strip()}</pre>'
+            key = f"MERMAID_SLOT_{uuid.uuid4().hex}"
+            _MERMAID_SLOTS[key] = svg
+            return key
+
+        text = MERMAID_FENCE_RE.sub(_mermaid_to_svg, text)
         # pre-process: markdown links inside raw <p> blocks that markdown ignores
         def _repl_raw(m):
             label, url = m.group(1), m.group(2)
@@ -138,6 +219,7 @@ def parse_to_markdown(text: str) -> str:
         return m.group(0)
 
     html = HTML_YT_P_RE.sub(_repl_html, html)
+
     cleaned = nh3.clean(
         html,
         tags=ALLOWED_TAGS,
@@ -146,6 +228,16 @@ def parse_to_markdown(text: str) -> str:
         link_rel="noopener noreferrer nofollow",
         filter_style_properties=ALLOWED_STYLE_PROPERTIES,
         set_tag_attribute_values={"a": {"target": "_blank"}},
+        clean_content_tags=set(),
+    )
+
+    for key, svg in _MERMAID_SLOTS.items():
+        cleaned = cleaned.replace(key, svg)
+
+    cleaned = re.sub(
+        r'(<a\b[^>]*href="#[^"]*"[^>]*)\s+target="_blank"',
+        r'\1',
+        cleaned,
     )
 
     nonce = CSP_NONCE.get(None)
@@ -153,6 +245,11 @@ def parse_to_markdown(text: str) -> str:
         cleaned = re.sub(
             r"<iframe\b",
             f'<iframe nonce="{nonce}"',
+            cleaned,
+        )
+        cleaned = re.sub(
+            r"<script\b",
+            f'<script nonce="{nonce}"',
             cleaned,
         )
 

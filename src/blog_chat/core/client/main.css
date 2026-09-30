@@ -506,7 +506,8 @@ img { max-width: 100%; height: auto; display: block; }
 }
 
 .pagination-prev,
-.pagination-next {
+.pagination-next,
+.pagination-last {
   display: inline-flex;
   align-items: center;
   gap: var(--sp-1);
@@ -518,13 +519,15 @@ img { max-width: 100%; height: auto; display: block; }
   transition: color var(--duration-fast), background var(--duration-fast);
 }
 .pagination-prev:hover,
-.pagination-next:hover {
+.pagination-next:hover,
+.pagination-last:hover {
   color: var(--text-primary);
   background: var(--accent-subtle);
 }
 
 .pagination-prev.disabled,
-.pagination-next.disabled {
+.pagination-next.disabled,
+.pagination-last.disabled {
   color: var(--text-faint);
   cursor: not-allowed;
   pointer-events: none;
@@ -679,6 +682,7 @@ img { max-width: 100%; height: auto; display: block; }
   color: var(--text-secondary);
   font-style: italic;
 }
+.article-body blockquote p:first-child { margin-top: 0; }
 
 .article-body code {
   font-family: var(--font-mono);
@@ -752,6 +756,62 @@ img { max-width: 100%; height: auto; display: block; }
   text-align: left;
   font-size: 1em;
   line-height: 1.4;
+}
+
+.mermaid-figure {
+  margin: 1.5rem 0;
+  text-align: center;
+}
+.mermaid-figure .mermaid-diagram {
+  display: block;
+}
+.mermaid-figure .mermaid-diagram svg {
+  max-width: 100%;
+  height: auto;
+}
+[data-theme-mode="dark"] .mermaid-figure .mermaid-diagram[data-theme="light"] { display: none; }
+[data-theme-mode="light"] .mermaid-figure .mermaid-diagram[data-theme="dark"] { display: none; }
+.mermaid-figure figcaption {
+  margin-top: 0.5rem;
+  font-size: 0.85em;
+  color: var(--text-secondary);
+}
+
+.footnote-ref {
+  font-size: 0.75em;
+  vertical-align: super;
+  text-decoration: none;
+  color: var(--accent);
+  font-weight: 600;
+}
+.footnote-ref:hover { text-decoration: underline; }
+
+.footnote-entry {
+  margin-top: 2rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+  font-size: 0.85em;
+  color: var(--text-secondary);
+  scroll-margin-top: 2rem;
+}
+.footnote-entry:target,
+.footnote-entry.highlight {
+  animation: footnote-pulse 1.5s ease-out;
+}
+
+@keyframes footnote-pulse {
+  0%   { background-color: rgba(0,122,77,0.25); }
+  100% { background-color: transparent; }
+}
+
+[data-theme-mode="light"] .footnote-entry:target,
+[data-theme-mode="light"] .footnote-entry.highlight {
+  animation-name: footnote-pulse-light;
+}
+
+@keyframes footnote-pulse-light {
+  0%   { background-color: rgba(0,122,77,0.12); }
+  100% { background-color: transparent; }
 }
 
 .article-body ul, .article-body ol {

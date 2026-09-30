@@ -15,6 +15,10 @@ run = ".venv/bin/pytest tests/test_e2e -v"
 description = "Build frontend assets into static/"
 run = "bun run build"
 
+[tasks.prerender]
+description = "Pre-render mermaid diagrams to static SVG files"
+run = ".venv/bin/python scripts/prerender_mermaid.py"
+
 [tasks.migrate]
 description = "Apply pending database migrations (uses DATABASE_URL from .env)"
 run = ".venv/bin/alembic upgrade head"
@@ -23,6 +27,7 @@ run = ".venv/bin/alembic upgrade head"
 description = "Deploy the whole service (app + Cloudflare tunnel) via Docker Compose. Builds the frontend, migrates the database, then starts the stack. Assumes .cloudflare/ config and credentials are prepared."
 run = [
   "bun run build",
+  ".venv/bin/python scripts/prerender_mermaid.py",
   ".venv/bin/alembic upgrade head",
   "docker compose up --build -d",
 ]
