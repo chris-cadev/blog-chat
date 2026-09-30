@@ -7,10 +7,10 @@ tags:
   - git
   - github
   - python
+  - logiciel
 created: '2025-10-17'
-updated: '2025-10-17'
-description: Un micro outil en Python pour découvrir le premier commit de n'importe quel dépôt
-  GitHub. Développé par Christian Camacho et déployé sur Vercel.
+updated: '2026-09-29'
+description: Un micro outil en Python pour découvrir le premier commit de n'importe quel dépôt GitHub.
 lang: fr
 lang_group: firstcommit
 ---
@@ -25,6 +25,8 @@ J'allais terminer ma garde du vendredi à l'usine quand ce projet m'est revenu e
 
 J'ai cherché un moment. Tout ce que je trouvais demandait votre nom d'utilisateur ou analysait votre profil, rien pour un dépôt qui n'est pas le vôtre. Au bout d'un moment je me suis dit *je le fais moi-même*.
 
-Aujourd'hui, monter ce genre de chose coûte peu. Quelques prompts et vous avez un site fonctionnel sur Vercel que vos collègues peuvent ouvrir. Quelques prompts de plus et deux ou trois bugs corrigés, j'avais quelque chose de simple que je pouvais publier avec confiance. Sans connexion, sans clonage. Juste coller l'URL.
+Aujourd'hui, monter ce genre de chose coûte peu. **Quelques prompts et vous avez un site fonctionnel sur Vercel** que vos collègues peuvent ouvrir. Quelques prompts de plus et deux ou trois bugs corrigés, j'avais quelque chose de simple que je pouvais publier avec confiance. Sans connexion, sans clonage. Juste coller l'URL.
 
 C'est fait en Python. Le code est sur le [dépôt first-commit sur GitHub](https://github.com/chris-cadev/first-commit/).
+
+Parfois les choses les plus utiles ne viennent pas d'une feuille de route ni d'une réunion. Elles viennent d'une garde de vendredi et d'une question simple : quand est-ce que ça a commencé ?

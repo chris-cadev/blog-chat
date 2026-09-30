@@ -1,12 +1,13 @@
 ---
-title: Inventor day (2025)
+title: "Inventor Day (2025)"
 slug: dia-del-inventor
 tags:
   - inventor
   - technology
   - thought
 created: '2025-02-17'
-updated: '2025-02-17'
+updated: '2026-09-29'
+description: "Alan Turing smiling, the mental image of an inventor, and why technology doesn't advance as fast as we think."
 lang: en
 lang_group: dia-del-inventor
 ---

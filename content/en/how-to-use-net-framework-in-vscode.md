@@ -7,18 +7,18 @@ tags:
   - vscode
   - tools
 created: '2025-11-26'
-updated: '2026-09-21'
+updated: '2026-09-29'
 lang: en
 lang_group: how-to-use-net-framework-in-vscode
 ---
 
-At a factory in Tijuana, everything ran on Microsoft and IBM — .NET, C#, Windows Server. Visual Studio was the standard IDE, but loading it with large solutions was heavy. VS Code was the lightweight alternative: it started fast, didn't eat RAM, and for everyday tasks like editing configs or debugging scripts, it was more than enough.
+At a factory in Tijuana, everything ran on Microsoft and IBM: .NET, C#, Windows Server. Visual Studio was the standard IDE, but loading it with large solutions was heavy. VS Code was the lightweight alternative: it started fast, didn't eat RAM, and for everyday tasks like editing configs or debugging scripts, it was more than enough.
 
-What was missing was an `EditorConfig` that unified formatting rules between both editors. Without it, each one formatted its own way and diffs were a mess. Here's the one that worked, ready to copy.
+What was missing was an [`EditorConfig`](https://editorconfig.org/) that unified formatting rules between both editors. Without it, each one formatted its own way and diffs were a mess. Here's the one that worked, ready to copy.
 
 ## EditorConfig essentials
 
-Start with the global rules: UTF-8 charset, consistent newlines, and indentation per file type. This ensures VS and VS Code share the same base rules.
+Start with the global rules: UTF-8 charset, consistent newlines, and indentation per file type. **This ensures VS and VS Code share the same base rules.**
 
 ```toml
 # Top-most EditorConfig file
@@ -63,7 +63,7 @@ end_of_line = crlf
 
 ## C# formatting rules
 
-C# formatting rules prevent unnecessary diffs between editors. The most important part: where braces go, how blocks are indented, and spaces around operators.
+C# formatting rules prevent unnecessary diffs between editors. **The most important part: where braces go, how blocks are indented, and spaces around operators.**
 
 ```toml
 [*.cs]
@@ -100,7 +100,7 @@ csharp_space_before_semicolon_in_for_statement = false
 
 ## Naming conventions
 
-Naming conventions are critical in a team. If everyone follows the same rules, code reviews focus on logic, not style.
+Naming conventions are critical in a team. **If everyone follows the same rules, code reviews focus on logic, not style.**
 
 ```toml
 # Async methods should end with Async
@@ -150,7 +150,7 @@ dotnet_naming_style.prefix_underscore.capitalization = camel_case
 
 ## Diagnostic severities
 
-These are the diagnostic rules that actually matter day-to-day. IDE rules handle the visual stuff, CA rules handle code quality. The full config has over 60 rules — use the ones you need.
+These are the diagnostic rules that actually matter day-to-day. **IDE rules handle the visual stuff, CA rules handle code quality.** The full config has over 60 rules, use the ones you need.
 
 ```toml
 # IDE diagnostics
@@ -182,7 +182,7 @@ dotnet_diagnostic.CA2235.severity = warning # Mark all non-serializable fields
 
 ## web.config: language encoding
 
-If your app handles internationalization or needs a specific culture, the `web.config` must declare encoding and culture explicitly. Without this, ASP.NET uses the server's culture — which in a factory in Tijuana probably isn't the one you want.
+If your app handles internationalization or needs a specific culture, the `web.config` must declare encoding and culture explicitly. **Without this, ASP.NET uses the server's culture**, which in a factory in Tijuana probably isn't the one you want.
 
 ```xml
 <system.web>
@@ -199,4 +199,6 @@ If your app handles internationalization or needs a specific culture, the `web.c
 
 This post covers the most useful sections. The full config has over 300 lines with all the naming, formatting, and diagnostics rules for .NET.
 
-Copy the sections you need, or download the full config from the project repository. The important thing is that VS and VS Code share the same `EditorConfig` — that's what prevents the formatting diffs that drive you crazy during code review.
+Copy the sections you need, or download the full config from the project repository. **The important thing is that VS and VS Code share the same `EditorConfig`**, that's what prevents the formatting diffs that drive you crazy during code review.
+
+For more details, the [official EditorConfig documentation](https://editorconfig.org/) and the [VS Code .NET guide](https://code.visualstudio.com/docs/languages/dotnet) expand on what this post covers.

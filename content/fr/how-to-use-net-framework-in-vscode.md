@@ -12,7 +12,7 @@ lang: fr
 lang_group: how-to-use-net-framework-in-vscode
 ---
 
-Dans une usine à Tijuana, tout tournait sur Microsoft et IBM — .NET, C#, Windows Server. Visual Studio était le IDE standard, mais le charger avec de grandes solutions pesait. VS Code était l'alternative légère : il démarrait vite, ne mangeait pas de RAM, et pour des tâches courantes comme éditer des configs ou déboguer des scripts, il suffisait.
+Dans une usine à Tijuana, tout tournait sur Microsoft et IBM : .NET, C#, Windows Server. Visual Studio était le IDE standard, mais le charger avec de grandes solutions pesait. VS Code était l'alternative légère : il démarrait vite, ne mangeait pas de RAM, et pour des tâches courantes comme éditer des configs ou déboguer des scripts, il suffisait.
 
 Ce qui manquait, c'était un `EditorConfig` qui unifiait les règles de formatage entre les deux éditeurs. Sans lui, chacun formatait à sa manière et les diffs étaient un chaos. Voici celui qui a fonctionné, prêt à copier.
 
@@ -150,7 +150,7 @@ dotnet_naming_style.prefix_underscore.capitalization = camel_case
 
 ## Sévérités de diagnostic
 
-Ce sont les règles de diagnostic qui comptent vraiment au quotidien. Les IDE vont pour le visuel, les CA pour la qualité du code. Le config complet a plus de 60 règles — utilise celles dont tu as besoin.
+Ce sont les règles de diagnostic qui comptent vraiment au quotidien. **Les IDE vont pour le visuel, les CA pour la qualité du code.** Le config complet a plus de 60 règles, utilise celles dont tu as besoin.
 
 ```toml
 # IDE diagnostics
@@ -182,7 +182,7 @@ dotnet_diagnostic.CA2235.severity = warning # Mark all non-serializable fields
 
 ## web.config : encodage de langue
 
-Si ton app gère l'internationalisation ou a besoin d'une culture spécifique, le `web.config` doit déclarer l'encodage et la culture explicitement. Sinon, ASP.NET utilise la culture du serveur — qui dans une usine à Tijuana n'est probablement pas celle que tu veux.
+Si ton app gère l'internationalisation ou a besoin d'une culture spécifique, le `web.config` doit déclarer l'encodage et la culture explicitement. **Sinon, ASP.NET utilise la culture du serveur**, qui dans une usine à Tijuana n'est probablement pas celle que tu veux.
 
 ```xml
 <system.web>
@@ -199,4 +199,4 @@ Si ton app gère l'internationalisation ou a besoin d'une culture spécifique, l
 
 Ce post couvre les sections les plus utiles. Le config complet a plus de 300 lignes avec toutes les règles de naming, formatting et diagnostics de .NET.
 
-Copie les sections dont tu as besoin, ou télécharge le config complet depuis le dépôt du projet. L'important, c'est que VS et VS Code partagent le même `EditorConfig` — c'est ce qui évite les diffs de formatage qui te rendent fou en revue de code.
+Copie les sections dont tu as besoin, ou télécharge le config complet depuis le dépôt du projet. **L'important, c'est que VS et VS Code partagent le même `EditorConfig`**, c'est ce qui évite les diffs de formatage qui te rendent fou en revue de code.

@@ -1,10 +1,13 @@
 ---
-title: Journée des inventeurs (2025)
+title: "Journée des inventeurs (2025)"
 slug: dia-del-inventor
 tags:
   - inventeur
+  - technologie
+  - pensée
 created: '2025-02-17'
-updated: '2025-02-17'
+updated: '2026-09-29'
+description: "Alan Turing souriant, l'image mentale d'un inventeur, et pourquoi la technologie n'avance pas aussi vite qu'on le croit."
 lang: fr
 lang_group: dia-del-inventor
 ---

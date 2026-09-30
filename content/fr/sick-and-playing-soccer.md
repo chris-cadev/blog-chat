@@ -2,7 +2,7 @@
 title: Malade et jouant au football
 slug: sick-and-playing-soccer
 created: '2025-11-07'
-updated: '2025-11-07'
+updated: '2026-09-29'
 description: Presque chaque fois que je joue au football, je me sens comme si je n'avais pas l'arme,
   même si je sais que je fais un jeu après l'autre. Cette fois, j'ai joué, j'ai réalisé
   qu'en apportant le nez couvert, je respirais un peu plus lentement

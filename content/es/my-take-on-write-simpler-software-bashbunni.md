@@ -5,13 +5,12 @@ tags:
   - software
   - simplicidad
   - código
-created: '2025-10-31'
+created: '2025-10-25'
 updated: '2026-09-28'
 lang: es
 lang_group: my-take-on-write-simpler-software-bashbunni
 description: 'Bashbunni comparte por qué la simplicidad y la consistencia superan a la conveniencia en software, con el ejemplo de los envíos en Japón.'
 ---
-# Mi take sobre Write Simpler Software (Bashbunni)
 
 Bashbunni comparte un punto que resuena: en tech tendemos a complicar la productividad y a resolver problemas que no existen. Su ejemplo favorito es el sistema de envíos de Japón, paper-based, sin tracking en tiempo real, pero confiable al punto de que la gente envía su equipaje del aeropuerto al hotel sin preocuparse. Sistemas simples con menos piezas en movimiento. Consistencia sobre conveniencia.
 

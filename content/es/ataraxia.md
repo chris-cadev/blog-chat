@@ -5,7 +5,7 @@ tags:
   - vida
   - meta
   - filosofia
-created: '2025-10-31'
+created: '2025-11-31'
 updated: '2025-10-31'
 lang: es
 lang_group: ataraxia

@@ -1,5 +1,5 @@
 ---
-title: Tired and Sick
+title: Cansado y enfermo
 slug: tired-of-work
 tags:
   - trabajo

@@ -6,7 +6,7 @@ tags:
   - concentracion
   - salud
 created: '2025-11-07'
-updated: '2025-11-07'
+updated: '2026-09-29'
 description: Casi siempre que juego futbol siento como que no la armo, aunque sé que sí hago una
   que otra jugada. Esta vez que jugué, me di cuenta de que por traer la nariz tapada
   estaba respirando un poco más lento

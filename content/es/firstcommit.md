@@ -9,9 +9,8 @@ tags:
   - python
   - software
 created: '2025-10-17'
-updated: '2025-10-17'
-description: Una micro herramienta en Python para descubrir el primer commit de cualquier repositorio
-  en GitHub. Desarrollada por Christian Camacho y desplegada en Vercel.
+updated: '2026-09-29'
+description: Una micro herramienta en Python para descubrir el primer commit de cualquier repositorio en GitHub.
 lang: es
 lang_group: firstcommit
 ---
@@ -26,6 +25,8 @@ Estaba por terminar la guardia del viernes en planta cuando me quedé pensando e
 
 Busqué un rato. Todo lo que encontraba pedía tu usuario o analizaba tu perfil, nada pensado para un repositorio ajeno. Después de un rato me dije *lo hago yo*.
 
-Hoy montar algo así cuesta poco. Unos prompts y tenés un sitio funcional en Vercel que tus colegas pueden abrir. Unos prompts más y un par de bugs después, ya tenía algo sencillo que podía publicar con confianza. Sin login, sin clonar, solo pegar la URL.
+Hoy montar algo así cuesta poco. **Unos prompts y tenés un sitio funcional en Vercel** que tus colegas pueden abrir. Unos prompts más y un par de bugs después, ya tenía algo sencillo que podía publicar con confianza. Sin login, sin clonar, solo pegar la URL.
 
 Está hecho con Python, podés ver el código en el [repositorio first-commit en GitHub](https://github.com/chris-cadev/first-commit/).
+
+A veces las cosas más útiles no vienen de un roadmap ni de una reunión. Vienen de una guardia de viernes y una pregunta simple: ¿cuándo empezó esto?
