@@ -47,11 +47,11 @@ CSP_TEMPLATE = "; ".join([
 
 
 def build_csp(nonce: str) -> str:
-    script_src = "'self'"
+    script_src = f"'self' 'nonce-{nonce}'"
     connect_src = "'self' wss: ws:"
     if UMAMI_ACTIVE and UMAMI_HOST:
         umami_origin = f"https://{UMAMI_HOST}"
-        script_src = f"'self' {umami_origin}"
+        script_src = f"'self' 'nonce-{nonce}' {umami_origin}"
         connect_src = f"'self' wss: ws: {umami_origin}"
     return CSP_TEMPLATE.format(
         nonce=nonce,

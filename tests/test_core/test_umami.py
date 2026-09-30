@@ -28,7 +28,7 @@ class TestCSP:
         monkeypatch.setattr(app_module, "UMAMI_ACTIVE", True)
         monkeypatch.setattr(app_module, "UMAMI_HOST", UMAMI_HOST)
         csp = app_module.build_csp("nonce123")
-        assert f"script-src 'self' https://{UMAMI_HOST}" in csp
+        assert f"'self' 'nonce-nonce123' https://{UMAMI_HOST}" in csp
         assert f"connect-src 'self' wss: ws: https://{UMAMI_HOST}" in csp
 
     def test_no_umami_origin_when_disabled(self, monkeypatch):

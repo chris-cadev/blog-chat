@@ -29,10 +29,14 @@ class TestParseToMarkdown:
         result = parse_to_markdown(None)
         assert result == ""
 
-    def test_strips_script_tags(self):
+    def test_preserves_script_tags(self):
         result = parse_to_markdown("<script>alert(1)</script>hello")
-        assert "<script" not in result
+        assert "<script" in result
         assert "hello" in result
+
+    def test_script_blocked_by_csp_no_inline(self):
+        result = parse_to_markdown("<script>alert(1)</script>hello")
+        assert 'nonce="' not in result
 
     def test_strips_event_handler_attributes(self):
         result = parse_to_markdown('<img src=x onerror=alert(1)>')
@@ -137,8 +141,16 @@ class TestParseToMarkdown:
     def test_nonce_not_added_to_non_iframe_elements(self):
         token = CSP_NONCE.set("test-nonce-456")
         try:
-            result = parse_to_markdown("**bold** and <script>alert(1)</script>")
+            result = parse_to_markdown("**bold** and <strong>text</strong>")
             assert "nonce=" not in result
+        finally:
+            CSP_NONCE.reset(token)
+
+    def test_adds_nonce_to_script_when_available(self):
+        token = CSP_NONCE.set("test-nonce-789")
+        try:
+            result = parse_to_markdown('<script type="text/javascript">alert(1)</script>')
+            assert 'nonce="test-nonce-789"' in result
         finally:
             CSP_NONCE.reset(token)
 

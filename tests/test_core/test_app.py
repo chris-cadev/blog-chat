@@ -27,9 +27,10 @@ class TestCSPTemplate:
         csp = build_csp("test-nonce-123")
         assert "frame-ancestors 'none'" in csp
 
-    def test_default_script_src_is_self(self):
+    def test_default_script_src_is_self_and_nonce(self):
         csp = build_csp("test-nonce-123")
-        assert "script-src 'self'" in csp
+        assert "'self'" in csp
+        assert "'nonce-test-nonce-123'" in csp
 
     def test_default_connect_src_is_self_and_websockets(self):
         csp = build_csp("test-nonce-123")
