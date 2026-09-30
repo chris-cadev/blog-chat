@@ -1,7 +1,7 @@
 ---
 title: "Cosas que hacía en 2011"
 created: 2011-07-29
-updated: 2011-07-29
+updated: 2026-09-29
 origin_link: "https://www.facebook.com/media/set/?set=a.114766901923364&type=3"
 description: "Photoshop, Minecraft, una limonada y escudos para amigos — un álbum de Facebook de 2011."
 slug: mis-creaciones-2011
@@ -13,7 +13,7 @@ lang: es
 lang_group: mis-creaciones-2011
 ---
 
-En 2011 estaba aprendiendo Photoshop y jugando Minecraft. Este álbum reúne lo que hacía en ese entonces: un mundo de ladrillo en Minecraft, fan art de anime, siluetas con degradados, la limonada que hice una tarde y escudos que diseñé para algunos amigos.
+**Aprendía Photoshop y jugaba Minecraft.** Este álbum reúne lo que hacía entonces: mundos de ladrillo, fan art de anime, siluetas con degradados, la limonada que hice una tarde y escudos que diseñé para algunos amigos.
 
 <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(250px, 1fr)); gap:8px; margin:1.5em 0;">
 
@@ -54,7 +54,7 @@ En 2011 estaba aprendiendo Photoshop y jugando Minecraft. Este álbum reúne lo 
 
 <figure style="margin:0;">
 <img src="assets/miguel-rangel-15y-que-chidas-imagenes-we_8.jpg" alt="Escudo verde metálico con texto 3D verde lima que dice K7P" style="width:100%; border-radius:6px; cursor:zoom-in;">
-<figcaption style="font-size:0.8rem; color:var(--text-faint); text-align:center; margin-top:4px;">Escudo para K7P</figcaption>
+<figcaption style="font-size:0.8rem; color:var(--text-faint); text-align:center; margin-top:4px;">Escudo para K7P (Kris7Pivot — mi primer nombre en internet)</figcaption>
 </figure>
 
 <figure style="margin:0;">

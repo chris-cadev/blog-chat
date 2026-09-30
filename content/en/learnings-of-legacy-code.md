@@ -1,21 +1,24 @@
 ---
 title: Learnings on working with legacy code
 slug: learnings-of-legacy-code
+description: Software architecture isn't just for greenfield projects. Legacy code deserves the same discipline — and soft skills make it happen.
 tags:
   - software
   - csharp
   - dotnet
+  - legacy-code
 created: '2025-12-11'
-updated: '2025-12-11'
+updated: '2026-09-29'
 lang: en
 lang_group: learnings-of-legacy-code
 ---
 
-Architecture of Software is not dependent of modern code. It can be applied to any source code, even legacy. This is something I read in some book, but this job really took me to the practice of apply that knowledge.
+Software architecture doesn't depend on modern code. It applies to any codebase, even legacy. I read this in a book once, but this job forced me to put that knowledge into practice.
 
-![](https://web.archive.org/web/20251210155229/https://blog.ndepend.com/wp-content/uploads/Clean-Architecture-Diagram-Asp-Net.png)
+![Clean Architecture diagram showing separation of concerns in ASP.NET](https://web.archive.org/web/20251210155229/https://blog.ndepend.com/wp-content/uploads/Clean-Architecture-Diagram-Asp-Net.png)
 
-You must learn to transmit your technical skill to real problem solving and socialize to achieve the goals of that.
+The hard part isn't the patterns, it's translating technical skill into real problem solving. You need to communicate, align with the team, and push toward shared goals.
 
-![](https://www.husson.edu/online/blog/2024/09/soft-skills-blog-image.jpg)
+![Soft skills are essential for developers working with legacy systems](https://www.husson.edu/online/blog/2024/09/soft-skills-blog-image.jpg)
 
+Code alone doesn't ship features. People do.

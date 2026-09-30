@@ -1,5 +1,5 @@
 ---
-title: "el typo que te delata"
+title: "Typo que te delata"
 created: 2014-04-06
 updated: 2014-04-06
 origin_link: "https://www.facebook.com/ccamacho.c4/posts/pfbid02A6zmBL6BVps4UHtoTthZGcN75B9w4tktNDSwV6Lsqrfy52aPx8y81pZHgPaYNC52l"
