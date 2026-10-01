@@ -25,17 +25,6 @@ Verificar si algo es tóxico, si va a dañar alguna de las partes donde lo vas a
 
 **Huella de responsabilidad:** es de quien creó esa complejidad al final de cuentas. La complejidad de comerse un pez globo la desarrolló quien creó la idea, pero también es responsable quien gana valor de hacer que esa idea llegue a más personas.
 
-<div style="display:flex; gap:16px; flex-wrap:wrap; margin:12px 0;">
-<figure style="margin:0; flex:1; min-width:200px;">
-<img src="../assets/pez-globo-platillo.jpg" alt="Platillo de pez globo (fugu) servido en un restaurante" style="width:100%; border-radius:4px;">
-<figcaption style="font-size:0.85rem; color:var(--text-faint); text-align:center; margin-top:4px;">Fugu: el platillo que puede matarte</figcaption>
-</figure>
-<figure style="margin:0; flex:1; min-width:200px;">
-<img src="../assets/chef-pez-globo.jpg" alt="Chef preparando un pez globo (fugu)" style="width:100%; border-radius:4px;">
-<figcaption style="font-size:0.85rem; color:var(--text-faint); text-align:center; margin-top:4px;">El chef que lo prepara también asume la responsabilidad</figcaption>
-</figure>
-</div>
-
 Distribuir la responsabilidad es un término que no me agrada del todo, porque al final la responsabilidad es de quien tuvo la última acción. Pero tenemos productos tan complejos que ya no es tan simple saber quién la tiene.
 
 Solo que estando adentro, desarrollando software para una maquiladora, no se puede pensar tan allá. **Estás muy metido dentro del engranaje de valor.**
