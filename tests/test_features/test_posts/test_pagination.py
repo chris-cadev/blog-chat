@@ -398,3 +398,52 @@ class TestPaginationToEnd:
             nav = _pagination_html(resp.text)
             assert "pagination-last" in nav
             assert 'href="/en/tags/python?page=3"' in nav
+
+
+# ── Post-not-found pagination parity ─────────────────────────
+
+
+class TestPostNotFoundPagination:
+    """GET /{lang}/{missing-slug} → 404 + index-like list + real pagination."""
+
+    def test_missing_post_shows_error_and_pagination(self, many_posts):
+        with TestClient(app) as client:
+            resp = client.get("/en/does-not-exist")
+            index = client.get("/en/")
+            assert resp.status_code == 404
+            assert "Post not found" in resp.text
+            assert "pagination" in resp.text
+            assert _page_numbers(resp.text) == _page_numbers(index.text)
+
+    def test_missing_post_page_2_same_slice_as_index(self, many_posts):
+        with TestClient(app) as client:
+            not_found = client.get("/en/does-not-exist?page=2")
+            index = client.get("/en/?page=2")
+            assert not_found.status_code == 404
+            assert "Post not found" in not_found.text
+            assert _page_numbers(not_found.text) == _page_numbers(index.text)
+            nav = _pagination_html(not_found.text)
+            assert 'hx-get="/en/does-not-exist?page=1"' in nav
+
+    def test_missing_post_pagination_links_stay_on_missing_url(self, many_posts):
+        with TestClient(app) as client:
+            resp = client.get("/en/does-not-exist")
+            nav = _pagination_html(resp.text)
+            assert 'hx-get="/en/does-not-exist?page=2"' in nav
+            assert 'href="/en/does-not-exist?page=2"' in nav
+
+    def test_missing_post_htmx_partial(self, many_posts):
+        with TestClient(app) as client:
+            resp = client.get(
+                "/en/does-not-exist?page=2",
+                headers={"HX-Request": "true"},
+            )
+            assert resp.status_code == 200
+            assert "pagination" in resp.text
+            assert "<html" not in resp.text
+
+    def test_missing_post_matches_index_page_count(self, few_posts):
+        with TestClient(app) as client:
+            resp = client.get("/en/nope")
+            assert resp.status_code == 404
+            assert "pagination" not in resp.text

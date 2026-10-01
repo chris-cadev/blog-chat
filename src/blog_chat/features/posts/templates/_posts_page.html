@@ -55,7 +55,7 @@
 
 {% if total_pages > 1 %}
 <nav class="pagination" aria-label="Page navigation">
-  {% set base_url = '/'+lang+'/' if not tag else '/'+lang+'/tags/'+tag %}
+  {% set base_url = '/'+lang+'/tags/'+tag if tag else (error and slug and ('/'+lang+'/'+slug) or '/'+lang+'/') %}
   {% if page > 1 %}
   <a href="{{ base_url }}?page={{ page - 1 }}" class="pagination-prev" rel="prev"
      hx-get="{{ base_url }}?page={{ page - 1 }}"

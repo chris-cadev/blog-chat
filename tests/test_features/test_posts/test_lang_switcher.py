@@ -64,3 +64,26 @@ class TestLangSwitcherPreservesPage:
             resp = client.get("/en/?page=2")
             links = self._lang_links(resp.text)
             assert links["en"] == "/en/?page=2"
+
+    def test_missing_post_no_page_links_to_index_without_page(self):
+        with TestClient(app) as client:
+            resp = client.get("/en/does-not-exist")
+            assert resp.status_code == 404
+            links = self._lang_links(resp.text)
+            for lang in ("es", "fr"):
+                assert links[lang] == f"/{lang}/"
+
+    def test_missing_post_page2_links_to_good_index_with_page(self):
+        with TestClient(app) as client:
+            resp = client.get("/en/does-not-exist?page=2")
+            assert resp.status_code == 404
+            links = self._lang_links(resp.text)
+            for lang in ("es", "fr"):
+                assert links[lang] == f"/{lang}/?page=2"
+
+    def test_missing_post_page3_links_to_good_index_with_page(self):
+        with TestClient(app) as client:
+            resp = client.get("/en/does-not-exist?page=3")
+            links = self._lang_links(resp.text)
+            for lang in ("es", "fr"):
+                assert links[lang] == f"/{lang}/?page=3"

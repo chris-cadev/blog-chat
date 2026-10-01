@@ -89,6 +89,27 @@ def _paginate(items: list, page: int, per_page: int = PER_PAGE) -> tuple[list, i
     return items[start:start + per_page], total_pages, page
 
 
+def _index_list_ctx(request: Request, lang: str, page: int) -> dict:
+    """Shared index list/pagination context for home and post-not-found."""
+    all_posts = get_posts(lang)
+    pinned_posts = [p for p in all_posts if p.get("pinned")][:3]
+    pinned_slugs = {p["slug"] for p in pinned_posts}
+    regular_posts = [p for p in all_posts if p["slug"] not in pinned_slugs]
+    page_posts, total_pages, current_page = _paginate(regular_posts, page)
+    chat_post = pinned_posts[0] if pinned_posts else (regular_posts[0] if regular_posts else None)
+    return {
+        "posts": page_posts,
+        "pinned_posts": pinned_posts,
+        "pinned_post": pinned_posts[0] if pinned_posts else None,
+        "chat_post": chat_post,
+        "room": chat_post["slug"] if chat_post else "offtopic",
+        "page": current_page,
+        "total_pages": total_pages,
+        "total_posts": len(regular_posts),
+        "language_switcher": language_switcher(request, lang, None),
+    }
+
+
 def _tags_data(lang: str):
     posts = get_posts(lang)
     counter: Counter = Counter()
@@ -242,27 +263,15 @@ def read_lang_index(request: Request, lang: str, page: int = Query(1, ge=1)):
             total_pages=1,
             language_switcher=language_switcher(request, None, None),
         )
-    all_posts = get_posts(lang)
-    pinned_posts = [p for p in all_posts if p.get("pinned")][:3]
-    pinned_slugs = {p["slug"] for p in pinned_posts}
-    regular_posts = [p for p in all_posts if p["slug"] not in pinned_slugs]
-    page_posts, total_pages, current_page = _paginate(regular_posts, page)
     log_business_event("page.view", "Blog index viewed", lang=lang, path=f"/{lang}/")
     is_htmx = request.headers.get("HX-Request")
-    chat_post = pinned_posts[0] if pinned_posts else (regular_posts[0] if regular_posts else None)
+    ctx = _index_list_ctx(request, lang, page)
     return _render(
         "_posts_page.html" if is_htmx else "index.html",
         request,
         lang,
-        posts=page_posts,
-        pinned_posts=pinned_posts,
-        pinned_post=pinned_posts[0] if pinned_posts else None,
-        chat_post=chat_post,
-        room=chat_post["slug"] if chat_post else "offtopic",
-        page=current_page,
-        total_pages=total_pages,
-        total_posts=len(regular_posts),
-        language_switcher=language_switcher(request, lang, None),
+        slug=None,
+        **ctx,
     )
 
 
@@ -326,36 +335,29 @@ def read_tags(request: Request, lang: str):
     )
 
 
+def _post_not_found(request: Request, lang: str, slug: str | None, page: int) -> Response:
+    is_htmx = request.headers.get("HX-Request")
+    ctx = _index_list_ctx(request, lang, page)
+    # HTMX partials: 200 so hx-swap/hx-push-url work; full page keeps 404.
+    return _render(
+        "_posts_page.html" if is_htmx else "index.html",
+        request,
+        lang,
+        status_code=None if is_htmx else 404,
+        apply_lang_cookie=lang in LANGS,
+        error=make_t(lang)("post_not_found"),
+        slug=slug,
+        **ctx,
+    )
+
+
 @router.get("/{lang}/fb/{slug:path}")
-def read_fb_item(request: Request, lang: str, slug: str):
+def read_fb_item(request: Request, lang: str, slug: str, page: int = Query(1, ge=1)):
     if lang not in LANGS:
-        return _render(
-            "index.html",
-            request,
-            "en",
-            status_code=404,
-            apply_lang_cookie=False,
-            posts=get_posts(),
-            error=make_t("en")("post_not_found"),
-            slug=None,
-            page=1,
-            total_pages=1,
-            language_switcher=language_switcher(request, None, None),
-        )
+        return _post_not_found(request, "en", None, page)
     post = get_fb_post(slug)
     if not post:
-        return _render(
-            "index.html",
-            request,
-            lang,
-            status_code=404,
-            posts=get_posts(lang),
-            error=make_t(lang)("post_not_found"),
-            slug=slug,
-            page=1,
-            total_pages=1,
-            language_switcher=language_switcher(request, lang, slug),
-        )
+        return _post_not_found(request, lang, slug, page)
     log_business_event(
         "page.view",
         "FB post viewed",
@@ -375,7 +377,7 @@ def read_fb_item(request: Request, lang: str, slug: str):
 
 
 @router.get("/{lang}/{slug:path}")
-def read_item(request: Request, lang: str, slug: str):
+def read_item(request: Request, lang: str, slug: str, page: int = Query(1, ge=1)):
     if lang not in LANGS:
         legacy = get_post(f"{lang}/{slug}")
         if legacy:
@@ -389,39 +391,10 @@ def read_item(request: Request, lang: str, slug: str):
                 slug=legacy.get("slug"),
                 language_switcher=language_switcher(request, legacy_lang, legacy.get("slug")),
             )
-        return _render(
-            "index.html",
-            request,
-            "en",
-            status_code=404,
-            apply_lang_cookie=False,
-            posts=get_posts(),
-            error=make_t("en")("post_not_found"),
-            slug=None,
-            page=1,
-            total_pages=1,
-            language_switcher=language_switcher(request, None, None),
-        )
+        return _post_not_found(request, "en", None, page)
     post = get_post(slug, lang)
     if not post:
-        _posts = get_posts(lang)
-        _pinned_posts = [p for p in _posts if p.get("pinned")][:3]
-        _pinned = _pinned_posts[0] if _pinned_posts else None
-        return _render(
-            "index.html",
-            request,
-            lang,
-            status_code=404,
-            posts=_posts,
-            pinned_posts=_pinned_posts,
-            pinned_post=_pinned,
-            room=_pinned["slug"] if _pinned else "offtopic",
-            error=make_t(lang)("post_not_found"),
-            slug=slug,
-            page=1,
-            total_pages=1,
-            language_switcher=language_switcher(request, lang, slug),
-        )
+        return _post_not_found(request, lang, slug, page)
     log_business_event(
         "page.view",
         "Post viewed",
