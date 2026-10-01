@@ -17,7 +17,7 @@ C'est le premier post que j'ai fait en pensant à ce blog. J'ai cette envie de c
 
 > L'écriture a été ma passion depuis que j'étais en **prepa**, mais mon écriture a toujours été sur le gore et ce genre de choses. ...parfois, je me sens vertigineux pour vivre. C'est comme si j'avais trop d'opportunités pour faire quelque chose sur n'importe quel sujet que je connais mais je ne dois pas choisir quoi que ce soit parce que chaque option se sent comme un puits de perdition.
 
-![Vertige : des puits qui s'ouvrent sous les pieds](/static/posts/vertigo-wells.webp)
+![Vertige : des puits qui s'ouvrent sous les pieds](../assets/vertigo-wells.webp)
 
 J'ai abandonné : animation, design, musique, football, arts, écriture, échecs, collections, photographie, édition vidéo, films, blagues, organisation de fêtes, boissons, et ainsi de suite... Ce sont ceux dont je me souviens maintenant (2024-12-14 20:25 PDT) mais ça a été un voyage jusqu'à ce que je sois là pour programmer un blog.
 

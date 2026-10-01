@@ -24,6 +24,6 @@ This one is with [Witchcraft by Pendulum](https://www.youtube.com/watch?v=ogMNV3
 
 I didn't know if what I posted resonated with anyone else. **It was a blind AMV**, made from whatever sounded nice and whatever looked good on screen. Later I started discovering other nuances that had to go into AMVs, and my perfectionism kicked in and decided not to keep going.
 
-<video controls src="/static/posts/yoseline-osuna-tirado-13y-te-quedo-muy-bien-ya-quisiera_v0.mp4" style="width:100%; max-height:600px; border-radius:4px;"></video>
+<video controls src="../assets/yoseline-osuna-tirado-13y-te-quedo-muy-bien-ya-quisiera_v0.mp4" style="width:100%; max-height:600px; border-radius:4px;"></video>
 
 > **Yoseline Osuna Tirado:** That turned out really well, I wish I could make a video like that xD

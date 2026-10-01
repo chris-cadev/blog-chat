@@ -82,3 +82,47 @@ class TestParseMarkdownFile:
                 assert result["tags"] == ["solo-tag"]
             finally:
                 Path(f.name).unlink()
+
+
+class TestRewriteRelativePaths:
+    def _layout(self, tmp_path, monkeypatch):
+        content = tmp_path / "content"
+        (content / "assets").mkdir(parents=True)
+        (content / "es").mkdir(parents=True)
+        (content / "_drafts").mkdir(parents=True)
+        monkeypatch.chdir(tmp_path)
+        return content
+
+    def test_assets_relative_becomes_media_url(self, tmp_path, monkeypatch):
+        content = self._layout(tmp_path, monkeypatch)
+        md = content / "es" / "post.md"
+        md.write_text("![img](../assets/foo.jpg)\n")
+        result = parse_markdown_file(md)
+        assert result["content"] == "![img](/media/foo.jpg)"
+
+    def test_assets_html_src_becomes_media_url(self, tmp_path, monkeypatch):
+        content = self._layout(tmp_path, monkeypatch)
+        md = content / "es" / "post.md"
+        md.write_text('<video controls src="../assets/foo.mp4"></video>\n')
+        result = parse_markdown_file(md)
+        assert result["content"] == '<video controls src="/media/foo.mp4"></video>'
+
+    def test_draft_relative_becomes_drafts_url(self, tmp_path, monkeypatch):
+        content = self._layout(tmp_path, monkeypatch)
+        md = content / "_drafts" / "post.md"
+        md.write_text("![](note.wav)\n")
+        result = parse_markdown_file(md)
+        assert result["content"] == "![](/drafts/note.wav)"
+
+    def test_absolute_and_remote_paths_pass_through(self, tmp_path, monkeypatch):
+        content = self._layout(tmp_path, monkeypatch)
+        md = content / "es" / "post.md"
+        md.write_text(
+            "![a](/media/ok.jpg)\n"
+            "![b](https://example.com/x.png)\n"
+            "![c](/static/main.css)\n"
+        )
+        result = parse_markdown_file(md)
+        assert "/media/ok.jpg" in result["content"]
+        assert "https://example.com/x.png" in result["content"]
+        assert "/static/main.css" in result["content"]

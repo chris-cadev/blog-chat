@@ -21,7 +21,7 @@ lang_group: compartido-brisa-disenadora
 > Si alguno de ustedes desea un logo o conoce a alguien que quiera uno Pues estoy dispuesta a trabajar ❤ espero no me ignoren <\3
 > Gracias y que tengan linda noche ❤
 
-![Facebook image](/static/posts/508727364_3364068073733047_6858969528841461038_n.jpg)
+![Facebook image](../assets/508727364_3364068073733047_6858969528841461038_n.jpg)
 
 **No tuvo alcance ni un solo like.** Nadie lo vio, nadie compartió. Se intentó, pero no se logró mucho.
 

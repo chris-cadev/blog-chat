@@ -22,13 +22,13 @@ Avant, on y jouait dans le navigateur (Flash), maintenant c'est sur Steam. Le fr
 
 De là est sorti Cuerxo, un pote d'Argentine. Je lui ai faite cette intro en Flash. **Ça ne dure que 9 secondes, mais les commentaires en disent plus que le vidéo.**
 
-<video controls src="/static/posts/fer-macouzet-14y-que-no-lo-puedo-ver-o-o_v0.mp4" style="width:100%; max-height:600px; border-radius:4px;"></video>
+<video controls src="../assets/fer-macouzet-14y-que-no-lo-puedo-ver-o-o_v0.mp4" style="width:100%; max-height:600px; border-radius:4px;"></video>
 
 ### Les souvenirs
 
 Fernanda Macouzet, une amie très proche de l'époque. Je ne sais pas faire la pause de jouer et tout ce truc-là. Mario Reina Cabrera, un mec super grand, un peu timide, il aimait tout ce qui était de [Darkar](https://darkarcompany.com/), [Vete a la Versh](https://darkarcompany.com/?show=1f14a17c-7181-492e-a15e-a9824f513253), etc, et il dessinait beaucoup les personnages et les scènes.
 
-![dibujo de Mario de ese entonces](/static/posts/IMG_20260929_163814.jpg)
+![dibujo de Mario de ese entonces](../assets/IMG_20260929_163814.jpg)
 
 À l'époque, j'étais très agressif envers ce qui ne me plaisait pas. Ado, je suppose.
 
@@ -78,4 +78,4 @@ Fernanda Macouzet, une amie très proche de l'époque. Je ne sais pas faire la p
 
 Aussi dans la saison du lycée, je me souviens que Fernanda m'avait donné quelque chose pour la Saint-Valentin. Je ne sais pas si je l'ai encore, si je trouve le chocolat que j'ai gardé depuis, je le mets ici.
 
-![chocolate de corazon](/static/posts/IMG_2797.jpg)
+![chocolate de corazon](../assets/IMG_2797.jpg)

@@ -17,6 +17,6 @@ lang_group: mi-primer-gameplay-grabado-terraria
 
 Así que ahí estoy: 15 años, Fraps corriendo, audio atrasado, jugando Terraria porque era lo único que mi PC aguantaba grabar.
 
-![Captura del post de Facebook donde comento que el audio está atrasado](/static/posts/christian-camacho-15y-esta-atrasado-el-sonido-u-u_post.png)
+![Captura del post de Facebook donde comento que el audio está atrasado](../assets/christian-camacho-15y-esta-atrasado-el-sonido-u-u_post.png)
 
-<video controls src="/static/posts/christian-camacho-15y-esta-atrasado-el-sonido-u-u_v0.mp4" style="width:100%; max-height:600px; border-radius:4px;"></video>
+<video controls src="../assets/christian-camacho-15y-esta-atrasado-el-sonido-u-u_v0.mp4" style="width:100%; max-height:600px; border-radius:4px;"></video>

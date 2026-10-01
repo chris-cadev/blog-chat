@@ -13,7 +13,7 @@ lang: en
 lang_group: mooh-kemouche-comentario-fracking
 ---
 
-<video controls src="/static/posts/mooh-kemouche-11y-reply-see-trans_v0.mp4" style="width:100%; max-height:600px; border-radius:4px;"></video>
+<video controls src="../assets/mooh-kemouche-11y-reply-see-trans_v0.mp4" style="width:100%; max-height:600px; border-radius:4px;"></video>
 
 I don't know how I came across [this post](https://www.facebook.com/watch/?v=10153054829609308). I guess I was following some Photoshop page, but for some reason it popped up like I had shared it. It talks about [fracking](https://en.wikipedia.org/wiki/Hydraulic_fracturing), a topic that was heavily discussed in 2015 because they wanted to implement it in Mexico.
 

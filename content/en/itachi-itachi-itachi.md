@@ -14,7 +14,7 @@ lang: en
 lang_group: itachi-itachi-itachi
 ---
 
-<video controls src="/static/posts/itachi-itachi-itachi.mp4" style="width:100%; max-height:600px; border-radius:4px;"></video>
+<video controls src="../assets/itachi-itachi-itachi.mp4" style="width:100%; max-height:600px; border-radius:4px;"></video>
 
 Back in 2011, the internet was Flash and bad phones. **This video captures all of it:** a Naruto parody where Sasuke annoys Itachi with the same line, over and over, until anyone's patience runs out.
 

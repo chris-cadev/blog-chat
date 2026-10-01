@@ -8,9 +8,6 @@ _MD_IMG_RE = re.compile(r"(!\[[^\]]*\]\()([^)]+)(\))")
 _HTML_SRC_RE = re.compile(r'((?:img|source|video|audio)\s[^>]*src=")([^"]+)(")')
 
 
-_MEDIA_RE = re.compile(r"\.(jpe?g|png|gif|webp|svg|bmp|ico|wav|mp3|ogg|opus|mp4|webm|mov|avi|mkv)$", re.IGNORECASE)
-
-
 def _rewrite_relative_paths(body: str, file_path: Path) -> str:
     def _resolve(rel: str) -> str:
         if rel.startswith(("/", "http://", "https://", "mailto:")):
@@ -23,10 +20,10 @@ def _rewrite_relative_paths(body: str, file_path: Path) -> str:
         parts = suffix.parts
         if not parts:
             return rel
+        if parts[0] == "assets":
+            return "/media/" + "/".join(parts[1:])
         if parts[0] == "_drafts":
             return "/drafts" + "/" + "/".join(parts[1:])
-        if len(parts) >= 2 and _MEDIA_RE.search(parts[-1]):
-            return "/static/posts/" + parts[-1]
         return rel
 
     def _replace_md(m: re.Match) -> str:

@@ -15,6 +15,6 @@ lang_group: 2018-08-21-estreno-feliz-ano-tijuana
 
 **Esta era una de mis primeras intenciones de promover la cultura de Tijuana.** República del estreno de Feliz Año Tijuana en la Cineteca CECUT, compartida de [Dulce Vázquez](https://www.facebook.com/dulce.vazquezm/posts/pfbid02NmmGRpWGvXU95nZt44kA4ZoEUrZoiPnNwvTS7E6jWGTZDq42F5UVeC2c9rDTPV2vl).
 
-![Cartel del estreno de Feliz Año Tijuana en la Cineteca CECUT](/static/posts/amigos-feliz-año-tijuana-se-estrena-este-viernes-24-en-la-c_mem_0.jpg)
+![Cartel del estreno de Feliz Año Tijuana en la Cineteca CECUT](../assets/amigos-feliz-año-tijuana-se-estrena-este-viernes-24-en-la-c_mem_0.jpg)
 
 Nunca se proyectó en nada que pudiera llevarlo más allá. Mis intenciones se quedaron en compartir, en republicar. **Nunca llegué a que mis manos hicieran algo más.**

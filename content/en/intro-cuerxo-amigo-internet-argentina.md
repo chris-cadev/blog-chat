@@ -22,13 +22,13 @@ It used to run in the browser (Flash), and now it's on Steam. The cheese was use
 
 That's how Cuerxo came into the picture, a friend from Argentina. I made this Flash intro for him. **It's only 9 seconds long, but the comments say more than the video.**
 
-<video controls src="/static/posts/fer-macouzet-14y-que-no-lo-puedo-ver-o-o_v0.mp4" style="width:100%; max-height:600px; border-radius:4px;"></video>
+<video controls src="../assets/fer-macouzet-14y-que-no-lo-puedo-ver-o-o_v0.mp4" style="width:100%; max-height:600px; border-radius:4px;"></video>
 
 ### The memories
 
 Fernanda Macouzet, a very close friend back then. I never learned to just accept playing and all that stuff. Mario Reina Cabrera, a super tall guy, kind of shy, he was into everything from [Darkar](https://darkarcompany.com/) and [Vete a la Versh](https://darkarcompany.com/?show=1f14a17c-7181-492e-a15e-a9824f513253), etc, and he drew the characters and scenes a lot.
 
-![Mario's drawing from back then](/static/posts/IMG_20260929_163814.jpg)
+![Mario's drawing from back then](../assets/IMG_20260929_163814.jpg)
 
 Back then I was pretty aggressive toward things I didn't like. A teenager, I guess.
 
@@ -78,4 +78,4 @@ Back then I was pretty aggressive toward things I didn't like. A teenager, I gue
 
 Also, as part of that high school season, I remember Fernanda once gave me something for Valentine's Day. I don't know if I still have it; if I find the chocolate I saved since back then, I'll post it here.
 
-![heart-shaped chocolate](/static/posts/IMG_2797.jpg)
+![heart-shaped chocolate](../assets/IMG_2797.jpg)

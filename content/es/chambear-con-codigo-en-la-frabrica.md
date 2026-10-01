@@ -27,11 +27,11 @@ Verificar si algo es tóxico, si va a dañar alguna de las partes donde lo vas a
 
 <div style="display:flex; gap:16px; flex-wrap:wrap; margin:12px 0;">
 <figure style="margin:0; flex:1; min-width:200px;">
-<img src="/static/posts/pez-globo-platillo.jpg" alt="Platillo de pez globo (fugu) servido en un restaurante" style="width:100%; border-radius:4px;">
+<img src="../assets/pez-globo-platillo.jpg" alt="Platillo de pez globo (fugu) servido en un restaurante" style="width:100%; border-radius:4px;">
 <figcaption style="font-size:0.85rem; color:var(--text-faint); text-align:center; margin-top:4px;">Fugu: el platillo que puede matarte</figcaption>
 </figure>
 <figure style="margin:0; flex:1; min-width:200px;">
-<img src="/static/posts/chef-pez-globo.jpg" alt="Chef preparando un pez globo (fugu)" style="width:100%; border-radius:4px;">
+<img src="../assets/chef-pez-globo.jpg" alt="Chef preparando un pez globo (fugu)" style="width:100%; border-radius:4px;">
 <figcaption style="font-size:0.85rem; color:var(--text-faint); text-align:center; margin-top:4px;">El chef que lo prepara también asume la responsabilidad</figcaption>
 </figure>
 </div>
@@ -44,9 +44,9 @@ Solo que estando adentro, desarrollando software para una maquiladora, no se pue
 <summary style="cursor: pointer; font-weight: 600;">🎧 Nota de voz — La huella de responsabilidad en la maquila</summary>
 <p style="color: var(--text-muted); font-size: 0.9em; margin: 8px 0 12px;">Hablo sobre la huella de responsabilidad, por qué las maquiladoras absorven tantas obligaciones, y qué pasa cuando estás dentro del engranaje de valor. (~3 min)</p>
 <audio controls preload="none" style="width: 100%;">
-  <source src="/drafts/handy-1790802744.opus" type="audio/opus" />
-  <source src="/drafts/handy-1790802744.mp3" type="audio/mpeg" />
-  <source src="/drafts/handy-1790802744.wav" type="audio/wav" />
-  Tu navegador no soporta audio. <a href="/drafts/handy-1790802744.opus">Descargar OPUS (471KB)</a> / <a href="/drafts/handy-1790802744.mp3">MP3 (751KB)</a> / <a href="/drafts/handy-1790802744.wav">WAV (5.9MB)</a>
+  <source src="../assets/handy-1790802744.opus" type="audio/opus" />
+  <source src="../assets/handy-1790802744.mp3" type="audio/mpeg" />
+  <source src="../assets/handy-1790802744.wav" type="audio/wav" />
+  Tu navegador no soporta audio. <a href="../assets/handy-1790802744.opus">Descargar OPUS (471KB)</a> / <a href="../assets/handy-1790802744.mp3">MP3 (751KB)</a> / <a href="../assets/handy-1790802744.wav">WAV (5.9MB)</a>
 </audio>
 </details>

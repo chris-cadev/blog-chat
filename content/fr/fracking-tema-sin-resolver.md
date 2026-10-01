@@ -13,7 +13,7 @@ lang: fr
 lang_group: mooh-kemouche-comentario-fracking
 ---
 
-<video controls src="/static/posts/mooh-kemouche-11y-reply-see-trans_v0.mp4" style="width:100%; max-height:600px; border-radius:4px;"></video>
+<video controls src="../assets/mooh-kemouche-11y-reply-see-trans_v0.mp4" style="width:100%; max-height:600px; border-radius:4px;"></video>
 
 Je ne sais pas comment je suis tombé sur [ce post](https://www.facebook.com/watch/?v=10153054829609308). Je suppose que je suivais une page Photoshop, mais pour une raison quelconque il est apparu comme si je l'avais partagé. Ça parle du [fracking](https://es.wikipedia.org/wiki/Fracturaci%C3%B3n_hidr%C3%A1ulica), un sujet qu'on discutait beaucoup en 2015 parce qu'on voulait l'implémenter au Mexique.
 

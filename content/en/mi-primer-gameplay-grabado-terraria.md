@@ -17,6 +17,6 @@ lang_group: mi-primer-gameplay-grabado-terraria
 
 So there I am: 15 years old, Fraps running, audio lagging, playing Terraria because it was the only thing my PC could handle recording.
 
-![Screenshot of the Facebook post where I comment that the audio is lagging](/static/posts/christian-camacho-15y-esta-atrasado-el-sonido-u-u_post.png)
+![Screenshot of the Facebook post where I comment that the audio is lagging](../assets/christian-camacho-15y-esta-atrasado-el-sonido-u-u_post.png)
 
-<video controls src="/static/posts/christian-camacho-15y-esta-atrasado-el-sonido-u-u_v0.mp4" style="width:100%; max-height:600px; border-radius:4px;"></video>
+<video controls src="../assets/christian-camacho-15y-esta-atrasado-el-sonido-u-u_v0.mp4" style="width:100%; max-height:600px; border-radius:4px;"></video>

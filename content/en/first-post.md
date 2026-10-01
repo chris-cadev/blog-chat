@@ -17,7 +17,7 @@ This is the first post I made thinking about this blog. I have this urge to star
 
 > Writing has been my passion since I was in **prepa**, but my writing was always about gore and that kind of stuff. ...sometimes I feel vertigo for living. It's like I have too many opportunities to do something about any topic I know about but I have to choose nothing because every option feels like a well of doom.
 
-![Vertigo: wells opening under your feet](/static/posts/vertigo-wells.webp)
+![Vertigo: wells opening under your feet](../assets/vertigo-wells.webp)
 
 I have been abandoning: animation, design, music, football, arts, writing, chess, collections, photography, video editing, films, jokes, party organization, drinks, and so on... Those are the ones I remember right now (2024-12-14 20:25 PDT) but it has been a journey until I'm here programming a blog.
 

@@ -12,7 +12,7 @@ lang: en
 lang_group: helpers-hell
 ---
 
-![Helpers hell representation: chaos of names and discussions](/static/posts/helpers-hell-representation.webp)
+![Helpers hell representation: chaos of names and discussions](../assets/helpers-hell-representation.webp)
 
 A few days ago, working on something in React, I realized there are already two projects where _helpers_ are everywhere, and sometimes they even reach the _code review_ stage, with discussions about whether a method, class or file should be called _helper_ or not. It's usually annoying.
 

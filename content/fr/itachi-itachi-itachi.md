@@ -14,7 +14,7 @@ lang: fr
 lang_group: itachi-itachi-itachi
 ---
 
-<video controls src="/static/posts/itachi-itachi-itachi.mp4" style="width:100%; max-height:600px; border-radius:4px;"></video>
+<video controls src="../assets/itachi-itachi-itachi.mp4" style="width:100%; max-height:600px; border-radius:4px;"></video>
 
 En 2011, internet c'était du Flash et des téléphones nuls. **Ce vidéo tout capte :** une parodie de Naruto où Sasuke emmerde Itachi avec la même phrase, encore et encore, jusqu'à épuiser la patience de n'importe qui.
 

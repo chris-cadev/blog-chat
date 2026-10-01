@@ -12,7 +12,7 @@ lang: es
 lang_group: helpers-hell
 ---
 
-![Representación del infierno de helpers: caos de nombres y discusiones](/static/posts/helpers-hell-representation.webp)
+![Representación del infierno de helpers: caos de nombres y discusiones](../assets/helpers-hell-representation.webp)
 
 Hace unos días, trabajando en algo de React, me di cuenta de que ya van dos proyectos en los que hay _helpers_ por todas partes, y a veces llegan a la etapa de _code review_, con discusiones sobre si un método, clase o archivo debería llamarse _helper_ o no. Suele ser fastidioso.
 

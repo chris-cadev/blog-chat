@@ -102,6 +102,7 @@ app.add_middleware(
 app.add_middleware(GZipMiddleware, minimum_size=500)
 app.add_middleware(TraceabilityMiddleware)
 app.mount("/static", StaticFiles(directory="static"), name="static")
+app.mount("/media", StaticFiles(directory="content/assets"), name="media")
 if APP_ENV == "development":
     app.mount("/drafts", StaticFiles(directory="content/_drafts"), name="drafts")
 app.include_router(accounts_router)

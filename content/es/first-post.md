@@ -16,7 +16,7 @@ Este es el primer post que hice pensando en este blog. Tengo este impulso de com
 
 > Escribir ha sido mi pasión desde que estaba en **prepa**, pero mi escritura siempre fue sobre gore y ese tipo de cosas. ...a veces me siento vertiginoso por vivir. Es como si tuviera muchas oportunidades para hacer algo sobre cualquier tema que conozca pero no tengo que elegir nada porque cada opción se siente como un pozo de perdición.
 
-![Vértigo: pozos que se abren bajo los pies](/static/posts/vertigo-wells.webp)
+![Vértigo: pozos que se abren bajo los pies](../assets/vertigo-wells.webp)
 
 He estado abandonando: animación, diseño, música, fútbol, artes, escritura, ajedrez, colecciones, fotografía, edición de video, películas, bromas, organización de fiestas, bebidas, y así sucesivamente... Esas son las que recuerdo ahora (2024-12-14 20:25 PDT) pero ha sido un viaje hasta que estoy aquí programando un blog.
 

@@ -30,7 +30,7 @@ Sur DeviantArt, je montais des builds du jeu sous le nom [xentyo](https://www.de
 Ensuite, je l'ai porté sur Unity. À ce moment-là, j'ai compris qu'Unity ne supportait que le C#, donc c'était mon premier contact avec ce langage.
 
 <figure style="margin:0;">
-<video controls src="/static/posts/rainbow-triangle-mi-juego_v0.mp4" style="width:100%; max-height:600px; border-radius:4px;"></video>
+<video controls src="../assets/rainbow-triangle-mi-juego_v0.mp4" style="width:100%; max-height:600px; border-radius:4px;"></video>
 <figcaption style="font-size:0.85rem; color:var(--text-faint); text-align:center; margin-top:4px;">Vidéo publiée le 19 mars 2016</figcaption>
 </figure>
 
@@ -51,7 +51,7 @@ Trois couleurs : rouge, vert et bleu. Les triangles maîtres qui ont donné lieu
 **Ce n'était pas un lore très travaillé**, mais l'intention y était. J'ai même "fondé" [Fly Games](https://devflygames.github.io/), même si je ne savais pas comment l'enregistrer ni quoi que ce soit d'autre.
 
 <figure style="margin:0;">
-<img src="/static/posts/487171706_2243943582666410_5253085169195767413_n.jpg" alt="Concept art de Rainbow Triangle : trois triangles (rouge, vert, bleu) et des personnages, fait en Illustrator" style="width:100%; border-radius:4px;">
+<img src="../assets/487171706_2243943582666410_5253085169195767413_n.jpg" alt="Concept art de Rainbow Triangle : trois triangles (rouge, vert, bleu) et des personnages, fait en Illustrator" style="width:100%; border-radius:4px;">
 <figcaption style="font-size:0.85rem; color:var(--text-faint); text-align:center; margin-top:4px;">Concept art publié le 7 mai 2016</figcaption>
 </figure>
 

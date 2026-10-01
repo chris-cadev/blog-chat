@@ -12,7 +12,7 @@ tags:
   - développement
 ---
 
-![Représentation de l'enfer des helpers : chaos de noms et de discussions](/static/posts/helpers-hell-representation.webp)
+![Représentation de l'enfer des helpers : chaos de noms et de discussions](../assets/helpers-hell-representation.webp)
 
 Il y a quelques jours, en travaillant sur quelque chose avec React, j'ai réalisé qu'il y avait déjà deux projets où les _helpers_ sont partout, et parfois ils arrivent même à l'étape de _code review_, avec des discussions sur la question de savoir si une méthode, une classe ou un fichier devrait être appelé _helper_ ou non. C'est généralement fastidieux.
 

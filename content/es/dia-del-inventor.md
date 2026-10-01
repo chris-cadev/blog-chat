@@ -14,7 +14,7 @@ lang_group: dia-del-inventor
 
 <div style="width:100%; display:flex; justify-content:center;">
 
-<img src="/static/posts/Alan_Turing-smiling.jpg" alt="Alan Turing sonriendo" style="max-width:100%; height:auto;" loading="lazy">
+<img src="../assets/Alan_Turing-smiling.jpg" alt="Alan Turing sonriendo" style="max-width:100%; height:auto;" loading="lazy">
 
 </div>
 
@@ -24,9 +24,9 @@ Me llama la atención porque todos tenemos más bien la imagen mental de un inve
 
 <div style="display:flex; gap:32px; align-items:center; flex-wrap:wrap; justify-content:center;">
 
-<img src="/static/posts/Vegapunk_Anime_Infobox.webp" alt="Vegapunk" style="max-width:45%; height:auto;" loading="lazy">
+<img src="../assets/Vegapunk_Anime_Infobox.webp" alt="Vegapunk" style="max-width:45%; height:auto;" loading="lazy">
 
-<img src="/static/posts/einstein_lengua.jpeg" alt="Einstein sacando la lengua" style="max-width:45%; height:auto;" loading="lazy">
+<img src="../assets/einstein_lengua.jpeg" alt="Einstein sacando la lengua" style="max-width:45%; height:auto;" loading="lazy">
 
 </div>
 

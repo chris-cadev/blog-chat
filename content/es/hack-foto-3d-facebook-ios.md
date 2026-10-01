@@ -16,7 +16,7 @@ lang_group: hack-foto-3d-facebook-ios
 
 En ese tiempo estaba medio metido en el tema de las cámaras y la fotografía. **Esta foto de [Hangingpixels Photo Art](https://www.facebook.com/hangingpixels) se veía bien perro.** El autor es [Oat Vaiyaboon](https://lumecube.com/blogs/ambassador/oat-vaiyaboon), un fotógrafo australiano.
 
-![Josh de Drake & Josh diciendo "Quiero intentarlo"](/static/posts/drake-josh-quiero-intentarlo.gif)
+![Josh de Drake & Josh diciendo "Quiero intentarlo"](../assets/drake-josh-quiero-intentarlo.gif)
 
 <iframe src="https://www.facebook.com/plugins/post.php?href=https%3A%2F%2Fwww.facebook.com%2Fhangingpixels%2Fposts%2Fpfbid0jdGR2MTLDEpbpKuupembkTngoJANph8XcyCZaSfo5PSAvkCxSEtp42VgbPBcZKsEl&width=500" title="Publicación original de Hangingpixels Photo Art en Facebook" style="width:100%; max-width:500px; height:1000px; border:0;" frameborder="0"></iframe>
 

@@ -30,7 +30,7 @@ On DeviantArt I posted game builds under the name [xentyo](https://www.deviantar
 Later I moved it to Unity. Back then I understood that Unity only supported C#, so that was my first contact with the language.
 
 <figure style="margin:0;">
-<video controls src="/static/posts/rainbow-triangle-mi-juego_v0.mp4" style="width:100%; max-height:600px; border-radius:4px;"></video>
+<video controls src="../assets/rainbow-triangle-mi-juego_v0.mp4" style="width:100%; max-height:600px; border-radius:4px;"></video>
 <figcaption style="font-size:0.85rem; color:var(--text-faint); text-align:center; margin-top:4px;">Video published on March 19, 2016</figcaption>
 </figure>
 
@@ -51,7 +51,7 @@ At that time I was adding lore to the game, a triangle-based world, and I planne
 **It wasn't very polished lore**, but I meant it. I even "founded" [Fly Games](https://devflygames.github.io/), even though I didn't know how to register it or anything.
 
 <figure style="margin:0;">
-<img src="/static/posts/487171706_2243943582666410_5253085169195767413_n.jpg" alt="Rainbow Triangle concept art: three triangles (red, green, blue) and characters, made in Illustrator" style="width:100%; border-radius:4px;">
+<img src="../assets/487171706_2243943582666410_5253085169195767413_n.jpg" alt="Rainbow Triangle concept art: three triangles (red, green, blue) and characters, made in Illustrator" style="width:100%; border-radius:4px;">
 <figcaption style="font-size:0.85rem; color:var(--text-faint); text-align:center; margin-top:4px;">Concept art published on May 7, 2016</figcaption>
 </figure>
 

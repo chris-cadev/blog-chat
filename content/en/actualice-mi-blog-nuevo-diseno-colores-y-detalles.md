@@ -56,9 +56,9 @@ Instead of hosting the images myself, I leave them on Internet Archive so they s
 <summary style="cursor: pointer; font-weight: 600;">Notas de voz — Cómo actualicé mi blog (de DaisyUI a Open Design)</summary>
 <p style="color: var(--text-muted); font-size: 0.9em; margin: 8px 0 12px;">Las grabé mientras hacía el análisis — 10 min hablando de DaisyUI y accesibilidad, el fallo de Stitch, por qué elegí Open Design y el verde Rolex.</p>
 <audio controls preload="none" style="width: 100%;">
-  <source src="/drafts/handy-1789869763.opus" type="audio/opus" />
-  <source src="/drafts/handy-1789869763.mp3" type="audio/mpeg" />
-  <source src="/drafts/handy-1789869763.wav" type="audio/wav" />
-  Your browser doesn't support audio. <a href="/drafts/handy-1789869763.opus">Download OPUS (907KB)</a> / <a href="/drafts/handy-1789869763.mp3">MP3 (2.4MB)</a> / <a href="/drafts/handy-1789869763.wav">WAV (19MB)</a>
+  <source src="../assets/handy-1789869763.opus" type="audio/opus" />
+  <source src="../assets/handy-1789869763.mp3" type="audio/mpeg" />
+  <source src="../assets/handy-1789869763.wav" type="audio/wav" />
+  Your browser doesn't support audio. <a href="../assets/handy-1789869763.opus">Download OPUS (907KB)</a> / <a href="../assets/handy-1789869763.mp3">MP3 (2.4MB)</a> / <a href="../assets/handy-1789869763.wav">WAV (19MB)</a>
 </audio>
 </details>

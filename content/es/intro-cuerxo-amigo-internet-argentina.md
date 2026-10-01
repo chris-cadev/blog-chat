@@ -22,13 +22,13 @@ Antes se jugaba en el navegador (Flash), ahora está en Steam. El queso servía 
 
 De ahí salió Cuerxo, un amigo de Argentina. Esta intro en Flash se la hice para él. **Solo dura 9 segundos, pero los comentarios dicen más que el video.**
 
-<video controls src="/static/posts/fer-macouzet-14y-que-no-lo-puedo-ver-o-o_v0.mp4" style="width:100%; max-height:600px; border-radius:4px;"></video>
+<video controls src="../assets/fer-macouzet-14y-que-no-lo-puedo-ver-o-o_v0.mp4" style="width:100%; max-height:600px; border-radius:4px;"></video>
 
 ### Los recuerdos
 
 Fernanda Macouzet, amiga muy cercana en ese tiempo. No sé aceptar la cura de jugar y toda esa madre. Mario Reina Cabrera, un vato super alto, medio tímido, le gustaba todo lo de [Darkar](https://darkarcompany.com/), [Vete a la Versh](https://darkarcompany.com/?show=1f14a17c-7181-492e-a15e-a9824f513253), etc, y dibujaba mucho los personajes y escenas.
 
-![dibujo de Mario de ese entonces](/static/posts/IMG_20260929_163814.jpg)
+![dibujo de Mario de ese entonces](../assets/IMG_20260929_163814.jpg)
 
 En ese tiempo era muy agresivo con lo que no me gustaba. Adolescente, supongo. 
 
@@ -78,4 +78,4 @@ En ese tiempo era muy agresivo con lo que no me gustaba. Adolescente, supongo.
 
 También como parte de la temporada de secundaria, recuerdo que Fernanda me llegó a dar algo por San Valentín. No sé si todavía lo tengo, si encuentro el chocolate que guarde desde entonces lo pongo aqui.
 
-![chocolate de corazon](/static/posts/IMG_2797.jpg)
+![chocolate de corazon](../assets/IMG_2797.jpg)

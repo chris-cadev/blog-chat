@@ -27,7 +27,7 @@ python scripts/set_slug.py content/_drafts/2026-09-19-1848.md mi-slug-kebab en
 - `content/_drafts/*.md` — borradores (parser los incluye; `lang` ausente → cae en `mixed` en listados).
 - `content/<lang>/<slug>.md` con `lang ∈ {en,es,fr}` — post publicado. Traducciones del mismo tema comparten `lang_group` (= `slug` base). Indefinidos van a `content/mixed/`.
 - Frontmatter que entiende `src/blog_chat/features/posts/parser.py:7` y `services.py:8`: `title` (fallback: stem), `slug` (fallback: stem), `created`/`updated` (`YYYY-MM-DD`), `description`, `tags: []`, `lang`, `lang_group`, `content` (body). `created/updated` ordenan el índice (`services.py:15`, descendente).
-- Assets: imágenes locales → `src/assets/posts/<nombre>` se publica en `/static/posts/` (lógica de `scripts/migrate_posts.py:293`). Audio de borradores → `content/_drafts/*.wav|mp3|opus` servido en `/drafts` (`src/blog_chat/app.py:100`).
+- Assets: medios publicados → `content/assets/<nombre>` (compartido por lang). Markdown publicado usa path relativo `../assets/<nombre>`; el parser (`parser.py`) los reescribe a `/media/<nombre>` y FastAPI monta `content/assets` en `/media` (prod y dev). `/static` solo sirve el bundle Vite (JS/CSS/favicon). Audio/local de borradores en `content/_drafts/` → `/drafts` solo en dev (`src/blog_chat/app.py`).
 
 ## Scripts auxiliares
 

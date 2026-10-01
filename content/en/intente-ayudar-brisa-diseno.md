@@ -21,7 +21,7 @@ lang_group: compartido-brisa-disenadora
 > If any of you want a logo or know someone who wants one, well I'm ready to work ❤ I hope you don't ignore me <\3
 > Thanks and have a lovely night ❤
 
-![Facebook image](/static/posts/508727364_3364068073733047_6858969528841461038_n.jpg)
+![Facebook image](../assets/508727364_3364068073733047_6858969528841461038_n.jpg)
 
 **It got zero reach, not a single like.** Nobody saw it, nobody shared it. I tried, but didn't get much.
 
