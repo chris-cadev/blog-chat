@@ -30,9 +30,8 @@ description = "Apply pending database migrations (uses DATABASE_URL from .env)"
 run = ".venv/bin/alembic upgrade head"
 
 [tasks.deploy]
-description = "Deploy the whole service (app + Cloudflare tunnel) via Docker Compose. Migrates the database, then builds and starts the stack (frontend + mermaid prerender happen in the Docker image). Assumes .cloudflare/ config and credentials are prepared."
+description = "Deploy the whole service (app + Cloudflare tunnel) via Docker Compose. Migrations run inside the app container on startup (alembic + uvicorn in the image). Assumes .cloudflare/ config and credentials are prepared."
 run = [
-  ".venv/bin/alembic upgrade head",
   "docker compose up --build -d",
 ]
 

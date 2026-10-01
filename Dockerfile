@@ -34,4 +34,4 @@ ENV PYTHONPATH=/app/src
 
 EXPOSE 9091
 
-CMD ["python", "-m", "uvicorn", "blog_chat.app:app", "--host", "0.0.0.0", "--port", "9091"]
+CMD ["sh", "-c", "alembic upgrade head && exec python -m uvicorn blog_chat.app:app --host 0.0.0.0 --port 9091"]
