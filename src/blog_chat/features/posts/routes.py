@@ -10,6 +10,14 @@ from fastapi import APIRouter, Query, Request
 from fastapi.responses import PlainTextResponse, Response, RedirectResponse
 
 from blog_chat.core.filters import add_filter, add_markdown_filter
+from blog_chat.core.ui import get_username_color
+from blog_chat.core.i18n import (
+    LANGS,
+    language_switcher,
+    make_t,
+    preferred_lang,
+    with_lang_cookie,
+)
 from blog_chat.core.logging import log_business_event
 from blog_chat.core.responses import create_templates
 from blog_chat.core.config import SITE_URL, UMAMI_ACTIVE, UMAMI_SCRIPT_URL, UMAMI_WEBSITE_ID
@@ -20,7 +28,6 @@ from blog_chat.features.accounts.services import (
     generate_guest_name,
     get_username_from_cookie,
 )
-from blog_chat.core.ui import get_username_color
 from blog_chat.features.posts.services import get_fb_post, get_fb_posts, get_post, get_post_by_lang_group, get_posts
 
 router = APIRouter()
@@ -107,190 +114,14 @@ def _render_tag_not_found(request: Request, lang: str) -> Response:
         tags_with_counts=tags_with_counts,
         posts_by_tag=posts_by_tag,
         is_tags_page=True,
-        error=_make_t(lang)("tag_not_found"),
+        error=make_t(lang)("tag_not_found"),
         room="offtopic",
         slug=None,
-        language_switcher=_language_switcher(request, lang, None),
+        language_switcher=language_switcher(request, lang, None),
     )
 
-LANGS = ("en", "es", "fr")
-LANG_FLAGS = {"en": "🇺🇸", "es": "🇲🇽", "fr": "🇫🇷"}
-LANG_NAMES = {"en": "English", "es": "Español", "fr": "Français"}
-LANG_COOKIE = "lang"
-LANG_COOKIE_MAX_AGE = 60 * 60 * 24 * 365
 CHAT_TOKEN_COOKIE = "chat_token"
 CHAT_TOKEN_MAX_AGE = 60 * 60 * 24 * 30
-
-TRANSLATIONS = {
-    "en": {
-        "home": "Home",
-        "back_to_posts": "Back to all posts",
-        "posts_title": "Blog Posts",
-        "no_posts": "No posts found.",
-        "posts_tagged": "Posts tagged",
-        "tags": "Tags",
-        "all_posts": "All posts",
-        "tags_subtitle": "Browse posts by topic.",
-        "tag_not_found": "Tag not found",
-        "chat_title": "Off-topic",
-        "enter_name": "Enter your name",
-        "join": "Join",
-        "logged_in_as": "Logged in as",
-        "change_username": "Change username",
-        "type_message": "Type a message…",
-        "enter_to_send": "Press Enter to send",
-        "send": "Send",
-        "save": "Save",
-        "no_messages": "No messages yet. Start the conversation!",
-        "starter_say_hi": "Say hi 👋",
-        "starter_take": "What's your take?",
-        "starter_ask": "Ask about this post",
-        "starter_share": "Share a thought",
-        "starter_reading": "What are you reading?",
-        "starter_say_hi_message": "Hi! 👋",
-        "starter_take_message": "I'd love to hear your take on this.",
-        "starter_ask_message": "What do you think about this post?",
-        "starter_share_message": "I'd like to share a thought.",
-        "starter_reading_message": "What are you reading right now?",
-        "language_not_found": "Language not found",
-        "post_not_found": "Post not found",
-        "page_not_found": "Page not found",
-        "people_online": "People currently in chat",
-        "online": "online",
-    },
-    "es": {
-        "home": "Inicio",
-        "back_to_posts": "Volver a todos los artículos",
-        "posts_title": "Posts",
-        "no_posts": "No se encontraron artículos.",
-        "posts_tagged": "Posts etiquetados",
-        "tags": "Tags",
-        "all_posts": "Todos los artículos",
-        "tags_subtitle": "Explora las publicaciones por tema.",
-        "tag_not_found": "Tag no encontrado",
-        "chat_title": "Fuera de tema",
-        "enter_name": "Escribe tu nombre",
-        "join": "Unirse",
-        "logged_in_as": "Conectado como",
-        "change_username": "Cambiar nombre",
-        "type_message": "Escribe un mensaje…",
-        "enter_to_send": "Enter para enviar",
-        "send": "Enviar",
-        "save": "Guardar",
-        "no_messages": "Aún no hay mensajes. ¡Inicia la conversación!",
-        "starter_say_hi": "¡Hola! 👋",
-        "starter_take": "¿Qué opinas?",
-        "starter_ask": "Pregunta sobre este artículo",
-        "starter_share": "Comparte una idea",
-        "starter_reading": "¿Qué estás leyendo?",
-        "starter_say_hi_message": "¡Hola! 👋",
-        "starter_take_message": "Me encantaría saber tu opinión.",
-        "starter_ask_message": "¿Qué opinas de este artículo?",
-        "starter_share_message": "Me gustaría compartir una idea.",
-        "starter_reading_message": "¿Qué estás leyendo ahora?",
-        "language_not_found": "Idioma no encontrado",
-        "post_not_found": "Artículo no encontrado",
-        "page_not_found": "Página no encontrada",
-        "people_online": "Personas en el chat ahora",
-        "online": "en línea",
-    },
-    "fr": {
-        "home": "Accueil",
-        "back_to_posts": "Retour à tous les articles",
-        "posts_title": "Articles du blog",
-        "no_posts": "Aucun article trouvé.",
-        "posts_tagged": "Articles tagués",
-        "tags": "Étiquettes",
-        "all_posts": "Tous les articles",
-        "tags_subtitle": "Parcourir les articles par thématique.",
-        "tag_not_found": "Tag non trouvé",
-        "chat_title": "Hors sujet",
-        "enter_name": "Saisissez votre nom",
-        "join": "Rejoindre",
-        "logged_in_as": "Connecté en tant que",
-        "change_username": "Changer de nom",
-        "type_message": "Écrivez un message…",
-        "enter_to_send": "Entrée pour envoyer",
-        "send": "Envoyer",
-        "save": "Enregistrer",
-        "no_messages": "Aucun message pour l'instant. Lancez la conversation !",
-        "starter_say_hi": "Dis bonjour 👋",
-        "starter_take": "Qu'en pensez-vous ?",
-        "starter_ask": "Posez une question sur cet article",
-        "starter_share": "Partagez une idée",
-        "starter_reading": "Que lisez-vous ?",
-        "starter_say_hi_message": "Bonjour ! 👋",
-        "starter_take_message": "J'aimerais bien connaître votre avis.",
-        "starter_ask_message": "Que pensez-vous de cet article ?",
-        "starter_share_message": "J'aimerais partager une idée.",
-        "starter_reading_message": "Que lisez-vous en ce moment ?",
-        "language_not_found": "Langue introuvable",
-        "post_not_found": "Article introuvable",
-        "page_not_found": "Page introuvable",
-        "people_online": "Personnes actuellement dans le chat",
-        "online": "en ligne",
-    },
-}
-
-
-def _make_t(lang: str | None):
-    table = TRANSLATIONS.get(lang or "en", TRANSLATIONS["en"])
-
-    def translate(key: str) -> str:
-        return table.get(key, key)
-
-    return translate
-
-
-def _language_switcher(request: Request, lang: str | None, slug: str | None) -> list[dict]:
-    return [
-        {
-            "code": code,
-            "active": code == lang,
-            "href": f"/{code}/{slug}" if slug else f"/{code}/",
-            "flag": LANG_FLAGS[code],
-            "title": LANG_NAMES[code],
-        }
-        for code in LANGS
-        if code != lang
-    ]
-
-
-def _preferred_lang(request: Request) -> str:
-    cookie = request.cookies.get(LANG_COOKIE)
-    if cookie in LANGS:
-        return cookie
-    entries = []
-    accept = request.headers.get("accept-language", "")
-    for part in accept.split(","):
-        segments = [s.strip() for s in part.split(";")]
-        code = segments[0].lower()
-        q = 1.0
-        for segment in segments[1:]:
-            if segment.startswith("q="):
-                try:
-                    q = float(segment[2:])
-                except ValueError:
-                    q = 0.0
-        entries.append((q, code))
-    entries.sort(key=lambda item: item[0], reverse=True)
-    for _, code in entries:
-        base = code.split("-")[0]
-        if base in LANGS:
-            return base
-    return "en"
-
-
-def _with_lang_cookie(response: Response, lang: str) -> Response:
-    response.set_cookie(
-        LANG_COOKIE,
-        lang,
-        max_age=LANG_COOKIE_MAX_AGE,
-        path="/",
-        samesite="lax",
-        httponly=True,
-    )
-    return response
 
 
 def _render(
@@ -317,7 +148,7 @@ def _render(
         **template_kwargs,
     )
     if apply_lang_cookie and lang in LANGS:
-        response = _with_lang_cookie(response, lang)
+        response = with_lang_cookie(response, lang)
     if generated:
         guest_id = str(_uuid.uuid4())
         response.set_cookie(
@@ -332,7 +163,11 @@ def _render(
 
 
 def _context(request: Request, lang: str | None, **extra) -> dict:
-    ctx = {"request": request, "lang": lang, "t": _make_t(lang)}
+    ctx = {
+        "request": request,
+        "lang": lang,
+        "t": make_t(lang),
+    }
     ctx["umami"] = {
         "enabled": UMAMI_ACTIVE,
         "script_url": UMAMI_SCRIPT_URL,
@@ -343,7 +178,7 @@ def _context(request: Request, lang: str | None, **extra) -> dict:
 
 
 def render_404(request: Request):
-    lang = _preferred_lang(request)
+    lang = preferred_lang(request)
     username = get_username_from_cookie(request) or generate_guest_name()
     ctx = _context(request, lang, username=username)
     return templates.TemplateResponse(request, "404.html", context=ctx, status_code=404)
@@ -387,7 +222,7 @@ def sitemap(request: Request):
 
 @router.get("/")
 def read_root(request: Request):
-    lang = _preferred_lang(request)
+    lang = preferred_lang(request)
     return RedirectResponse(f"/{lang}/", status_code=302)
 
 
@@ -401,9 +236,11 @@ def read_lang_index(request: Request, lang: str, page: int = Query(1, ge=1)):
             status_code=404,
             apply_lang_cookie=False,
             posts=get_posts(),
-            error=_make_t("en")("language_not_found"),
+            error=make_t("en")("language_not_found"),
             slug=None,
-            language_switcher=_language_switcher(request, None, None),
+            page=1,
+            total_pages=1,
+            language_switcher=language_switcher(request, None, None),
         )
     all_posts = get_posts(lang)
     pinned_posts = [p for p in all_posts if p.get("pinned")][:3]
@@ -422,11 +259,10 @@ def read_lang_index(request: Request, lang: str, page: int = Query(1, ge=1)):
         pinned_post=pinned_posts[0] if pinned_posts else None,
         chat_post=chat_post,
         room=chat_post["slug"] if chat_post else "offtopic",
-        slug=None,
         page=current_page,
         total_pages=total_pages,
         total_posts=len(regular_posts),
-        language_switcher=_language_switcher(request, lang, None),
+        language_switcher=language_switcher(request, lang, None),
     )
 
 
@@ -434,14 +270,14 @@ def read_lang_index(request: Request, lang: str, page: int = Query(1, ge=1)):
 def read_tag_redirect(request: Request, tag: str):
     if not _is_valid_tag(tag):
         # fail-closed: malformed tags never reach lookup; show tags overview with tag_not_found
-        return _render_tag_not_found(request, _preferred_lang(request))
-    return RedirectResponse(f"/{_preferred_lang(request)}/tags/{tag}")
+        return _render_tag_not_found(request, preferred_lang(request))
+    return RedirectResponse(f"/{preferred_lang(request)}/tags/{tag}")
 
 
 @router.get("/{lang}/tags/{tag}")
 def read_tag(request: Request, lang: str, tag: str, page: int = Query(1, ge=1)):
     if lang not in LANGS:
-        return RedirectResponse(f"/{_preferred_lang(request)}/tags/{tag}")
+        return RedirectResponse(f"/{preferred_lang(request)}/tags/{tag}")
     if not _is_valid_tag(tag):
         return _render_tag_not_found(request, lang)
     all_posts = [p for p in get_posts(lang) if tag in (p.get("tags") or [])]
@@ -467,14 +303,14 @@ def read_tag(request: Request, lang: str, tag: str, page: int = Query(1, ge=1)):
         page=current_page,
         total_pages=total_pages,
         total_posts=len(all_posts),
-        language_switcher=_language_switcher(request, lang, None),
+        language_switcher=language_switcher(request, lang, None),
     )
 
 
 @router.get("/{lang}/tags")
 def read_tags(request: Request, lang: str):
     if lang not in LANGS:
-        return RedirectResponse(f"/{_preferred_lang(request)}/tags")
+        return RedirectResponse(f"/{preferred_lang(request)}/tags")
     tags_with_counts, posts_by_tag = _tags_data(lang)
     log_business_event("page.view", "Tags overview viewed", lang=lang, path=f"/{lang}/tags")
     return _render(
@@ -486,7 +322,7 @@ def read_tags(request: Request, lang: str):
         is_tags_page=True,
         room="offtopic",
         slug=None,
-        language_switcher=_language_switcher(request, lang, None),
+        language_switcher=language_switcher(request, lang, None),
     )
 
 
@@ -500,11 +336,11 @@ def read_fb_item(request: Request, lang: str, slug: str):
             status_code=404,
             apply_lang_cookie=False,
             posts=get_posts(),
-            error=_make_t("en")("post_not_found"),
+            error=make_t("en")("post_not_found"),
             slug=None,
             page=1,
             total_pages=1,
-            language_switcher=_language_switcher(request, None, None),
+            language_switcher=language_switcher(request, None, None),
         )
     post = get_fb_post(slug)
     if not post:
@@ -514,11 +350,11 @@ def read_fb_item(request: Request, lang: str, slug: str):
             lang,
             status_code=404,
             posts=get_posts(lang),
-            error=_make_t(lang)("post_not_found"),
+            error=make_t(lang)("post_not_found"),
             slug=slug,
             page=1,
             total_pages=1,
-            language_switcher=_language_switcher(request, lang, slug),
+            language_switcher=language_switcher(request, lang, slug),
         )
     log_business_event(
         "page.view",
@@ -534,7 +370,7 @@ def read_fb_item(request: Request, lang: str, slug: str):
         post=post,
         room=slug,
         slug=slug,
-        language_switcher=_language_switcher(request, lang, f"fb/{slug}"),
+        language_switcher=language_switcher(request, lang, f"fb/{slug}"),
     )
 
 
@@ -551,7 +387,7 @@ def read_item(request: Request, lang: str, slug: str):
                 post=legacy,
                 room=legacy.get("slug"),
                 slug=legacy.get("slug"),
-                language_switcher=_language_switcher(request, legacy_lang, legacy.get("slug")),
+                language_switcher=language_switcher(request, legacy_lang, legacy.get("slug")),
             )
         return _render(
             "index.html",
@@ -560,11 +396,11 @@ def read_item(request: Request, lang: str, slug: str):
             status_code=404,
             apply_lang_cookie=False,
             posts=get_posts(),
-            error=_make_t("en")("post_not_found"),
+            error=make_t("en")("post_not_found"),
             slug=None,
             page=1,
             total_pages=1,
-            language_switcher=_language_switcher(request, None, None),
+            language_switcher=language_switcher(request, None, None),
         )
     post = get_post(slug, lang)
     if not post:
@@ -580,11 +416,11 @@ def read_item(request: Request, lang: str, slug: str):
             pinned_posts=_pinned_posts,
             pinned_post=_pinned,
             room=_pinned["slug"] if _pinned else "offtopic",
-            error=_make_t(lang)("post_not_found"),
+            error=make_t(lang)("post_not_found"),
             slug=slug,
             page=1,
             total_pages=1,
-            language_switcher=_language_switcher(request, lang, slug),
+            language_switcher=language_switcher(request, lang, slug),
         )
     log_business_event(
         "page.view",
@@ -600,5 +436,5 @@ def read_item(request: Request, lang: str, slug: str):
         post=post,
         room=slug,
         slug=slug,
-        language_switcher=_language_switcher(request, lang, slug),
+        language_switcher=language_switcher(request, lang, slug),
     )

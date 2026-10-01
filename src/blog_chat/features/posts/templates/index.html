@@ -25,7 +25,7 @@
 </div>
 {% else %}
 <h1 class="page-title">{% if tag %}{{ t('posts_tagged') }}: {{ tag }}{% else %}{{ t('posts_title') }}{% endif %}</h1>
-<p class="page-subtitle" style="margin-bottom:var(--sp-8);">Thoughts on software, life, and the things in between.</p>
+<p class="page-subtitle" style="margin-bottom:var(--sp-8);">{{ t('tagline') }}</p>
 {% endif %}
 
 <div id="posts-page">
