@@ -5,6 +5,8 @@
 | **Tipo:** spike de investigación (sin código)                                       |
 | **Pregunta:** ¿qué implementaciones GEO (paquetes o propias) encajan en blog-chat y cuáles merecen entrar en el top 5? |
 
+> **Estado:** top 5 propio implementado el 2026-10-01 (JSON-LD, about, `/llms.txt`, checklist, `geo_qa.py`) sin paquetes GEO nuevos. Evaluación independiente: `docs/spikes/2026-10-01_geo-analisis-feedback-loop_evaluacion-muse.md`. Qué se dejó fuera y por qué: sección "Estado de implementación" más abajo.
+
 ## Resumen
 
 geo-score.online dio 45/100 a blog.chrislabs.net. Los puntos reales no son robots ni sitemap (ambos ya en 100), sino citabilidad del contenido, schema JSON-LD ausente, E-E-A-T débil y knowledge graph casi nulo. Un bucle cercano aquí no se logra con un SaaS que audita la URL viva: el blog ya guarda el contenido en `content/{en,es}/*.md`. La mejora más barata es código propio (JSON-LD + llms.txt + checklist) y, después, un QA delgado o un paquete maduro. Tras la evaluación, `geo-opt` sale del top por licencia no OSI y madurez baja; entra `geo-optimizer-skill` (MIT, 600+ estrellas) por generadores que pueden cubrir schema y llms.txt sin escribirlos a mano.
@@ -366,6 +368,43 @@ robots y sitemap ya puntúan 100 en geo-score. llms.txt es el siguiente paso de 
 4. **E3 después, delgado.** Script de 5-8 señales KDD con umbrales por tipo de post. Sin frameworks.
 5. **Paquetes como complemento, no como base:** `geo-optimizer-skill` para spot check / generadores; `@ijonis/geo-lint` solo si se quiere ruleset externo en drafts; `llmscout-cli` como WARN en CI, nunca gate duro.
 6. **No en el top 5 inmediato:** citation probes, AutoGEO/MAGEO, geo-opt como base, y plataformas self-hosted. Se reconsideran si "que ChatGPT cite el blog" pasa a ser objetivo medible.
+
+## Estado de implementación (2026-10-01)
+
+Hecho en el repo (sin paquetes nuevos de GEO):
+
+| Qué | Dónde |
+| --- | --- |
+| JSON-LD WebSite+Organization en todas las páginas | `base.html` + `features/posts/schema.py` |
+| JSON-LD Article en posts | `post.html` / `article_schema()` |
+| Página `/{lang}/about` + Person schema + sameAs GitHub | `about.html`, `routes.py`, i18n |
+| Footer y byline enlazan a about | `base.html`, `post.html` |
+| `/llms.txt` desde `get_posts()` (EN/ES/FR) | `routes.py` / `build_llms_txt()` |
+| Checklist GEO pre-publicar | `AGENTS.md` |
+| QA local de drafts | `scripts/geo_qa.py`, `mise run geo` |
+| Tests schema/endpoints/QA | `tests/test_features/test_posts/test_geo.py` |
+
+### Omitido a propósito (no está en el código)
+
+Nada de esto se instaló ni se cableó. Motivos y cuándo retomarlo:
+
+| Opción | Score spike | Por qué se omitió | Cuándo retomar |
+| --- | --- | --- | --- |
+| `geo-optimizer-skill` (B2) | 79 | E1/E2 cubiertos a mano con el parser existente; un pip extra no era necesario para el loop de drafts | Si quieres `geo audit` de la URL publicada o reutilizar `geo schema`/`geo llms` sin mantener generadores propios |
+| `@ijonis/geo-lint` (A1) | 78 | `geo_qa.py` ya da findings locales; ruleset de 92 reglas obliga a curar severidades contra la voz editorial | Si el QA casero se queda corto y quieres fixes JSON para agentes |
+| `ai-visibility` (B1) | 79 | Mismo motivo; bus factor 1, madurez baja | Solo si prefieres score Python ya hecho al script propio |
+| `llmscout-cli` (A4) | 76 | Smoke de URL viva, no de markdown | CI en modo WARN tras deploy, nunca gate de PRs personales |
+| `geo-opt` (A2) | 68 | Licencia Tooltician no OSI, Node 22, 0 estrellas; evaluación Muse lo sacó del top | Audit puntual suelto si un día necesitas citability score comparable |
+| `@dariodario/geochecker`, `auto-geo`, `geo-audit` | 60/57/52 | Auditan URL publicada; el loop barato es el draft en git | Spot check periódico del sitio, no el flujo de escritura |
+| Citation probes (D1/D2) | 54/51 | Necesitan API keys y preguntas reales a motores | Cuando "que ChatGPT cite el blog" sea objetivo medible con presupuesto |
+| RSS/Atom + lastmod fino (E5) | 70 | No ataca citability/schema; freshness ya parcial con `updated` | Si syndication o freshness puntúan bajo en un re-audit |
+| E7 lint-fix autónomo con agente | 79 | Depende de un linter con JSON de fixes; hoy el loop es humano + `geo_qa.py` | Cuando quieras loop agent-in-the-loop sobre drafts |
+| Rewriters académicos (F1/F2) | 44/38 | Matan voz, cuestan APIs/GPU, fuera de scope de blog personal | Investigación, no productivo |
+| Plataformas self-hosted (D3) | 35 | YAGNI: días de setup para un blog-chat | Solo con tráfico de AI search medible |
+| Gate de CI por word count / FAQ | N/A | Contradice el spike editorial del repo | No planificado |
+| Generador de llms.txt de terceros | N/A | Ruta manual ~30 líneas copiando `sitemap()` con `get_posts()` | Solo si el índice crece y el format hand-rolled duele |
+
+**Decisión de diseño:** cero dependencias nuevas de GEO en `pyproject.toml`/`package.json`. El close loop es markdown local + checklist + endpoints que ya usa el parser. Los paquetes del ranking son complemento opcional, no base.
 
 ## Checklist pre-publicar (ampliación GEO del spike editorial)
 

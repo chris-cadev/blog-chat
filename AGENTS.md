@@ -7,6 +7,7 @@ Run these through mise (e.g. `mise run test`):
 - `mise run migrate` — apply pending DB migrations (uses `DATABASE_URL` from `.env`)
 - `mise run dev` — run the dev server with hot reload (starts tmux session)
 - `mise run deploy` — build and start the Docker Compose stack (frontend + mermaid prerender run in the image; DB migrations run inside the app container on startup)
+- `mise run geo` — GEO QA on markdown (`python scripts/geo_qa.py ...`; pass paths after `--`)
 
 # Contenido — `scripts/` → `content/`
 
@@ -58,10 +59,35 @@ Checklist pre-publicar (2 min, del spike):
 - [ ] 1-2 negritas por sección, listas solo donde aclaran
 - [ ] Columna/tamaño probados en móvil
 - [ ] Contraste verificado
-- [ ] Links con texto descriptivo
+- [ ] Links con texto descriptivos
 - [ ] Lectura en voz alta sin tropiezos
 
 Qué omitir a propósito (YAGNI para post personal): plantillas pesadas, H2/H3 por cada párrafo, negrita masiva, tablas para todo, reescritura para Flesch ciego. Solo si el post busca snippet/GEO o es guía larga.
+
+## Checklist GEO (close feedback loop)
+
+Fuente: `docs/spikes/2026-10-01_geo-analisis-feedback-loop.md` (+ evaluación Muse). No fuerza SEO marketese; solo señales que AI engines citan y que caben en la voz del blog.
+
+Antes de `set_slug`:
+
+```bash
+python scripts/geo_qa.py content/_drafts/<archivo>.md
+# o: mise run geo -- content/_drafts/<archivo>.md
+```
+
+Checklist (2 min, además del editorial):
+
+- [ ] Frontmatter `description` completa y autónoma (≥~40 chars, no corte a medias)
+- [ ] Primera oración de cada H2 lleva el takeaway (front-load)
+- [ ] Si se afirma un dato, hay fuente o número concreto (stats ayudan a citabilidad)
+- [ ] Guías/tutoriales: 3-7 preguntas reales como H2 o FAQ final; diarios personales no obligan FAQ
+- [ ] Imágenes con `alt` que nombre entidad + contexto
+- [ ] Un enlace externo a referencia estable cuando se introduce concepto no trivial
+- [ ] `created`/`updated` correctos (freshness)
+
+El sitio ya emite JSON-LD (Article + WebSite/Organization) y `/llms.txt`. No reescribas posts solo para "alargar a 1500 palabras".
+
+**No instalado a propósito:** `geo-optimizer-skill`, `@ijonis/geo-lint`, `geo-opt`, `ai-visibility`, `llmscout-cli`, citation probes y plataformas self-hosted. El loop es `geo_qa.py` + checklist + endpoints propios. Detalle y cuándo retomarlos: `docs/spikes/2026-10-01_geo-analisis-feedback-loop.md` (sección "Estado de implementación").
 
 # Spikes — cómo escribir uno como `2026-09-20_blog-editorial-legibilidad.md`
 
