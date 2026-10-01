@@ -10,6 +10,7 @@ __pycache__/
 .pdm-build
 .pdm-python
 dist
+static
 coverage*
 .cloudflare
 migration_report.txt
