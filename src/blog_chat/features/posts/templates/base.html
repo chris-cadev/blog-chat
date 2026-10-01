@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="{{ lang or 'en' }}">
+<html lang="{{ lang or 'en' }}" data-theme-mode="{{ theme_mode|default('dark') }}" data-theme="{{ theme_data|default('nord') }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script>
+    <script nonce="{{ csp_nonce|default('') }}">
       (function() {
         var t = localStorage.getItem('blog-theme-mode');
         if (!t) {

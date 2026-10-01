@@ -183,11 +183,24 @@ def _render(
     return response
 
 
+def resolve_theme_mode(cookies) -> str:
+    raw = cookies.get("theme-mode")
+    if raw in ("nord", "dark"):
+        return "dark"
+    if raw in ("nord-light", "light"):
+        return "light"
+    return "dark"
+
+
 def _context(request: Request, lang: str | None, **extra) -> dict:
+    theme_mode = resolve_theme_mode(request.cookies)
     ctx = {
         "request": request,
         "lang": lang,
         "t": make_t(lang),
+        "theme_mode": theme_mode,
+        "theme_data": "nord" if theme_mode == "dark" else "nord-light",
+        "csp_nonce": getattr(request.state, "csp_nonce", ""),
     }
     ctx["umami"] = {
         "enabled": UMAMI_ACTIVE,

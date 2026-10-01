@@ -66,6 +66,7 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next):
         nonce = secrets.token_urlsafe(16)
         token = CSP_NONCE.set(nonce)
+        request.state.csp_nonce = nonce
         try:
             response = await call_next(request)
             response.headers["Content-Security-Policy"] = build_csp(nonce)
