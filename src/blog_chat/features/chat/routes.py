@@ -11,12 +11,17 @@ import json
 from blog_chat.core.database import get_db, engine, init_db
 from blog_chat.core.db_watcher import DatabaseChangeWatcher, sqlite_db_path
 from blog_chat.core.filters import add_filter, add_markdown_filter
+from blog_chat.core.ui import get_username_color
 from blog_chat.core.logging import get_logger, log_business_event
 from blog_chat.core.responses import create_templates
 from blog_chat.features.chat.models import Message
-from blog_chat.features.chat.services import get_or_create_user_id, resolve_user_id
 from blog_chat.features.chat.websocket import ConnectionManager
-from blog_chat.features.accounts.services import get_alias_from_token, get_user_id_from_token, decode_token
+from blog_chat.features.accounts.services import (
+    get_alias_from_token,
+    get_or_create_user_id,
+    get_user_id_from_token,
+    resolve_user_id,
+)
 from blog_chat.features.accounts.models import User
 
 router = APIRouter()
@@ -89,15 +94,6 @@ async def _handle_db_change():
 
 
 db_watcher = DatabaseChangeWatcher(on_change=_handle_db_change)
-
-
-def get_username_color(username: str) -> str:
-    hash_value = 0x811C9DC5
-    for byte in username.encode("utf-8"):
-        hash_value ^= byte
-        hash_value = (hash_value * 0x01000193) & 0xFFFFFFFF
-    hue = hash_value % 360
-    return f"hsl({hue}, 70%, 45%)"
 
 
 add_filter(templates, "username_color", get_username_color)

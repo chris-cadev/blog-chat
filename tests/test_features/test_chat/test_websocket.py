@@ -6,8 +6,9 @@ from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 from blog_chat.core.base import Base
 from blog_chat.features.accounts.models import User
 from blog_chat.features.chat.models import Message
-from blog_chat.features.chat.routes import get_username_color, load_history
-from blog_chat.features.chat.services import get_or_create_user_id, resolve_user_id
+from blog_chat.core.ui import get_username_color
+from blog_chat.features.chat.routes import load_history
+from blog_chat.features.accounts.services import get_or_create_user_id, resolve_user_id
 from blog_chat.features.chat.websocket import ConnectionManager, SlidingWindowLimiter
 
 

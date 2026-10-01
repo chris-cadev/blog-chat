@@ -20,7 +20,7 @@ from blog_chat.features.accounts.services import (
     generate_guest_name,
     get_username_from_cookie,
 )
-from blog_chat.features.chat.routes import get_username_color
+from blog_chat.core.ui import get_username_color
 from blog_chat.features.posts.services import get_fb_post, get_fb_posts, get_post, get_post_by_lang_group, get_posts
 
 router = APIRouter()
