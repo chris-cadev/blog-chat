@@ -7,8 +7,8 @@ tags:
   - communauté
 created: '2026-09-25'
 updated: '2026-09-30'
-description: Le tiers-lieu de Ray Oldenburg : pourquoi il n'est pas numérique, pourquoi
-  le travail le simule, et pourquoi il naît de la communauté.
+description: "Le tiers-lieu de Ray Oldenburg : pourquoi il n'est pas numérique, pourquoi
+  le travail le simule, et pourquoi il naît de la communauté."
 lang: fr
 lang_group: terceros-espacios
 ---

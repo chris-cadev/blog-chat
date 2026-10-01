@@ -7,8 +7,8 @@ tags:
   - community
 created: '2026-09-25'
 updated: '2026-09-30'
-description: Ray Oldenburg's third place: why it isn't digital, why work tries to fake
-  it, and why it's born from community.
+description: "Ray Oldenburg's third place: why it isn't digital, why work tries to fake
+  it, and why it's born from community."
 lang: en
 lang_group: terceros-espacios
 ---

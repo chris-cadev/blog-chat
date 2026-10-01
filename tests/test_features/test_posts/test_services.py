@@ -65,6 +65,35 @@ class TestGetPostsOrdering:
         assert slugs == ["b", "a", "z", "nodate", "adate"]
 
 
+class TestGetPostExactLangBeatsLangless:
+    def test_exact_lang_wins_over_langless_shadow(self, tmp_path, monkeypatch):
+        # regression: a lang-less (or broken-YAML) post must not shadow
+        # the real translation, regardless of walk order
+        (tmp_path / "a_langless.md").write_text(
+            "---\ntitle: Ghost\nslug: post\ntags: []\ncreated: '2024-01-01'\n---\n\nGhost body",
+            encoding="utf-8",
+        )
+        (tmp_path / "z_translation.md").write_text(
+            "---\ntitle: Real\nslug: post\ntags: []\ncreated: '2024-01-01'\nlang: es\nlang_group: post\n---\n\nCuerpo real",
+            encoding="utf-8",
+        )
+        monkeypatch.setattr("blog_chat.features.posts.services.CONTENT_DIR", tmp_path)
+        post = get_post("post", "es")
+        assert post is not None
+        assert post["lang"] == "es"
+        assert post["content"] == "Cuerpo real"
+
+    def test_langless_still_serves_as_fallback(self, tmp_path, monkeypatch):
+        (tmp_path / "seed.md").write_text(
+            "---\ntitle: Seed\nslug: post\ntags: []\ncreated: '2024-01-01'\n---\n\nBody",
+            encoding="utf-8",
+        )
+        monkeypatch.setattr("blog_chat.features.posts.services.CONTENT_DIR", tmp_path)
+        post = get_post("post", "es")
+        assert post is not None
+        assert post["content"] == "Body"
+
+
 class TestGetPostLanguageNeutralFallback:
     def test_langless_post_matches_any_lang(self, tmp_path, monkeypatch):
         (tmp_path / "seed.md").write_text(

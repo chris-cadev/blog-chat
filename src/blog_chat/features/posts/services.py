@@ -45,6 +45,7 @@ def get_posts(lang: str | None = None) -> list[dict]:
 
 
 def get_post(slug: str, lang: str | None = None) -> dict | None:
+    fallback = None
     for entry in powerwalk.walk(CONTENT_DIR, filter="**/*.md"):
         if _is_trashed(entry.path):
             continue
@@ -54,9 +55,9 @@ def get_post(slug: str, lang: str | None = None) -> dict | None:
         if post and post.get("slug") == slug:
             if lang is None or post.get("lang") == lang:
                 return post
-            if not post.get("lang"):
-                return post
-    return None
+            if not post.get("lang") and fallback is None:
+                fallback = post
+    return fallback
 
 
 def get_post_by_lang_group(lang_group: str, lang: str) -> dict | None:

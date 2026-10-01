@@ -1,5 +1,5 @@
 ---
-title: Mi plan contra la rosácea: doxiciclina, metronidazol y un paper de por medio
+title: "Mi plan contra la rosácea: doxiciclina, metronidazol y un paper de por medio"
 slug: mi-plan-contra-la-rosacea
 tags:
   - salud
