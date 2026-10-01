@@ -28,6 +28,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="{{ post.title }}">
 <meta name="twitter:description" content="{{ (post.description or post.content) | plain_excerpt(160) }}">
+<script type="application/ld+json" nonce="{{ csp_nonce|default('') }}">{{ article_schema_json }}</script>
 {% endblock %}
 
 {% block title %}{{ post.title }} — Chrislabs Blog{% endblock %}
@@ -74,7 +75,7 @@
     <div class="article-author-block">
         <div class="author-avatar">CC</div>
         <div class="author-info">
-            <div class="author-name">Chris Camacho</div>
+            <div class="author-name"><a href="/{{ lang or 'en' }}/about">Chris Camacho</a></div>
             <div class="author-bio">Software developer, lifelong learner, writing about code and life.</div>
         </div>
     </div>

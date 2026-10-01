@@ -29,6 +29,13 @@ from blog_chat.features.accounts.services import (
     get_username_from_cookie,
 )
 from blog_chat.features.posts.services import get_fb_post, get_fb_posts, get_post, get_post_by_lang_group, get_posts
+from blog_chat.features.posts.schema import (
+    article_schema,
+    build_llms_txt,
+    person_schema,
+    to_jsonld,
+    website_schema,
+)
 
 router = APIRouter()
 
@@ -207,6 +214,11 @@ def _context(request: Request, lang: str | None, **extra) -> dict:
         "script_url": UMAMI_SCRIPT_URL,
         "website_id": UMAMI_WEBSITE_ID,
     }
+    ctx["site_schema_json"] = to_jsonld(website_schema())
+    if extra.get("post"):
+        ctx["article_schema_json"] = to_jsonld(article_schema(extra["post"]))
+    if extra.get("is_about_page"):
+        ctx["person_schema_json"] = to_jsonld(person_schema(lang or "en"))
     ctx.update(extra)
     return ctx
 
@@ -252,6 +264,32 @@ def sitemap(request: Request):
 {chr(10).join(urls)}
 </urlset>"""
     return Response(content=sitemap_xml, media_type="application/xml")
+
+
+@router.get("/llms.txt", response_class=PlainTextResponse)
+def llms_txt():
+    return build_llms_txt(get_posts())
+
+
+@router.get("/about")
+def about_redirect(request: Request):
+    return RedirectResponse(f"/{preferred_lang(request)}/about", status_code=302)
+
+
+@router.get("/{lang}/about")
+def read_about(request: Request, lang: str):
+    if lang not in LANGS:
+        return RedirectResponse(f"/{preferred_lang(request)}/about", status_code=302)
+    log_business_event("page.view", "About page viewed", lang=lang, path=f"/{lang}/about")
+    return _render(
+        "about.html",
+        request,
+        lang,
+        slug=None,
+        is_about_page=True,
+        room="offtopic",
+        language_switcher=language_switcher(request, lang, "about"),
+    )
 
 
 @router.get("/")

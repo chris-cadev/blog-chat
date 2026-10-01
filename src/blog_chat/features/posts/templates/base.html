@@ -24,6 +24,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
     {% block metadata %}{% endblock %}
+    <script type="application/ld+json" nonce="{{ csp_nonce|default('') }}">{{ site_schema_json }}</script>
     <title>{% block title %}Blog Chat{% endblock %}</title>
     <link rel="stylesheet" href="{{ static_url('main.css') }}">
     {% block styles %}{% endblock %}
@@ -89,6 +90,7 @@
     <footer class="site-footer">
         <p>&copy; 2026 Chrislabs Blog</p>
         <nav class="footer-nav">
+            <a href="/{{ lang or 'en' }}/about">{{ t('about') }}</a>
             <a href="/{{ lang or 'en' }}/legal/privacy-policy">{{ t('privacy') }}</a>
             <a href="/{{ lang or 'en' }}/legal/terms">{{ t('terms') }}</a>
         </nav>

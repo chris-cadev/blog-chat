@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block metadata %}
+<meta name="description" content="{{ t('about_meta') }}">
+<link rel="canonical" href="{{ request.url }}">
+<script type="application/ld+json" nonce="{{ csp_nonce|default('') }}">{{ person_schema_json }}</script>
+{% endblock %}
+
+{% block title %}{{ t('about_title') }} — Chrislabs Blog{% endblock %}
+
+{% block content %}
+<article>
+    <header class="article-header">
+        <h1 class="article-title">{{ t('about_title') }}</h1>
+    </header>
+    <div class="article-body">
+        <p>{{ t('about_body_1') }}</p>
+        <p>{{ t('about_body_2') }}</p>
+        <p>{{ t('about_body_3') }}</p>
+        <ul>
+            <li><a href="https://github.com/chris-cadev/blog-chat">{{ t('about_repo') }}</a></li>
+            <li><a href="mailto:chris@chrislabs.net">{{ t('about_email') }}</a></li>
+        </ul>
+    </div>
+</article>
+{% endblock %}
