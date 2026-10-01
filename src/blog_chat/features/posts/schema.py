@@ -43,6 +43,12 @@ def person_schema(lang: str = "en") -> dict:
     }
 
 
+def _iso(value) -> str | None:
+    if value is None or value == "":
+        return None
+    return value.isoformat() if hasattr(value, "isoformat") else str(value)
+
+
 def article_schema(post: dict, site_url: str = SITE_URL) -> dict:
     lang = post.get("lang") or "en"
     slug = post.get("slug") or ""
@@ -63,15 +69,15 @@ def article_schema(post: dict, site_url: str = SITE_URL) -> dict:
     if description:
         data["description"] = description[:300]
     if post.get("created"):
-        data["datePublished"] = post["created"]
-    modified = post.get("updated") or post.get("created")
+        data["datePublished"] = _iso(post["created"])
+    modified = _iso(post.get("updated") or post.get("created"))
     if modified:
         data["dateModified"] = modified
     return data
 
 
 def to_jsonld(data: dict) -> Markup:
-    return Markup(json.dumps(data, ensure_ascii=False))
+    return Markup(json.dumps(data, ensure_ascii=False, default=str))
 
 
 def build_llms_txt(posts: list[dict], site_url: str = SITE_URL) -> str:
