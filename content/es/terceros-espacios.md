@@ -2,13 +2,15 @@
 title: Terceros espacios
 slug: terceros-espacios
 tags:
-  - sociedad
-  - trabajo
-  - comunidad
+- sociedad
+- trabajo
+- comunidad
 created: '2026-09-25'
-updated: '2026-09-25'
+updated: '2026-09-30'
 lang: es
 lang_group: terceros-espacios
+description: 'El tercer espacio de Ray Oldenburg: por qué no es digital, por qué el
+  trabajo lo simula, y por qué nace de la comunidad.'
 ---
 
 Espacios donde no estás obligado a estar.

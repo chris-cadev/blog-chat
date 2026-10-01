@@ -2,13 +2,15 @@
 title: Desaparecer trabajos
 slug: desaparecer-trabajos
 tags:
-  - trabajo
-  - sociedad
-  - futuro
+- trabajo
+- sociedad
+- futuro
 created: '2025-11-26'
-updated: '2026-09-25'
+updated: '2026-09-30'
 lang: es
 lang_group: desaparecer-trabajos
+description: Por qué los trabajos que odiamos son los que deben desaparecer, el Principio
+  de Peter y la esclavitud monitoreada disfrazada de beneficio de oficina.
 ---
 
 Los trabajos que odiamos son los que deben desaparecer.

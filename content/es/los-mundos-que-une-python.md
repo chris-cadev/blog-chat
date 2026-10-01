@@ -2,13 +2,15 @@
 title: Los mundos que une Python
 slug: los-mundos-que-une-python
 tags:
-  - pensar
-  - software
-  - liderazgo
+- pensar
+- software
+- liderazgo
 created: '2026-09-29'
-updated: '2026-09-29'
+updated: '2026-09-30'
 lang: es
 lang_group: los-mundos-que-une-python
+description: 'Python como punto de encuentro entre el mundo del negocio y el mundo
+  de la ingeniería: dos formas de contar historias que no se hablan entre sí.'
 ---
 
 Python no es solo un lenguaje de programación. Es un punto de encuentro entre roles que normalmente no se hablan.

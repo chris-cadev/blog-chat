@@ -2,13 +2,16 @@
 title: Python para managers staff
 slug: python-for-staff-managers
 tags:
-  - pensar
-  - software
-  - liderazgo
+- pensar
+- software
+- liderazgo
 created: '2025-11-26'
-updated: '2025-11-26'
+updated: '2026-09-30'
 lang: es
 lang_group: python-for-staff-managers
+description: ¿Puede Python ser el idioma que managers y developers hablan por fin
+  en la misma reunión? La brecha de contexto en consultoras, y por qué leer el código
+  del equipo no es programar.
 ---
 
 ¿Es loco pensar que Python podría ser el idioma que managers y developers hablan por fin en la misma reunión?

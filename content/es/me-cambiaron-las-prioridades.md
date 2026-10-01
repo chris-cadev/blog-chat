@@ -2,16 +2,17 @@
 title: Me cambiaron las prioridades
 slug: me-cambiaron-las-prioridades
 tags:
-  - trabajo
-  - despido injustificado
-  - ley federal del trabajo
-  - consultora
-  - reflexión
+- trabajo
+- despido injustificado
+- ley federal del trabajo
+- consultora
+- reflexión
 created: '2025-02-11'
-updated: '2026-09-29'
+updated: '2026-09-30'
 lang: es
 lang_group: me-cambiaron-las-prioridades
-description: Mi experiencia con un despido injustificado en una consultora de software en México, el proceso legal y cómo me obligó a rearmar mis prioridades.
+description: Mi experiencia con un despido injustificado en una consultora de software
+  en México, el proceso legal y cómo me obligó a rearmar mis prioridades.
 ---
 
 Me cambiaron las prioridades. No en el sentido corporativo bonito de "pivotar estratégico", sino en el de sentarte un lunes y que te digan que tu proyecto ya no existe.
