@@ -24,6 +24,6 @@ Este es con [Witchcraft de Pendulum](https://www.youtube.com/watch?v=ogMNV33AhCY
 
 No sabía si lo que publicaba hacía resonar a los demás. **Era un AMV a ciegas**, hecho con lo que sonaba bonito y lo que se veía bien en pantalla. Ya después empecé a descubrir otros matices que se tenían que meter en los AMVs, y mi perfeccionismo atacó y decidió no seguir con eso.
 
-<video controls src="assets/yoseline-osuna-tirado-13y-te-quedo-muy-bien-ya-quisiera_v0.mp4" style="width:100%; max-height:600px; border-radius:4px;"></video>
+<video controls src="/static/posts/yoseline-osuna-tirado-13y-te-quedo-muy-bien-ya-quisiera_v0.mp4" style="width:100%; max-height:600px; border-radius:4px;"></video>
 
 > **Yoseline Osuna Tirado:** Te quedó muy bien, ya quisiera yo poder hacer un video así xD

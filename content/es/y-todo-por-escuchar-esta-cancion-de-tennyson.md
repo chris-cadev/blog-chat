@@ -22,17 +22,17 @@ lang_group: y-todo-por-escuchar-esta-cancion-de-tennyson
 Escuchando esta canción y pensando en la relación que tenía en ese entonces, armé este set de imágenes en Photoshop. Trataba de traducir esa sensación a algo visual, con un sentido más poético. **Cada imagen está bien centrada, bien recortada, con su significado.** Eran las herramientas que tenía en ese momento.
 
 <figure class="zoomable">
-  <img src="assets/fb_post_8.jpg" alt="city and forest">
+  <img src="/static/posts/fb_post_8.jpg" alt="city and forest">
   <figcaption>city and forest</figcaption>
 </figure>
 
 <figure class="zoomable">
-  <img src="assets/fb_post_9.jpg" alt="mundo rosa azul">
+  <img src="/static/posts/fb_post_9.jpg" alt="mundo rosa azul">
   <figcaption>mundo rosa azul</figcaption>
 </figure>
 
 <figure class="zoomable">
-  <img src="assets/fb_post_10.jpg" alt="mundo verde">
+  <img src="/static/posts/fb_post_10.jpg" alt="mundo verde">
   <figcaption>mundo verde</figcaption>
 </figure>
 

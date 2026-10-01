@@ -30,7 +30,7 @@ En DeviantArt subía builds del juego bajo el nombre [xentyo](https://www.devian
 Después lo pasé a Unity. En ese entonces entendí que Unity solo soportaba C#, así que ahí fue mi primer contacto con ese lenguaje.
 
 <figure style="margin:0;">
-<video controls src="assets/rainbow-triangle-mi-juego_v0.mp4" style="width:100%; max-height:600px; border-radius:4px;"></video>
+<video controls src="/static/posts/rainbow-triangle-mi-juego_v0.mp4" style="width:100%; max-height:600px; border-radius:4px;"></video>
 <figcaption style="font-size:0.85rem; color:var(--text-faint); text-align:center; margin-top:4px;">Video publicado el 19 de marzo de 2016</figcaption>
 </figure>
 
@@ -51,7 +51,7 @@ En ese momento estaba metiendo lore al juego, un mundo basado en triángulos, y 
 **No era lore muy trabajado**, pero tenía intención. Incluso "fundé" [Fly Games](https://devflygames.github.io/), aunque no sabía cómo registrarla ni nada.
 
 <figure style="margin:0;">
-<img src="487171706_2243943582666410_5253085169195767413_n.jpg" alt="Concept art de Rainbow Triangle: tres triángulos (rojo, verde, azul) y personajes, hecho en Illustrator" style="width:100%; border-radius:4px;">
+<img src="/static/posts/487171706_2243943582666410_5253085169195767413_n.jpg" alt="Concept art de Rainbow Triangle: tres triángulos (rojo, verde, azul) y personajes, hecho en Illustrator" style="width:100%; border-radius:4px;">
 <figcaption style="font-size:0.85rem; color:var(--text-faint); text-align:center; margin-top:4px;">Concept art publicado el 7 de mayo de 2016</figcaption>
 </figure>
 
