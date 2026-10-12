@@ -87,6 +87,14 @@ class TestParseToMarkdown:
         assert "data-custom" not in result
         assert 'src="https://example.com"' in result
 
+    def test_preserves_figure_id(self):
+        result = parse_to_markdown('<figure id="escudo-k7p" style="margin:0;"></figure>')
+        assert 'id="escudo-k7p"' in result
+
+    def test_preserves_video_title(self):
+        result = parse_to_markdown('<video controls src="https://example.com/v.mp4" title="My video"></video>')
+        assert 'title="My video"' in result
+
     def test_preserves_responsive_embed_wrapper(self):
         html = (
             '<div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">'
