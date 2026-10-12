@@ -107,6 +107,13 @@ class TestRewriteRelativePaths:
         result = parse_markdown_file(md)
         assert result["content"] == '<video controls src="/media/foo.mp4"></video>'
 
+    def test_assets_video_poster_becomes_media_url(self, tmp_path, monkeypatch):
+        content = self._layout(tmp_path, monkeypatch)
+        md = content / "es" / "post.md"
+        md.write_text('<video controls src="../assets/foo.mp4" poster="../assets/foo.jpg"></video>\n')
+        result = parse_markdown_file(md)
+        assert result["content"] == '<video controls src="/media/foo.mp4" poster="/media/foo.jpg"></video>'
+
     def test_draft_relative_becomes_drafts_url(self, tmp_path, monkeypatch):
         content = self._layout(tmp_path, monkeypatch)
         md = content / "_drafts" / "post.md"

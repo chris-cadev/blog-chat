@@ -6,6 +6,7 @@ from pathlib import Path
 
 _MD_IMG_RE = re.compile(r"(!\[[^\]]*\]\()([^)]+)(\))")
 _HTML_SRC_RE = re.compile(r'((?:img|source|video|audio)\s[^>]*src=")([^"]+)(")')
+_HTML_POSTER_RE = re.compile(r'(poster=")([^"]+)(")')
 
 
 def _rewrite_relative_paths(body: str, file_path: Path) -> str:
@@ -36,6 +37,7 @@ def _rewrite_relative_paths(body: str, file_path: Path) -> str:
 
     body = _MD_IMG_RE.sub(_replace_md, body)
     body = _HTML_SRC_RE.sub(_replace_src, body)
+    body = _HTML_POSTER_RE.sub(_replace_src, body)
     return body
 
 
