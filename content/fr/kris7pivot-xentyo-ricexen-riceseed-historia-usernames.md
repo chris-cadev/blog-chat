@@ -16,7 +16,21 @@ lang_group: kris7pivot-xentyo-ricexen-riceseed-historia-usernames
 
 Voici comment je suis arrivé de Kris7Pivot à RiceSeed(x), preuve encore visible : le [bouclier K7P que j'ai dessiné en 2011](mis-creaciones-2011#escudo-k7p).
 
-> **TL;DR pour Ulises :** je sais que tu vas dire "trop long", voilà le résumé : **Kris7Pivot** animait des bâtonnets sur Pivot (2010) → **Xentyo** est né du Centello raccourci au minimum et montait des AMV sous Sony Vegas (2012-2016) → **Ricexen** c'était le riz zen + le vestige `xen` de Xentyo → **RiceSeed(x)** c'est la graine et garde le `x`. Pour la version complète, continue.
+<div id="tldr-ulises" data-puzzle data-expected="Endaa,Endaa3132,3132" style="margin: 16px 0;">
+<div class="puzzle-gate">
+<p style="font-weight: 600; margin: 0 0 6px;">🔒 TL;DR pour Ulises: une question pour débloquer</p>
+<p style="color: var(--text-muted); font-size: 0.9em; margin: 0 0 8px;">Quel est le pseudo du membre d'équipage NT qui adore les jeux Pokémon ?</p>
+<div style="display: flex; gap: 8px; align-items: center;">
+<input class="puzzle-input" type="text" placeholder="pseudo" autocomplete="off" aria-label="Réponse" />
+<button class="puzzle-btn" type="button">Débloquer</button>
+</div>
+<div class="puzzle-msg" aria-live="polite" style="font-size: 0.85em; color: var(--text-muted); margin-top: 6px; min-height: 1.2em;"></div>
+</div>
+<div class="puzzle-content" hidden style="display: none; margin-top: 12px; border-left: 3px solid var(--accent); background: var(--accent-subtle); padding: 12px 16px; border-radius: 0 6px 6px 0;">
+<strong>TL;DR pour Ulises :</strong> je sais que tu vas dire "trop long", voilà le résumé : <strong>Kris7Pivot</strong> animait des bâtonnets sur Pivot (2010) → <strong>Xentyo</strong> est né du Centello raccourci au minimum et montait des AMV sous Sony Vegas (2012-2016) → <strong>Ricexen</strong> c'était le riz zen + le vestige <code>xen</code> de Xentyo → <strong>RiceSeed(x)</strong> c'est la graine et garde le <code>x</code>. Pour la version complète, continue.
+</div>
+</div>
+<noscript><blockquote><strong>TL;DR pour Ulises :</strong> je sais que tu vas dire "trop long", voilà le résumé : <strong>Kris7Pivot</strong> animait des bâtonnets sur Pivot (2010) → <strong>Xentyo</strong> est né du Centello raccourci au minimum et montait des AMV sous Sony Vegas (2012-2016) → <strong>Ricexen</strong> c'était le riz zen + le vestige <code>xen</code> de Xentyo → <strong>RiceSeed(x)</strong> c'est la graine et garde le <code>x</code>. Pour la version complète, continue.</blockquote></noscript>
 
 <details style="border: 1px solid var(--border-strong); border-radius: 6px; padding: 12px 16px; background-color: var(--bg-surface); margin: 16px 0;">
 <summary style="cursor: pointer; font-weight: 600;">🎧 Note vocale : Comment je suis passé de Kris7Pivot à RiceSeed(x)</summary>

@@ -16,7 +16,21 @@ lang_group: kris7pivot-xentyo-ricexen-riceseed-historia-usernames
 
 Este es el recuento de cómo llegué de Kris7Pivot a RiceSeed(x), con la prueba todavía visible: el [escudo de K7P que diseñé en 2011](mis-creaciones-2011#escudo-k7p).
 
-> **TL;DR para Ulises:** como sé que vas a decir "mucho texto", ahí te va bien resumido: **Kris7Pivot** animaba palitos en Pivot (2010) → **Xentyo** nació del Centello recortado al mínimo y editaba AMVs en Sony Vegas (2012-2016) → **Ricexen** era arroz zen + el vestigio `xen` de Xentyo → **RiceSeed(x)** es semilla y guarda la `x`. Si quieres el chisme completo, sigue bajando.
+<div id="tldr-ulises" data-puzzle data-expected="Endaa,Endaa3132,3132" style="margin: 16px 0;">
+<div class="puzzle-gate">
+<p style="font-weight: 600; margin: 0 0 6px;">🔒 TL;DR para Ulises: una pregunta para desbloquear</p>
+<p style="color: var(--text-muted); font-size: 0.9em; margin: 0 0 8px;">¿Cuál es el username del miembro del crew de NT que le gustan mucho los videojuegos de Pokémon?</p>
+<div style="display: flex; gap: 8px; align-items: center;">
+<input class="puzzle-input" type="text" placeholder="username" autocomplete="off" aria-label="Respuesta" />
+<button class="puzzle-btn" type="button">Desbloquear</button>
+</div>
+<div class="puzzle-msg" aria-live="polite" style="font-size: 0.85em; color: var(--text-muted); margin-top: 6px; min-height: 1.2em;"></div>
+</div>
+<div class="puzzle-content" hidden style="display: none; margin-top: 12px; border-left: 3px solid var(--accent); background: var(--accent-subtle); padding: 12px 16px; border-radius: 0 6px 6px 0;">
+<strong>TL;DR para Ulises:</strong> como sé que vas a decir "mucho texto", ahí te va bien resumido: <strong>Kris7Pivot</strong> animaba palitos en Pivot (2010) → <strong>Xentyo</strong> nació del Centello recortado al mínimo y editaba AMVs en Sony Vegas (2012-2016) → <strong>Ricexen</strong> era arroz zen + el vestigio <code>xen</code> de Xentyo → <strong>RiceSeed(x)</strong> es semilla y guarda la <code>x</code>. Si quieres el chisme completo, sigue bajando.
+</div>
+</div>
+<noscript><blockquote><strong>TL;DR para Ulises:</strong> como sé que vas a decir "mucho texto", ahí te va bien resumido: <strong>Kris7Pivot</strong> animaba palitos en Pivot (2010) → <strong>Xentyo</strong> nació del Centello recortado al mínimo y editaba AMVs en Sony Vegas (2012-2016) → <strong>Ricexen</strong> era arroz zen + el vestigio <code>xen</code> de Xentyo → <strong>RiceSeed(x)</strong> es semilla y guarda la <code>x</code>. Si quieres el chisme completo, sigue bajando.</blockquote></noscript>
 
 <details style="border: 1px solid var(--border-strong); border-radius: 6px; padding: 12px 16px; background-color: var(--bg-surface); margin: 16px 0;">
 <summary style="cursor: pointer; font-weight: 600;">🎧 Nota de voz: Cómo pasé de Kris7Pivot a RiceSeed(x)</summary>

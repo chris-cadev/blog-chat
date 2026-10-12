@@ -16,7 +16,21 @@ lang_group: kris7pivot-xentyo-ricexen-riceseed-historia-usernames
 
 This is how I got from Kris7Pivot to RiceSeed(x), with proof still standing: the [K7P shield I designed in 2011](mis-creaciones-2011#escudo-k7p).
 
-> **TL;DR for Ulises:** I know you're going to say "too long", so here's the short version: **Kris7Pivot** animated sticks in Pivot (2010) → **Xentyo** came from Centello trimmed to the minimum and edited AMVs in Sony Vegas (2012-2016) → **Ricexen** was zen rice + the `xen` vestige from Xentyo → **RiceSeed(x)** is seed and keeps the `x`. For the full story, keep scrolling.
+<div id="tldr-ulises" data-puzzle data-expected="Endaa,Endaa3132,3132" style="margin: 16px 0;">
+<div class="puzzle-gate">
+<p style="font-weight: 600; margin: 0 0 6px;">🔒 TL;DR for Ulises: one question to unlock</p>
+<p style="color: var(--text-muted); font-size: 0.9em; margin: 0 0 8px;">What is the username of the NT's crew member that likes a lot Pokemon videogames?</p>
+<div style="display: flex; gap: 8px; align-items: center;">
+<input class="puzzle-input" type="text" placeholder="username" autocomplete="off" aria-label="Answer" />
+<button class="puzzle-btn" type="button">Unlock</button>
+</div>
+<div class="puzzle-msg" aria-live="polite" style="font-size: 0.85em; color: var(--text-muted); margin-top: 6px; min-height: 1.2em;"></div>
+</div>
+<div class="puzzle-content" hidden style="display: none; margin-top: 12px; border-left: 3px solid var(--accent); background: var(--accent-subtle); padding: 12px 16px; border-radius: 0 6px 6px 0;">
+<strong>TL;DR for Ulises:</strong> I know you're going to say "too long", so here's the short version: <strong>Kris7Pivot</strong> animated sticks in Pivot (2010) → <strong>Xentyo</strong> came from Centello trimmed to the minimum and edited AMVs in Sony Vegas (2012-2016) → <strong>Ricexen</strong> was zen rice + the <code>xen</code> vestige from Xentyo → <strong>RiceSeed(x)</strong> is seed and keeps the <code>x</code>. For the full story, keep scrolling.
+</div>
+</div>
+<noscript><blockquote><strong>TL;DR for Ulises:</strong> I know you're going to say "too long", so here's the short version: <strong>Kris7Pivot</strong> animated sticks in Pivot (2010) → <strong>Xentyo</strong> came from Centello trimmed to the minimum and edited AMVs in Sony Vegas (2012-2016) → <strong>Ricexen</strong> was zen rice + the <code>xen</code> vestige from Xentyo → <strong>RiceSeed(x)</strong> is seed and keeps the <code>x</code>. For the full story, keep scrolling.</blockquote></noscript>
 
 <details style="border: 1px solid var(--border-strong); border-radius: 6px; padding: 12px 16px; background-color: var(--bg-surface); margin: 16px 0;">
 <summary style="cursor: pointer; font-weight: 600;">🎧 Voice note: How I went from Kris7Pivot to RiceSeed(x)</summary>
