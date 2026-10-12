@@ -11,18 +11,18 @@ function trackUmami(event: string, data?: Record<string, string | undefined>): v
 }
 
 initIframeLoader();
-// Puzzle separado en TS: no va dentro de posts.js — chunk aparte, se carga solo si existe #audio-puzzle
-function loadAudioPuzzle() {
-  if (!document.getElementById("audio-puzzle")) return;
+// Puzzle separado en TS: no va dentro de posts.js — chunk aparte, se carga solo si existe [data-puzzle] o #audio-puzzle
+function loadPuzzle() {
+  if (!document.querySelector("[data-puzzle], #audio-puzzle")) return;
   const s = document.createElement("script");
-  s.src = "/static/audio-puzzle.js";
+  s.src = "/static/puzzle.js";
   s.async = true;
   document.head.appendChild(s);
 }
 if (document.readyState === "loading") {
-  document.addEventListener("DOMContentLoaded", loadAudioPuzzle);
+  document.addEventListener("DOMContentLoaded", loadPuzzle);
 } else {
-  loadAudioPuzzle();
+  loadPuzzle();
 }
 
 function initImageZoom() {
