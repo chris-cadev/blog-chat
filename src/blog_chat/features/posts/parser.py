@@ -3,6 +3,7 @@ import re
 import yaml
 from pathlib import Path
 
+from blog_chat.features.posts.reading_time import reading_time_for
 
 _MD_IMG_RE = re.compile(r"(!\[[^\]]*\]\()([^)]+)(\))")
 _HTML_SRC_RE = re.compile(r'((?:img|source|video|audio)\s[^>]*src=")([^"]+)(")')
@@ -70,6 +71,9 @@ def parse_markdown_file(file_path: Path) -> dict | None:
         frontmatter = {}
         body = content
 
+    stripped_body = body.strip()
+    reading_time = reading_time_for(stripped_body)
+
     return {
         "title": frontmatter.get("title", file_path.stem),
         "slug": frontmatter.get("slug", file_path.stem),
@@ -82,5 +86,6 @@ def parse_markdown_file(file_path: Path) -> dict | None:
         "pinned": bool(frontmatter.get("pinned", False)),
         "css_class": frontmatter.get("css_class", None),
         "type": frontmatter.get("type", None),
-        "content": _rewrite_relative_paths(body.strip(), file_path),
+        "content": _rewrite_relative_paths(stripped_body, file_path),
+        "reading_time": reading_time,
     }

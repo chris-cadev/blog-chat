@@ -73,6 +73,9 @@ def article_schema(post: dict, site_url: str = SITE_URL) -> dict:
     modified = _iso(post.get("updated") or post.get("created"))
     if modified:
         data["dateModified"] = modified
+    rt = post.get("reading_time")
+    if isinstance(rt, dict) and rt.get("iso_duration"):
+        data["timeRequired"] = rt["iso_duration"]
     return data
 
 

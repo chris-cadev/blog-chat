@@ -3,7 +3,7 @@
   {% for pp in pinned_posts %}
   <div class="post-card pinned">
     <a href="/{{ pp.lang or lang or 'en' }}/{{ pp.slug }}" class="post-card-link" data-track-post="{{ pp.slug }}">
-      <span class="post-card-date">{{ pp.created or '' }}</span>
+      <span class="post-card-date">{{ pp.created or '' }}{% if pp.reading_time %}<br><span class="reading-time" aria-label="{{ pp.reading_time | reading_time_aria(lang or pp.lang or 'en') }}">{{ pp.reading_time.label }}</span>{% endif %}</span>
       <div class="post-card-body">
         <h2>{{ pp.title }}</h2>
         {% set excerpt = (pp.description or pp.content) | plain_excerpt(160) %}
@@ -32,7 +32,7 @@
   <li>
     <div class="post-card">
       <a href="/{{ post.lang or lang or 'en' }}/{{ post.slug }}" class="post-card-link" data-track-post="{{ post.slug }}">
-        <span class="post-card-date">{{ post.created or '' }}</span>
+        <span class="post-card-date">{{ post.created or '' }}{% if post.reading_time %}<br><span class="reading-time" aria-label="{{ post.reading_time | reading_time_aria(lang or post.lang or 'en') }}">{{ post.reading_time.label }}</span>{% endif %}</span>
         <div class="post-card-body">
           <h2>{{ post.title }}</h2>
           {% set excerpt = (post.description or post.content) | plain_excerpt(160) %}

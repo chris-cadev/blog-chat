@@ -54,6 +54,8 @@ TRANSLATIONS = {
         "page_not_found": "Page not found",
         "people_online": "People currently in chat",
         "online": "online",
+        "reading_time": "Reading time",
+        "reading_time_aria": "{minutes} {seconds}",
     },
     "es": {
         "home": "Inicio",
@@ -101,6 +103,8 @@ TRANSLATIONS = {
         "page_not_found": "Página no encontrada",
         "people_online": "Personas en el chat ahora",
         "online": "en línea",
+        "reading_time": "Tiempo de lectura",
+        "reading_time_aria": "{minutes} {seconds}",
     },
     "fr": {
         "home": "Accueil",
@@ -148,6 +152,8 @@ TRANSLATIONS = {
         "page_not_found": "Page introuvable",
         "people_online": "Personnes actuellement dans le chat",
         "online": "en ligne",
+        "reading_time": "Temps de lecture",
+        "reading_time_aria": "{minutes} {seconds}",
     },
 }
 

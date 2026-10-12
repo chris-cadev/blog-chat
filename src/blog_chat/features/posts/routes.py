@@ -77,6 +77,17 @@ add_filter(templates, "tag_style", _tag_style)
 add_filter(templates, "tag_hue", _tag_hue)
 templates.env.globals["get_post_by_lang_group"] = get_post_by_lang_group
 
+def _reading_time_aria(reading_time, lang="en"):
+    if not isinstance(reading_time, dict):
+        return ""
+    try:
+        from blog_chat.features.posts.reading_time import format_aria
+        return format_aria(reading_time.get("minutes", 0), reading_time.get("seconds", 0), lang or "en")
+    except Exception:
+        return ""
+
+add_filter(templates, "reading_time_aria", _reading_time_aria)
+
 # OWASP ASVS 5.1.3 / Input Validation Cheat Sheet: positive (allowlist) validation
 # Tags in content: letters (incl. accents), digits, hyphen, underscore, space, 1-64 chars.
 # Rejects payloads like "{:tag}", "../", "<script>", "%2e", etc. before business logic.

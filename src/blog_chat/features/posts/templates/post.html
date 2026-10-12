@@ -58,6 +58,10 @@
             {% if post.updated and post.updated != post.created %}
             <time class="date-updated" datetime="{{ post.updated }}">(updated {{ post.updated }})</time>
             {% endif %}
+            {% if post.reading_time %}
+            <span>·</span>
+            <span class="reading-time" aria-label="{{ post.reading_time | reading_time_aria(lang or post.lang or 'en') }}">{{ post.reading_time.label }}</span>
+            {% endif %}
         </div>
         {% if post.tags %}
         <div class="article-tags">
