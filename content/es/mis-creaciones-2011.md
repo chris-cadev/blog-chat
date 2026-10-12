@@ -52,7 +52,7 @@ lang_group: mis-creaciones-2011
 <figcaption style="font-size:0.8rem; color:var(--text-faint); text-align:center; margin-top:4px;">Escudo para Fernando Dokuro</figcaption>
 </figure>
 
-<figure style="margin:0;">
+<figure id="escudo-k7p" style="margin:0;">
 <img src="../assets/miguel-rangel-15y-que-chidas-imagenes-we_8.jpg" alt="Escudo verde metálico con texto 3D verde lima que dice K7P" style="width:100%; border-radius:6px; cursor:zoom-in;">
 <figcaption style="font-size:0.8rem; color:var(--text-faint); text-align:center; margin-top:4px;">Escudo para K7P (Kris7Pivot — mi primer nombre en internet)</figcaption>
 </figure>
