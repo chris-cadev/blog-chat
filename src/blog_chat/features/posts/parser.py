@@ -5,6 +5,14 @@ from pathlib import Path
 
 from blog_chat.features.posts.reading_time import reading_time_for
 
+_PARSE_CACHE: dict[tuple[str, int], dict] = {}
+_CACHE_MAX = 256
+
+
+def clear_cache() -> None:
+    _PARSE_CACHE.clear()
+
+
 _MD_IMG_RE = re.compile(r"(!\[[^\]]*\]\()([^)]+)(\))")
 _HTML_SRC_RE = re.compile(r'((?:img|source|video|audio)\s[^>]*src=")([^"]+)(")')
 _HTML_POSTER_RE = re.compile(r'(poster=")([^"]+)(")')
@@ -57,6 +65,16 @@ def _flatten_tags(raw):
 
 
 def parse_markdown_file(file_path: Path) -> dict | None:
+    # cache key: resolved path + mtime_ns (invalidates on edit)
+    try:
+        stat = file_path.stat()
+        cache_key = (str(file_path.resolve()), stat.st_mtime_ns)
+        cached = _PARSE_CACHE.get(cache_key)
+        if cached is not None:
+            return dict(cached)
+    except (OSError, ValueError):
+        cache_key = None
+
     content = file_path.read_text(encoding="utf-8")
 
     frontmatter_match = re.match(r"^---\n(.*?)\n---\n", content, re.DOTALL)
@@ -74,7 +92,7 @@ def parse_markdown_file(file_path: Path) -> dict | None:
     stripped_body = body.strip()
     reading_time = reading_time_for(stripped_body)
 
-    return {
+    result = {
         "title": frontmatter.get("title", file_path.stem),
         "slug": frontmatter.get("slug", file_path.stem),
         "tags": _flatten_tags(frontmatter.get("tags")),
@@ -89,3 +107,12 @@ def parse_markdown_file(file_path: Path) -> dict | None:
         "content": _rewrite_relative_paths(stripped_body, file_path),
         "reading_time": reading_time,
     }
+
+    if cache_key is not None:
+        if len(_PARSE_CACHE) >= _CACHE_MAX:
+            # evict oldest (first inserted)
+            oldest = next(iter(_PARSE_CACHE))
+            _PARSE_CACHE.pop(oldest)
+        _PARSE_CACHE[cache_key] = dict(result)
+
+    return result

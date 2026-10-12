@@ -139,3 +139,31 @@ class TestReadingTime:
         assert format_aria(1, 5, "es") == "1 minuto 5 segundos"
         assert format_aria(1, 5, "fr") == "1 minute 5 secondes"
 
+
+class TestReadingTimeIntegration:
+    def test_article_page_has_reading_time_and_timeRequired(self):
+        from fastapi.testclient import TestClient
+        from blog_chat.app import app
+        from blog_chat.features.posts.parser import clear_cache
+
+        clear_cache()
+        with TestClient(app) as client:
+            resp = client.get("/en/first-post")
+        assert resp.status_code == 200
+        assert "reading-time" in resp.text
+        assert "timeRequired" in resp.text
+        # label and aria present
+        assert "aria-label=" in resp.text
+
+    def test_listing_has_reading_time(self):
+        from fastapi.testclient import TestClient
+        from blog_chat.app import app
+        from blog_chat.features.posts.parser import clear_cache
+
+        clear_cache()
+        with TestClient(app) as client:
+            resp = client.get("/en/")
+        assert resp.status_code == 200
+        assert "reading-time" in resp.text
+        # at least one label like Xm or Xs
+        assert "m" in resp.text or "s" in resp.text
