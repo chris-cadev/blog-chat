@@ -33,8 +33,10 @@ ALLOWED_STYLE_PROPERTIES = {
     "padding",
     "padding-bottom",
     "margin",
+    "margin-top",
     "margin-bottom",
     "border",
+    "border-left",
     "border-radius",
     "overflow",
     "display",
@@ -46,6 +48,7 @@ ALLOWED_STYLE_PROPERTIES = {
     "align-items",
     "align-content",
     "aspect-ratio",
+    "background",
     "background-color",
     "font-family",
     "font-size",
@@ -61,9 +64,10 @@ ALLOWED_STYLE_PROPERTIES = {
     "text-overflow",
     "cursor",
     "box-shadow",
+    "min-height",
 }
 
-ALLOWED_TAGS = nh3.ALLOWED_TAGS | {"iframe", "audio", "video", "source", "img", "figure", "figcaption", "picture", "section", "input", "button", "label", "svg", "g", "path", "circle", "rect", "text", "tspan", "polygon", "defs", "marker", "linearGradient", "stop", "filter", "foreignObject", "script"}
+ALLOWED_TAGS = nh3.ALLOWED_TAGS | {"iframe", "audio", "video", "source", "img", "figure", "figcaption", "picture", "section", "input", "button", "label", "noscript", "blockquote", "svg", "g", "path", "circle", "rect", "text", "tspan", "polygon", "defs", "marker", "linearGradient", "stop", "filter", "foreignObject", "script"}
 ALLOWED_ATTRIBUTES = dict(nh3.ALLOWED_ATTRIBUTES)
 ALLOWED_ATTRIBUTES["iframe"] = IFRAME_ATTRIBUTES
 ALLOWED_ATTRIBUTES["audio"] = {"src", "controls", "preload", "type", "style", "controlslist"}
@@ -74,12 +78,14 @@ ALLOWED_ATTRIBUTES["a"] = {"href", "hreflang", "class", "target", "title"}
 ALLOWED_ATTRIBUTES["figure"] = {"style", "class", "id"}
 ALLOWED_ATTRIBUTES["figcaption"] = {"style", "class"}
 ALLOWED_ATTRIBUTES["picture"] = {"style", "class"}
-ALLOWED_ATTRIBUTES["div"] = {"style", "class", "id"}
+ALLOWED_ATTRIBUTES["div"] = {"style", "class", "id", "hidden", "aria-live", "aria-label", "role", "data-puzzle", "data-expected", "data-hint", "data-puzzle-id"}
 ALLOWED_ATTRIBUTES["span"] = {"style", "class", "id"}
-ALLOWED_ATTRIBUTES["input"] = {"type", "placeholder", "style", "class", "id", "inputmode", "aria-label", "value"}
-ALLOWED_ATTRIBUTES["button"] = {"type", "style", "class", "id"}
+ALLOWED_ATTRIBUTES["input"] = {"type", "placeholder", "style", "class", "id", "inputmode", "aria-label", "value", "autocomplete", "aria-live"}
+ALLOWED_ATTRIBUTES["button"] = {"type", "style", "class", "id", "aria-label"}
 ALLOWED_ATTRIBUTES["label"] = {"style", "class", "for"}
 ALLOWED_ATTRIBUTES["section"] = {"style", "class", "id", "aria-label", "data-expected"}
+ALLOWED_ATTRIBUTES["blockquote"] = {"style", "class", "id"}
+ALLOWED_ATTRIBUTES["noscript"] = set()
 ALLOWED_ATTRIBUTES["p"] = {"id", "class"}
 ALLOWED_ATTRIBUTES["pre"] = {"class", "id"}
 ALLOWED_ATTRIBUTES["script"] = {"src", "type", "nonce"}
